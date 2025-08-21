@@ -11,7 +11,7 @@ export default function Page() {
           backgroundImage: `
             radial-gradient(
               circle at top center,
-              rgba(70, 130, 180, 0.5),
+              rgba(208, 243, 245, 0.8),
               transparent 70%
             )
           `,
