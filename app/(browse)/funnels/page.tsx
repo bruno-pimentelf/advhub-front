@@ -5,7 +5,7 @@ const page = () => {
   return (
     <div>
         <div className="p-6">
-            <TypographyH1>Configurações</TypographyH1>
+            <TypographyH1>Funis</TypographyH1>
         </div>
     </div>
   )

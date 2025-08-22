@@ -9,7 +9,8 @@ import {
   Settings, 
   LogOut,
   Menu,
-  X
+  X,
+  Calendar
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -22,9 +23,10 @@ import {
 } from '@/components/ui/tooltip'
 
 const menuItems = [
-  { name: 'Funis', href: '/dashboard', icon: Home },
+  { name: 'Funis', href: '/funnels', icon: Home },
   { name: 'Contatos', href: '/contacts', icon: Users },
   { name: 'Mensagens', href: '/messages', icon: MessageSquare },
+  { name: 'Calendário', href: '/calendar', icon: Calendar },
   { name: 'Configurações', href: '/settings', icon: Settings },
 ]
 
@@ -56,7 +58,6 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
       {/* Header */}
       <div 
         className="flex items-center justify-between p-4 h-[73px]"
-        style={{ borderBottom: '1px solid var(--sidebar-border)' }}
       >
         {!isCollapsed && (
           <div className="flex items-center">
@@ -124,39 +125,6 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
           })}
         </ul>
       </nav>
-
-      {/* Footer */}
-      <div 
-        className="p-4"
-        style={{ borderTop: '1px solid var(--sidebar-border)' }}
-      >
-        <TooltipProvider key={`tooltip-logout-${isCollapsed}`}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                className={cn(
-                  "w-full gap-3 cursor-pointer",
-                  isCollapsed 
-                    ? "justify-center px-2" 
-                    : "justify-start"
-                )}
-                style={{
-                  color: 'var(--destructive)'
-                }}
-              >
-                <LogOut size={20} />
-                {!isCollapsed && <span>Sair</span>}
-              </Button>
-            </TooltipTrigger>
-            {isCollapsed && (
-              <TooltipContent side="right">
-                Sair
-              </TooltipContent>
-            )}
-          </Tooltip>
-        </TooltipProvider>
-      </div>
     </div>
   )
 }

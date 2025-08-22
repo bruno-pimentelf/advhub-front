@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Bell, Search, Settings, User, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
 interface HeaderProps {
   sidebarCollapsed?: boolean
@@ -46,7 +47,7 @@ export function Header({ sidebarCollapsed = false }: HeaderProps) {
             className="absolute -top-1 -right-1 text-xs rounded-full h-5 w-5 flex items-center justify-center"
             style={{
               backgroundColor: 'var(--destructive)',
-              color: 'var(--destructive-foreground)'
+              color: 'white'
             }}
           >
             3
@@ -71,7 +72,7 @@ export function Header({ sidebarCollapsed = false }: HeaderProps) {
                     color: 'var(--primary-foreground)'
                   }}
                 >
-                  U
+                  M
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -79,9 +80,9 @@ export function Header({ sidebarCollapsed = false }: HeaderProps) {
           <DropdownMenuContent className="w-56" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">Usuário</p>
+                <p className="text-sm font-medium leading-none">Miguel</p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  usuario@ailum.com
+                  miguel@ailum.com
                 </p>
               </div>
             </DropdownMenuLabel>
@@ -90,9 +91,11 @@ export function Header({ sidebarCollapsed = false }: HeaderProps) {
               <User className="mr-2 h-4 w-4" />
               <span>Perfil</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Configurações</span>
+            <DropdownMenuItem asChild>
+              <Link href="/settings">
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Configurações</span>
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem 
