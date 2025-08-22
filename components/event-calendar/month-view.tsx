@@ -13,6 +13,7 @@ import {
   startOfMonth,
   startOfWeek,
 } from "date-fns"
+import { ptBR } from "date-fns/locale"
 
 import { DraggableEvent } from "@/components/event-calendar/draggable-event"
 import { DroppableCell } from "@/components/event-calendar/droppable-cell"
@@ -53,7 +54,7 @@ export function MonthView({
   const weekdays = useMemo(() => {
     return Array.from({ length: 7 }).map((_, i) => {
       const date = addDays(startOfWeek(new Date()), i)
-      return format(date, "EEE")
+      return format(date, "EEE", { locale: ptBR })
     })
   }, [])
 
@@ -142,7 +143,7 @@ export function MonthView({
                     }}
                   >
                     <div className="group-data-today:bg-primary group-data-today:text-primary-foreground mt-1 inline-flex size-6 items-center justify-center rounded-full text-sm">
-                      {format(day, "d")}
+                      {format(day, "d", { locale: ptBR })}
                     </div>
                     <div
                       ref={isReferenceCell ? contentRef : null}
@@ -178,7 +179,8 @@ export function MonthView({
                                     <span>
                                       {format(
                                         new Date(event.start),
-                                        "h:mm"
+                                        "H:mm",
+                                        { locale: ptBR }
                                       )}{" "}
                                     </span>
                                   )}
@@ -215,7 +217,7 @@ export function MonthView({
                             >
                               <span>
                                 + {remainingCount}{" "}
-                                <span className="max-sm:sr-only">more</span>
+                                <span className="max-sm:sr-only">mais</span>
                               </span>
                             </button>
                           </PopoverTrigger>
@@ -230,7 +232,7 @@ export function MonthView({
                           >
                             <div className="space-y-2">
                               <div className="text-sm font-medium">
-                                {format(day, "EEE d")}
+                                {format(day, "EEE d", { locale: ptBR })}
                               </div>
                               <div className="space-y-1">
                                 {sortEvents(allEvents).map((event: CalendarEvent) => {
