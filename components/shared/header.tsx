@@ -13,16 +13,39 @@ import {
 import { Bell, Search, Settings, User, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 interface HeaderProps {
   sidebarCollapsed?: boolean
 }
 
 export function Header({ sidebarCollapsed = false }: HeaderProps) {
+  const pathname = usePathname()
+
+  // Get page title based on current route
+  const getPageTitle = () => {
+    switch (pathname) {
+      case '/':
+      case '/dashboard':
+      case '/funnels':
+        return 'Funis'
+      case '/contacts':
+        return 'Contatos'
+      case '/messages':
+        return 'Mensagens'
+      case '/settings':
+        return 'Configurações'
+      case '/calendar':
+        return 'Calendário'
+      default:
+        return 'Dashboard'
+    }
+  }
+
   return (
     <header 
       className={cn(
-        "px-6 transition-all duration-300 h-[73px] flex items-center",
+        "px-6 transition-all duration-300 h-[73px] flex items-center justify-between",
         sidebarCollapsed && "ml-[-1px]" // Ajusta para alinhar com a borda da sidebar
       )}
       style={{
@@ -30,9 +53,13 @@ export function Header({ sidebarCollapsed = false }: HeaderProps) {
         borderBottom: '1px solid var(--border)'
       }}
     >
+      {/* Page Title */}
+      <h1 className="text-xl font-semibold">
+        {getPageTitle()}
+      </h1>
 
       {/* Right Section */}
-      <div className="flex items-center gap-4 ml-auto">
+      <div className="flex items-center gap-4">
         {/* Notifications */}
         <Button 
           variant="ghost" 

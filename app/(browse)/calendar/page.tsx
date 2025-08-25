@@ -8,9 +8,6 @@ const page = () => {
   return (
     <div>
         <div className="p-6">
-            <div className="mb-6">
-                <TypographyH1>Calendário</TypographyH1>
-            </div>
             <Calendar />
         </div>
     </div>
