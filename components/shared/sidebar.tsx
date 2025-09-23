@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { 
-  Home, 
+  TrendingUp, 
   Users, 
   MessageSquare, 
   Settings, 
@@ -24,7 +24,7 @@ const navigationItems = [
   {
     title: "Funis",
     href: "/funnels",
-    icon: Home,
+    icon: TrendingUp,
     description: "Gerenciar funis",
   },
   {
@@ -85,8 +85,8 @@ const UserDropdown = () => {
         className="w-full justify-between px-3 py-2 h-auto"
       >
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-            <User className="w-4 h-4 text-primary" />
+          <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#04CDD410' }}>
+            <User className="w-4 h-4 text-foreground" />
           </div>
           <div className="text-left flex-1 min-w-0">
             <div className="text-sm font-medium text-foreground truncate">
@@ -144,7 +144,7 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
   // Se estiver retraída, mostrar apenas botão de voltar
   if (isRetracted) {
     return (
-      <div className="fixed inset-y-0 left-0 z-50 w-16 bg-background/95 backdrop-blur-md border-r border-border/50 lg:block hidden">
+      <div className="fixed inset-y-0 left-4 z-50 w-16 bg-background/95 backdrop-blur-md border rounded-2xl lg:block hidden my-4" style={{ borderColor: '#04CDD4' }}>
         <div className="flex h-full flex-col">
           {/* Logo compacto */}
           <div className="flex h-16 items-center justify-center border-b border-border/50">
@@ -184,18 +184,31 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
                   href={item.href}
                   className={cn(
                     "group relative flex items-center justify-center p-3 rounded-lg transition-all duration-200",
-                    "hover:bg-secondary/50",
+                    "hover:bg-opacity-10",
                     isActive
-                      ? "bg-secondary shadow-sm"
+                      ? "shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
                   )}
+                  style={{
+                    backgroundColor: isActive ? '#04CDD410' : undefined,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = '#04CDD410';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = '';
+                    }
+                  }}
                   title={item.title}
                 >
                   <Icon className="h-5 w-5" />
                   
                   {/* Active indicator */}
                   {isActive && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full" style={{ backgroundColor: '#04CDD4' }} />
                   )}
                 </Link>
               );
@@ -205,8 +218,8 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
           {/* Footer com dropdown do usuário compacto */}
           <div className="p-2 border-t border-border/50">
             <div className="flex items-center justify-center">
-              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                <User className="w-4 h-4 text-primary" />
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#04CDD410' }}>
+                <User className="w-4 h-4 text-foreground" />
               </div>
             </div>
           </div>
@@ -227,9 +240,9 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
       )}
       
       <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-background/95 backdrop-blur-md border-r border-border/50
+        fixed inset-y-0 left-4 z-50 w-64 bg-background/95 backdrop-blur-md border rounded-2xl my-4
         ${isMobileOpen ? 'block' : 'lg:block hidden'}
-      `}>
+      `} style={{ borderColor: '#04CDD4' }}>
         <div className="flex h-full flex-col">
           {/* Logo */}
           <div className="flex h-16 items-center px-6 border-b border-border/50">
@@ -281,11 +294,24 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
                 onClick={handleCloseMobile}
                 className={cn(
                   "group relative flex items-center px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200",
-                  "hover:bg-secondary/50 hover:text-foreground",
+                  "hover:text-foreground",
                   isActive
-                    ? "bg-secondary text-foreground shadow-sm"
+                    ? "shadow-sm"
                     : "text-muted-foreground"
                 )}
+                style={{
+                  backgroundColor: isActive ? '#04CDD410' : undefined,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = '#04CDD410';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = '';
+                  }
+                }}
               >
                 <Icon className="mr-3 h-5 w-5 flex-shrink-0" />
                 <div className="flex-1">
@@ -301,7 +327,7 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
                 
                 {/* Active indicator */}
                 {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full" style={{ backgroundColor: '#04CDD4' }} />
                 )}
               </Link>
             );

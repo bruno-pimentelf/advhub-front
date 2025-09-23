@@ -17,10 +17,10 @@ export default function BrowseLayout({
             {/* Main Content */}
             <div className={`
                 flex flex-col min-h-screen transition-all duration-300
-                ml-0 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}
+                ml-0 ${sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-72'}
             `}>
                 <Header sidebarCollapsed={sidebarCollapsed} />
-                <main className="flex-1 overflow-auto bg-gray-50">
+                <main className="flex-1 overflow-auto bg-gray-50 mx-4 mb-4 mt-2">
                     {children}
                 </main>
             </div>
