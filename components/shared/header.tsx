@@ -45,13 +45,8 @@ export function Header({ sidebarCollapsed = false }: HeaderProps) {
   return (
     <header 
       className={cn(
-        "px-6 transition-all duration-300 h-[73px] flex items-center justify-between",
-        sidebarCollapsed && "ml-[-1px]" // Ajusta para alinhar com a borda da sidebar
+        "px-6 transition-all duration-300 h-16 flex items-center justify-between bg-background/95 backdrop-blur-md border-b border-border/50"
       )}
-      style={{
-        backgroundColor: 'var(--background)',
-        borderBottom: '1px solid var(--border)'
-      }}
     >
       {/* Page Title */}
       <h1 className="text-xl font-semibold">
