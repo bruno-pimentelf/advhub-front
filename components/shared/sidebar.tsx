@@ -144,7 +144,7 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
   // Se estiver retraída, mostrar apenas botão de voltar
   if (isRetracted) {
     return (
-      <div className="fixed inset-y-0 left-4 z-50 w-16 bg-background/95 backdrop-blur-md border rounded-2xl lg:block hidden my-4" style={{ borderColor: '#04CDD4' }}>
+      <div className="fixed inset-y-0 left-4 z-50 w-16 bg-background/95 backdrop-blur-md border rounded-2xl lg:block hidden my-4" style={{ borderColor: '#04CDD470' }}>
         <div className="flex h-full flex-col">
           {/* Logo compacto */}
           <div className="flex h-16 items-center justify-center border-b border-border/50">
@@ -186,11 +186,12 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
                     "group relative flex items-center justify-center p-3 rounded-lg transition-all duration-200",
                     "hover:bg-opacity-10",
                     isActive
-                      ? "shadow-sm"
+                      ? "border"
                       : "text-muted-foreground hover:text-foreground"
                   )}
                   style={{
                     backgroundColor: isActive ? '#04CDD410' : undefined,
+                    borderColor: isActive ? '#04CDD470' : undefined,
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive) {
@@ -242,7 +243,7 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
       <div className={`
         fixed inset-y-0 left-4 z-50 w-64 bg-background/95 backdrop-blur-md border rounded-2xl my-4
         ${isMobileOpen ? 'block' : 'lg:block hidden'}
-      `} style={{ borderColor: '#04CDD4' }}>
+      `} style={{ borderColor: '#04CDD470' }}>
         <div className="flex h-full flex-col">
           {/* Logo */}
           <div className="flex h-16 items-center px-6 border-b border-border/50">
@@ -296,11 +297,12 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
                   "group relative flex items-center px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200",
                   "hover:text-foreground",
                   isActive
-                    ? "shadow-sm"
+                    ? "border"
                     : "text-muted-foreground"
                 )}
                 style={{
                   backgroundColor: isActive ? '#04CDD410' : undefined,
+                  borderColor: isActive ? '#04CDD470' : undefined,
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {

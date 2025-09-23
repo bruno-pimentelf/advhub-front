@@ -36,7 +36,7 @@ export function Header({ sidebarCollapsed = false }: HeaderProps) {
       className={cn(
         "mx-4 mt-4 px-6 transition-all duration-300 h-16 flex items-center justify-between bg-background/95 backdrop-blur-md border rounded-2xl"
       )}
-      style={{ borderColor: '#04CDD4' }}
+      style={{ borderColor: '#04CDD470' }}
     >
       {/* Page Title */}
       <h1 className="text-xl font-semibold">
