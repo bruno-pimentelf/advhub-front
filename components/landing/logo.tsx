@@ -6,7 +6,7 @@ export const Logo = ({ className, uniColor }: { className?: string; uniColor?: b
         <div className='flex items-center gap-2'>
 
             <Image src="/ailum-logo.png" alt="Ailum Logo" width={120} height={120} className={cn('w-auto h-10', className)} />
-            <span className="text-xl ">Ailum</span>
+            <span className="text-xl ">A I L U M</span>
         </div>
     )
 }

@@ -17,6 +17,7 @@ import {
   ChevronDown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 
@@ -154,22 +155,35 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
                 alt="Ailum" 
                 width={32} 
                 height={32}
-                className="w-8 h-8"
+                className="w-7 h-8"
               />
             </Link>
           </div>
 
           {/* Botão para expandir sidebar - mais visível */}
           <div className="px-2 py-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleToggleSidebar}
-              className="w-full h-10 p-0"
-              title="Expandir sidebar"
-            >
-              <Menu className="w-4 h-4" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleToggleSidebar}
+                  className="w-full h-10 p-0 hover:bg-opacity-10"
+                  style={{ backgroundColor: 'transparent' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#04CDD410';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                >
+                  <Menu className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>Expandir sidebar</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           {/* Navigation compacta */}
@@ -179,39 +193,47 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
               const Icon = item.icon;
               
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "group relative flex items-center justify-center p-3 rounded-lg transition-all duration-200",
-                    "hover:bg-opacity-10",
-                    isActive
-                      ? "border"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                  style={{
-                    backgroundColor: isActive ? '#04CDD410' : undefined,
-                    borderColor: isActive ? '#04CDD470' : undefined,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = '#04CDD410';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = '';
-                    }
-                  }}
-                  title={item.title}
-                >
-                  <Icon className="h-5 w-5" />
-                  
-                  {/* Active indicator */}
-                  {isActive && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full" style={{ backgroundColor: '#04CDD4' }} />
-                  )}
-                </Link>
+                <Tooltip key={item.href}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "group relative flex items-center justify-center p-3 rounded-lg transition-all duration-200",
+                        "hover:bg-opacity-10",
+                        isActive
+                          ? "border"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                      style={{
+                        backgroundColor: isActive ? '#04CDD410' : undefined,
+                        borderColor: isActive ? '#04CDD470' : undefined,
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.backgroundColor = '#04CDD410';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.backgroundColor = '';
+                        }
+                      }}
+                    >
+                      <Icon className="h-5 w-5" />
+                      
+                      {/* Active indicator */}
+                      {isActive && (
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full" style={{ backgroundColor: '#04CDD4' }} />
+                      )}
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <div>
+                      <p className="font-medium">{item.title}</p>
+                      <p className="text-xs opacity-80">{item.description}</p>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
               );
             })}
           </nav>
@@ -219,9 +241,19 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
           {/* Footer com dropdown do usuário compacto */}
           <div className="p-2 border-t border-border/50">
             <div className="flex items-center justify-center">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#04CDD410' }}>
-                <User className="w-4 h-4 text-foreground" />
-              </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-20 transition-all duration-200" style={{ backgroundColor: '#04CDD410' }}>
+                    <User className="w-4 h-4 text-foreground" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <div>
+                    <p className="font-medium">Miguel</p>
+                    <p className="text-xs opacity-80">miguel@ailum.com</p>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
         </div>
