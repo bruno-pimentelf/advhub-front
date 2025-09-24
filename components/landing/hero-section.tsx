@@ -32,7 +32,7 @@ export default function HeroSection() {
         <>
             <HeroHeader />
             <main className="overflow-hidden">
-                <div className="min-h-screen w-full relative bg-white">
+                <div className="min-h-[70vh] w-full relative bg-white">
                     {/* Teal Glow Top */}
                     <div
                         className="absolute inset-0 z-0"
@@ -51,7 +51,7 @@ export default function HeroSection() {
                     />
                     {/* Your Content/Components */}
                     <section>
-                        <div className="relative pt-24 md:pt-36">
+                        <div className="relative pt-8 md:pt-12 pb-8 md:pb-12">
                         <AnimatedGroup
                             variants={{
                                 container: {
