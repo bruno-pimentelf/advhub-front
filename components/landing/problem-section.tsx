@@ -41,7 +41,7 @@ export default function ProblemSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
   return (
-    <section ref={ref} className="pt-12 md:pt-16 pb-24 md:pb-32 bg-white">
+    <section ref={ref} className="pt-20 md:pt-28 pb-24 md:pb-32 bg-white">
       <div className="mx-auto max-w-7xl px-6">
         <motion.div
           variants={transitionVariants.container}
