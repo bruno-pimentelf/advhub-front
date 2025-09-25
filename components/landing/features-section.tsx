@@ -4,6 +4,7 @@ import React, { useRef } from 'react'
 import { useInView, motion } from 'motion/react'
 import { Highlighter } from '@/components/ui/highlighter'
 import { RainbowButton } from '@/components/ui/rainbow-button'
+import { BentoGrid, BentoCard } from '@/components/ui/bento-grid'
 import { 
   Users, 
   Target, 
@@ -44,47 +45,30 @@ const pillars = [
   {
     icon: Users,
     title: "Fluxo de Leads",
-    description: "Organização e segmentação automática de contatos, garantindo que nenhum lead seja perdido.",
-    colors: {
-      firstColor: "#04CDD4",
-      secondColor: "#03a8a8"
-    }
+    description: "Organização e segmentação automática de contatos, garantindo que nenhum lead seja perdido. Centralização dos atendimentos e automação de processos para que sua equipe trabalhe menos e renda mais.",
+    className: "col-span-3 md:col-span-2",
+    header: "Gestão Inteligente"
   },
   {
     icon: Target,
     title: "Conversão e Vendas",
     description: "Inteligência Artificial que sugere mensagens estratégicas no WhatsApp para aumentar agendamentos e fechar mais procedimentos.",
-    colors: {
-      firstColor: "#04CDD4",
-      secondColor: "#03a8a8"
-    }
+    className: "col-span-3 md:col-span-1",
+    header: "IA para Vendas"
   },
   {
     icon: Heart,
     title: "Relacionamento e Fidelização",
     description: "Follow-ups personalizados para engajar pacientes e reduzir faltas e cancelamentos.",
-    colors: {
-      firstColor: "#04CDD4",
-      secondColor: "#03a8a8"
-    }
+    className: "col-span-3 md:col-span-1",
+    header: "Fidelização"
   },
   {
     icon: BarChart3,
-    title: "Organização e Produtividade",
-    description: "Centralização dos atendimentos e automação de processos para que sua equipe trabalhe menos e renda mais.",
-    colors: {
-      firstColor: "#04CDD4",
-      secondColor: "#03a8a8"
-    }
-  },
-  {
-    icon: Eye,
     title: "Acompanhamento Estratégico",
     description: "Insights inteligentes que mostram onde estão as oportunidades de crescimento da clínica.",
-    colors: {
-      firstColor: "#04CDD4",
-      secondColor: "#03a8a8"
-    }
+    className: "col-span-3 md:col-span-2",
+    header: "Analytics"
   }
 ]
 
@@ -113,25 +97,22 @@ export default function FeaturesSection() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <BentoGrid className="max-w-6xl mx-auto">
             {pillars.map((pillar, index) => (
-              <motion.div key={index} variants={transitionVariants.item}>
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-[#04CDD4]/20 hover:bg-white/90 transition-all duration-300 h-full">
-                  <div className="flex flex-col items-center text-center h-full">
-                    <div className="p-4 rounded-xl bg-gradient-to-r from-[#04CDD4] to-[#03a8a8] mb-6">
-                      <pillar.icon className="w-12 h-12 text-white" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-foreground mb-4">
-                      {pillar.title}
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {pillar.description}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
+              <BentoCard
+                key={index}
+                name={pillar.title}
+                className={pillar.className}
+                Icon={pillar.icon}
+                description={pillar.description}
+                background={
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#04CDD4]/10 to-[#03a8a8]/10" />
+                }
+                href="#application-form"
+                cta="Saiba mais"
+              />
             ))}
-          </div>
+          </BentoGrid>
         </motion.div>
 
         <motion.div

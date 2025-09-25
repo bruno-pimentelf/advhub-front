@@ -5,7 +5,6 @@ import { useInView } from 'motion/react'
 import { BentoGrid, BentoCard } from '@/components/ui/bento-grid'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
 import { BlurFade } from '@/components/ui/blur-fade'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { motion } from 'motion/react'
@@ -50,12 +49,13 @@ const transitionVariants = {
 const benefits = [
   {
     name: "Parar de perder pacientes",
-    description: "Diga adeus ao caos no WhatsApp e à desorganização! Nunca mais perca um paciente por falta de follow-up.",
+    description: "Diga adeus ao caos no WhatsApp e à desorganização! Nunca mais perca um paciente por falta de follow-up. Organize contatos, sugira mensagens personalizadas e faça follow-ups inteligentes para aumentar conversões.",
     icon: Users,
     metric: "95%",
     metricLabel: "Redução de perda de pacientes",
     stats: "Antes: 30% de perda | Depois: 2% de perda",
-    className: "col-span-3 md:col-span-1"
+    className: "col-span-3 md:col-span-2",
+    isMain: true
   },
   {
     name: "Reduzir investimentos",
@@ -64,7 +64,8 @@ const benefits = [
     metric: "70%",
     metricLabel: "Economia em treinamentos",
     stats: "R$ 15.000/ano economizados em treinamentos",
-    className: "col-span-3 md:col-span-1"
+    className: "col-span-3 md:col-span-1",
+    isMain: false
   },
   {
     name: "Automatizar atendimento",
@@ -73,16 +74,8 @@ const benefits = [
     metric: "3x",
     metricLabel: "Mais pacientes atendidos",
     stats: "De 50 para 150 pacientes/dia",
-    className: "col-span-3 md:col-span-1"
-  },
-  {
-    name: "Organização total",
-    description: "Organize contatos, sugira mensagens personalizadas e faça follow-ups inteligentes para aumentar conversões.",
-    icon: Target,
-    metric: "40%",
-    metricLabel: "Aumento nas conversões",
-    stats: "Taxa de conversão: 15% → 21%",
-    className: "col-span-3 md:col-span-2"
+    className: "col-span-3 md:col-span-1",
+    isMain: false
   },
   {
     name: "Identificar oportunidades",
@@ -91,7 +84,8 @@ const benefits = [
     metric: "60%",
     metricLabel: "Menos tempo em tarefas manuais",
     stats: "8h/dia economizadas em atendimento",
-    className: "col-span-3 md:col-span-1"
+    className: "col-span-3 md:col-span-1",
+    isMain: false
   }
 ]
 
@@ -120,44 +114,78 @@ export default function BenefitsSection() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {benefits.map((benefit, index) => (
-              <motion.div key={benefit.name} variants={transitionVariants.item}>
-                <Card className="bg-white/80 backdrop-blur-sm border-[#04CDD4]/20 hover:bg-white/90 transition-all duration-300 group">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="p-3 rounded-xl bg-gradient-to-r from-[#04CDD4] to-[#03a8a8] text-white group-hover:scale-110 transition-transform duration-300">
-                        <benefit.icon className="w-6 h-6" />
+          <div className="max-w-6xl mx-auto space-y-8">
+            {/* Card principal em destaque */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {benefits.filter(benefit => benefit.isMain).map((benefit) => (
+                <motion.div key={benefit.name} variants={transitionVariants.item} className="md:col-span-2">
+                  <Card className="bg-white/80 backdrop-blur-sm border-[#04CDD4]/20 hover:bg-white/90 transition-all duration-300 group">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="p-4 rounded-xl bg-gradient-to-r from-[#04CDD4] to-[#03a8a8] text-white group-hover:scale-110 transition-transform duration-300">
+                          <benefit.icon className="w-8 h-8" />
+                        </div>
+                        <Badge variant="secondary" className="bg-[#04CDD4] text-white font-semibold border-[#04CDD4] text-lg px-4 py-2">
+                          {benefit.metric}
+                        </Badge>
                       </div>
-                      <Badge variant="secondary" className="bg-[#04CDD4]/10 text-[#04CDD4] border-[#04CDD4]/20">
-                        {benefit.metric}
-                      </Badge>
-                    </div>
-                    <CardTitle className="text-lg font-semibold text-foreground">
-                      {benefit.name}
-                    </CardTitle>
-                    <CardDescription className="text-sm text-muted-foreground">
-                      {benefit.metricLabel}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                      {benefit.description}
-                    </p>
-                    <div className="space-y-3">
-                      <div className="text-xs font-medium text-[#04CDD4] bg-[#04CDD4]/5 px-3 py-2 rounded-lg">
-                        {benefit.stats}
+                      <CardTitle className="text-2xl font-semibold text-foreground">
+                        {benefit.name}
+                      </CardTitle>
+                      <CardDescription className="text-base text-muted-foreground">
+                        {benefit.metricLabel}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <p className="text-base text-bold text-muted-foreground mb-4 leading-relaxed">
+                        {benefit.description}
+                      </p>
+                      <div className="space-y-3">
+                        <div className="text-sm font-semibold text-[#04CDD4] bg-[#04CDD4]/5 px-4 py-3 rounded-lg">
+                          {benefit.stats}
+                        </div>
                       </div>
-                      <Progress value={85} className="h-2" />
-                      <div className="flex justify-between text-xs text-muted-foreground">
-                        <span>Antes do Ailum</span>
-                        <span>Com o Ailum</span>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Cards secundários */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {benefits.filter(benefit => !benefit.isMain).map((benefit) => (
+                <motion.div key={benefit.name} variants={transitionVariants.item}>
+                  <Card className="bg-white/80 backdrop-blur-sm border-[#04CDD4]/20 hover:bg-white/90 transition-all duration-300 group">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="p-3 rounded-xl bg-gradient-to-r from-[#04CDD4] to-[#03a8a8] text-white group-hover:scale-110 transition-transform duration-300">
+                          <benefit.icon className="w-6 h-6" />
+                        </div>
+                        <Badge variant="secondary" className="bg-[#04CDD4] text-white font-semibold border-[#04CDD4]">
+                          {benefit.metric}
+                        </Badge>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                      <CardTitle className="text-lg font-semibold text-foreground">
+                        {benefit.name}
+                      </CardTitle>
+                      <CardDescription className="text-sm text-muted-foreground">
+                        {benefit.metricLabel}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                        {benefit.description}
+                      </p>
+                      <div className="space-y-3">
+                        <div className="text-xs font-medium text-[#04CDD4] bg-[#04CDD4]/5 px-3 py-2 rounded-lg">
+                          {benefit.stats}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </motion.div>
 
