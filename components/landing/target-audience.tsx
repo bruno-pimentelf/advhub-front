@@ -1,9 +1,7 @@
 "use client"
 
 import React, { useRef } from 'react'
-import { useInView } from 'motion/react'
-import { BlurFade } from '@/components/ui/blur-fade'
-import { AnimatedGroup } from '@/components/ui/animated-group'
+import { useInView, motion } from 'motion/react'
 import { Highlighter } from '@/components/ui/highlighter'
 import { RainbowButton } from '@/components/ui/rainbow-button'
 import { 
@@ -76,27 +74,27 @@ export default function TargetAudience() {
   return (
     <section ref={ref} className="py-24 md:py-32 bg-white">
       <div className="mx-auto max-w-7xl px-6">
-        <AnimatedGroup 
-          variants={transitionVariants} 
+        <motion.div
+          variants={transitionVariants.container}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           className="text-center mb-16"
         >
-          <div>
+          <motion.div variants={transitionVariants.item}>
             <h2 className="text-4xl md:text-5xl font-medium text-foreground mb-8">
               <Highlighter color="#04CDD4" action="highlight">Para quem é?</Highlighter>
             </h2>
-          </div>
-        </AnimatedGroup>
+          </motion.div>
+        </motion.div>
 
-        <AnimatedGroup 
-          variants={transitionVariants}
+        <motion.div
+          variants={transitionVariants.container}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {audiences.map((audience, index) => (
-              <div key={index}>
+              <motion.div key={index} variants={transitionVariants.item}>
                 <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-[#04CDD4]/20 hover:bg-white/90 transition-all duration-300">
                   <div className="flex items-start gap-4">
                     <div className="p-4 rounded-xl bg-gradient-to-r from-[#04CDD4] to-[#03a8a8] text-white">
@@ -112,38 +110,38 @@ export default function TargetAudience() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </AnimatedGroup>
+        </motion.div>
 
-        <AnimatedGroup 
-          variants={transitionVariants} 
+        <motion.div
+          variants={transitionVariants.container}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           className="text-center mt-16"
         >
-          <div>
+          <motion.div variants={transitionVariants.item}>
             <div className="bg-gradient-to-r from-[#04CDD4]/5 to-[#03a8a8]/5 rounded-2xl p-8 border border-[#04CDD4]/20 mb-8">
               <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
                 Se sua clínica quer mais pacientes, mais organização e mais faturamento com menos esforço, o <Highlighter color="#04CDD4" action="highlight">Ailum - CRM Powered by AI</Highlighter> é para você!
               </p>
             </div>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div variants={transitionVariants.item}>
             <div className="flex items-center justify-center gap-2 mb-6">
               <CheckCircle className="w-6 h-6 text-green-500" />
               <span className="text-lg font-medium text-foreground">Garantia de 30 dias</span>
             </div>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div variants={transitionVariants.item}>
             <RainbowButton size="lg" className="text-lg px-8 py-4">
               É para mim
             </RainbowButton>
-          </div>
-        </AnimatedGroup>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   )
