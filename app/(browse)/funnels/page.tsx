@@ -10,6 +10,9 @@ import {
 } from '@/components/ui/shadcn-io/kanban';
 import { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Plus, Search, Settings } from 'lucide-react';
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -24,23 +27,64 @@ const shortDateFormatter = new Intl.DateTimeFormat('pt-BR', {
   day: 'numeric',
 });
 
+// Estrutura de dados para diferentes tipos de funis
+const funnelTemplates = {
+  'vendas-geral': {
+    id: 'vendas-geral',
+    name: 'Vendas Geral',
+    description: 'Funil padrão para vendas B2B',
+    stages: [
+      { id: 'leads', name: 'Leads', color: '#04CDD4' },
+      { id: 'qualificados', name: 'Qualificados', color: '#04CDD4' },
+      { id: 'propostas', name: 'Propostas', color: '#04CDD4' },
+      { id: 'fechados', name: 'Fechados', color: '#04CDD4' },
+    ]
+  },
+  'ecommerce': {
+    id: 'ecommerce',
+    name: 'E-commerce',
+    description: 'Funil para vendas online',
+    stages: [
+      { id: 'visitantes', name: 'Visitantes', color: '#8B5CF6' },
+      { id: 'interessados', name: 'Interessados', color: '#8B5CF6' },
+      { id: 'carrinho', name: 'Carrinho', color: '#8B5CF6' },
+      { id: 'checkout', name: 'Checkout', color: '#8B5CF6' },
+      { id: 'compra', name: 'Compra', color: '#8B5CF6' },
+    ]
+  },
+  'saas': {
+    id: 'saas',
+    name: 'SaaS',
+    description: 'Funil para software como serviço',
+    stages: [
+      { id: 'awareness', name: 'Awareness', color: '#10B981' },
+      { id: 'interest', name: 'Interest', color: '#10B981' },
+      { id: 'trial', name: 'Trial', color: '#10B981' },
+      { id: 'conversion', name: 'Conversion', color: '#10B981' },
+      { id: 'retention', name: 'Retention', color: '#10B981' },
+    ]
+  }
+};
+
 const FunnelsPage = () => {
   const [leads, setLeads] = useState<any[]>([]);
   const [columns, setColumns] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [isClient, setIsClient] = useState(false);
-  // Sem ações customizadas para esta página
+  const [selectedFunnel, setSelectedFunnel] = useState<string>('vendas-geral');
+  const [showCreateFunnel, setShowCreateFunnel] = useState(false);
+  const [showExploreFunnels, setShowExploreFunnels] = useState(false);
 
-  useEffect(() => {
-    // Garantir que os dados sejam gerados apenas no cliente
-    setIsClient(true);
-    
-    const generatedColumns = [
-      { id: faker.string.uuid(), name: 'Leads', color: '#04CDD4' },
-      { id: faker.string.uuid(), name: 'Qualificados', color: '#04CDD4' },
-      { id: faker.string.uuid(), name: 'Propostas', color: '#04CDD4' },
-      { id: faker.string.uuid(), name: 'Fechados', color: '#04CDD4' },
-    ];
+  // Função para carregar dados baseado no funil selecionado
+  const loadFunnelData = (funnelId: string) => {
+    const funnel = funnelTemplates[funnelId as keyof typeof funnelTemplates];
+    if (!funnel) return;
+
+    const generatedColumns = funnel.stages.map(stage => ({
+      id: stage.id,
+      name: stage.name,
+      color: stage.color,
+    }));
 
     const generatedUsers = Array.from({ length: 4 })
       .fill(null)
@@ -64,7 +108,18 @@ const FunnelsPage = () => {
     setColumns(generatedColumns);
     setUsers(generatedUsers);
     setLeads(generatedLeads);
-  }, []);
+  };
+
+  useEffect(() => {
+    // Garantir que os dados sejam gerados apenas no cliente
+    setIsClient(true);
+    loadFunnelData(selectedFunnel);
+  }, [selectedFunnel]);
+
+  // Função para lidar com mudança de funil
+  const handleFunnelChange = (funnelId: string) => {
+    setSelectedFunnel(funnelId);
+  };
 
 
   // Mostrar loading enquanto os dados não são carregados
@@ -80,6 +135,52 @@ const FunnelsPage = () => {
 
   return (
     <div className="mx-4 mb-4 mt-2">
+      {/* Header clean com seleção de funil e botões de ação */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Select value={selectedFunnel} onValueChange={handleFunnelChange}>
+              <SelectTrigger className="w-[200px] h-10">
+                <SelectValue>
+                  {funnelTemplates[selectedFunnel as keyof typeof funnelTemplates]?.name}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(funnelTemplates).map((funnel) => (
+                  <SelectItem key={funnel.id} value={funnel.id}>
+                    <div className="flex flex-col items-start">
+                      <span className="font-medium">{funnel.name}</span>
+                      <span className="text-xs text-muted-foreground">{funnel.description}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setShowExploreFunnels(true)}
+              className="flex items-center gap-2"
+            >
+              <Search className="h-4 w-4" />
+              Explorar
+            </Button>
+            <Button 
+              size="sm"
+              onClick={() => setShowCreateFunnel(true)}
+              className="flex items-center gap-2 bg-[#04CDD4] hover:bg-[#04CDD4]/90"
+            >
+              <Plus className="h-4 w-4" />
+              Criar Funil
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Kanban Board */}
       <KanbanProvider
         columns={columns}
         data={leads}
@@ -113,7 +214,10 @@ const FunnelsPage = () => {
                         {lead.name}
                       </p>
                       <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-[#04CDD4]"></div>
+                        <div 
+                          className="h-1.5 w-1.5 rounded-full"
+                          style={{ backgroundColor: column.color }}
+                        ></div>
                         <p className="m-0 text-muted-foreground text-xs">
                           {shortDateFormatter.format(lead.startAt)} -{' '}
                           {dateFormatter.format(lead.endAt)}
@@ -123,7 +227,10 @@ const FunnelsPage = () => {
                     {lead.owner && (
                       <Avatar className="h-6 w-6 shrink-0 border border-border/50">
                         <AvatarImage src={lead.owner.image} />
-                        <AvatarFallback className="text-xs bg-[#04CDD410] text-foreground">
+                        <AvatarFallback 
+                          className="text-xs text-foreground"
+                          style={{ backgroundColor: `${column.color}10` }}
+                        >
                           {lead.owner.name?.slice(0, 2)}
                         </AvatarFallback>
                       </Avatar>
@@ -135,6 +242,35 @@ const FunnelsPage = () => {
           </KanbanBoard>
         )}
       </KanbanProvider>
+
+      {/* Modais para criar e explorar funis (placeholder) */}
+      {showCreateFunnel && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-background rounded-lg p-6 max-w-md w-full mx-4">
+            <h2 className="text-xl font-bold mb-4">Criar Novo Funil</h2>
+            <p className="text-muted-foreground mb-4">
+              Esta funcionalidade será implementada posteriormente.
+            </p>
+            <Button onClick={() => setShowCreateFunnel(false)} className="w-full">
+              Fechar
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {showExploreFunnels && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-background rounded-lg p-6 max-w-md w-full mx-4">
+            <h2 className="text-xl font-bold mb-4">Explorar Funis</h2>
+            <p className="text-muted-foreground mb-4">
+              Esta funcionalidade será implementada posteriormente.
+            </p>
+            <Button onClick={() => setShowExploreFunnels(false)} className="w-full">
+              Fechar
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
