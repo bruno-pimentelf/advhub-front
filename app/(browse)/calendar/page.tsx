@@ -1,12 +1,15 @@
 'use client'
 
+import { TypographyH1 } from '@/components/Typography/h1'
 import { Calendar } from '@/components/calendar/Calendar'
 import React from 'react'
 
 const page = () => {
   return (
-    <div className="mx-4 mb-4 mt-4">
-      <Calendar />
+    <div>
+        <div className="p-6">
+            <Calendar />
+        </div>
     </div>
   )
 }
