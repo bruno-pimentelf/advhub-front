@@ -263,7 +263,11 @@ export function EventCalendar({
 
   return (
     <div
-      className="flex flex-col rounded-lg border has-data-[slot=month-view]:flex-1"
+      className={cn(
+        "flex flex-col rounded-2xl border-[0.5px] border-[#04CDD4] bg-background/95 backdrop-blur-md has-data-[slot=month-view]:flex-1",
+        "shadow-[0_0_15px_rgba(4,205,212,0.08)] hover:shadow-[0_0_20px_rgba(4,205,212,0.12)] transition-shadow duration-300",
+        className
+      )}
       style={
         {
           "--event-height": `${EventHeight}px`,
@@ -273,16 +277,11 @@ export function EventCalendar({
       }
     >
       <CalendarDndProvider onEventUpdate={handleEventUpdate}>
-        <div
-          className={cn(
-            "flex items-center justify-between p-2 sm:p-4",
-            className
-          )}
-        >
+        <div className="flex items-center justify-between p-4 border-b border-border/50">
           <div className="flex items-center gap-1 sm:gap-4">
             <Button
               variant="outline"
-              className="max-[479px]:aspect-square max-[479px]:p-0!"
+              className="max-[479px]:aspect-square max-[479px]:p-0! border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4]"
               onClick={handleToday}
             >
               <RiCalendarCheckLine
@@ -298,6 +297,7 @@ export function EventCalendar({
                 size="icon"
                 onClick={handlePrevious}
                 aria-label="Previous"
+                className="hover:bg-[#04CDD410]"
               >
                 <ChevronLeftIcon size={16} aria-hidden="true" />
               </Button>
@@ -306,6 +306,7 @@ export function EventCalendar({
                 size="icon"
                 onClick={handleNext}
                 aria-label="Next"
+                className="hover:bg-[#04CDD410]"
               >
                 <ChevronRightIcon size={16} aria-hidden="true" />
               </Button>
@@ -317,7 +318,7 @@ export function EventCalendar({
           <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="gap-1.5 max-[479px]:h-8">
+                <Button variant="outline" className="gap-1.5 max-[479px]:h-8 border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4]">
                   <span>
                     <span className="min-[480px]:hidden" aria-hidden="true">
                       {viewLabels[view].charAt(0)}
@@ -349,7 +350,7 @@ export function EventCalendar({
               </DropdownMenuContent>
             </DropdownMenu>
             <Button
-              className="max-[479px]:aspect-square max-[479px]:p-0!"
+              className="max-[479px]:aspect-square max-[479px]:p-0! bg-[#04CDD4] hover:bg-[#04CDD4]/90 text-white"
               size="sm"
               onClick={() => {
                 setSelectedEvent(null) // Ensure we're creating a new event

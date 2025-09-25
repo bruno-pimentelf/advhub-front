@@ -152,11 +152,13 @@ export function Calendar() {
   }
 
   return (
-    <EventCalendar
-      events={events}
-      onEventAdd={handleEventAdd}
-      onEventUpdate={handleEventUpdate}
-      onEventDelete={handleEventDelete}
-    />
+    <div className="space-y-6">
+      <EventCalendar
+        events={events}
+        onEventAdd={handleEventAdd}
+        onEventUpdate={handleEventUpdate}
+        onEventDelete={handleEventDelete}
+      />
+    </div>
   )
 }
