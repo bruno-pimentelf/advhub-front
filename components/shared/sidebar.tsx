@@ -14,7 +14,8 @@ import {
   ArrowLeft,
   Menu,
   User,
-  ChevronDown
+  ChevronDown,
+  MessageCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -39,6 +40,12 @@ const navigationItems = [
     href: "/messages",
     icon: MessageSquare,
     description: "Central de mensagens",
+  },
+  {
+    title: "Chats",
+    href: "/chats",
+    icon: MessageCircle,
+    description: "Conversas em tempo real",
   },
   {
     title: "Calendário",
