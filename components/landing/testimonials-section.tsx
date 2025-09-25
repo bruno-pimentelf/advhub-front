@@ -123,11 +123,8 @@ export default function TestimonialsSection() {
               O que nossos clientes dizem:
             </h3>
           </BlurFade>
-          
-          <BlurFade direction="up" delay={0.8}>
-          </BlurFade>
 
-          <BlurFade direction="up" delay={1.0}>
+          <BlurFade direction="up" delay={0.8}>
             <RainbowButton size="lg" className="text-lg px-8 py-4" asChild>
               <a href="#application-form">
                 Eu quero!
