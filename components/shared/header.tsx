@@ -17,7 +17,7 @@ export function Header({ sidebarCollapsed = false }: HeaderProps) {
       case '/':
       case '/dashboard':
       case '/funnels':
-        return 'Funis'
+        return 'Funil de Vendas'
       case '/contacts':
         return 'Contatos'
       case '/messages':
