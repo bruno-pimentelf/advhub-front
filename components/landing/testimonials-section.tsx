@@ -125,14 +125,13 @@ export default function TestimonialsSection() {
           </BlurFade>
           
           <BlurFade direction="up" delay={0.8}>
-            <div className="bg-gradient-to-r from-[#04CDD4]/5 to-[#03a8a8]/5 rounded-2xl p-8 border border-[#04CDD4]/20 mb-8">
-              <p className="text-lg text-muted-foreground">Mais de 500 clínicas já transformaram seus resultados com o Ailum. Veja os depoimentos reais dos nossos clientes acima.</p>
-            </div>
           </BlurFade>
 
           <BlurFade direction="up" delay={1.0}>
-            <RainbowButton size="lg" className="text-lg px-8 py-4">
-              Eu quero!
+            <RainbowButton size="lg" className="text-lg px-8 py-4" asChild>
+              <a href="#application-form">
+                Eu quero!
+              </a>
             </RainbowButton>
           </BlurFade>
         </div>

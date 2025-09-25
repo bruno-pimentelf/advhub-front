@@ -93,8 +93,10 @@ export default function CTASection() {
                   <Star className="w-6 h-6 text-yellow-500" />
                 </div>
               </Pointer>
-              <RainbowButton size="lg" className="text-xl px-12 py-6">
-                É para mim
+              <RainbowButton size="lg" className="text-xl px-12 py-6" asChild>
+                <a href="#application-form">
+                  É para mim
+                </a>
               </RainbowButton>
             </div>
           </BlurFade>
@@ -110,13 +112,11 @@ export default function CTASection() {
                   Não perca a oportunidade de transformar sua clínica com a tecnologia mais avançada do mercado.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                  <ShinyButton className="text-lg px-8 py-4 bg-white text-gray-900 hover:bg-gray-100">
-                    QUERO COMEÇAR AGORA
-                  </ShinyButton>
-                  <div className="flex items-center gap-2 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-green-400" />
-                    <span>Garantia de 30 dias</span>
-                  </div>
+                  <a href="#application-form">
+                    <ShinyButton className="text-lg px-8 py-4 bg-white text-gray-900 hover:bg-gray-100">
+                      APLIQUE-SE
+                    </ShinyButton>
+                  </a>
                 </div>
               </div>
             </div>

@@ -130,15 +130,10 @@ export default function TargetAudience() {
           </motion.div>
 
           <motion.div variants={transitionVariants.item}>
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <CheckCircle className="w-6 h-6 text-green-500" />
-              <span className="text-lg font-medium text-foreground">Garantia de 30 dias</span>
-            </div>
-          </motion.div>
-
-          <motion.div variants={transitionVariants.item}>
-            <RainbowButton size="lg" className="text-lg px-8 py-4">
-              É para mim
+            <RainbowButton size="lg" className="text-lg px-8 py-4" asChild>
+              <a href="#application-form">
+                É para mim
+              </a>
             </RainbowButton>
           </motion.div>
         </motion.div>

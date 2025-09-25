@@ -147,8 +147,10 @@ export default function FeaturesSection() {
           </motion.div>
 
           <motion.div variants={transitionVariants.item}>
-            <RainbowButton size="lg" className="text-lg px-8 py-4">
-              Quero saber mais!
+            <RainbowButton size="lg" className="text-lg px-8 py-4" asChild>
+              <a href="#application-form">
+                Quero saber mais!
+              </a>
             </RainbowButton>
           </motion.div>
         </motion.div>

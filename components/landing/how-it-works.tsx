@@ -236,8 +236,10 @@ export default function HowItWorks() {
           </motion.div>
 
           <motion.div variants={transitionVariants.item}>
-            <RainbowButton size="lg" className="text-lg px-8 py-4">
-              QUERO SABER MAIS
+            <RainbowButton size="lg" className="text-lg px-8 py-4" asChild>
+              <a href="#application-form">
+                QUERO SABER MAIS
+              </a>
             </RainbowButton>
           </motion.div>
         </motion.div>

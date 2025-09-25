@@ -9,7 +9,6 @@ import { cn } from '@/lib/utils'
 const menuItems = [
     { name: 'Soluções', href: '#link' },
     { name: 'Como funciona', href: '#link' },
-    { name: 'Preços', href: '#link' },
     { name: 'Sobre nós', href: '#link' },
 ]
 
@@ -90,8 +89,8 @@ export const HeroHeader = () => {
                                     asChild
                                     size="sm"
                                     className={cn(isScrolled ? 'lg:inline-flex' : 'hidden')}>
-                                    <Link href="#">
-                                        <span>Comece agora</span>
+                                    <Link href="#application-form">
+                                        <span>Aplique-se</span>
                                     </Link>
                                 </Button>
                             </div>

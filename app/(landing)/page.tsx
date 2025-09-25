@@ -7,6 +7,7 @@ import FeaturesSection from "@/components/landing/features-section";
 import TestimonialsSection from "@/components/landing/testimonials-section";
 import FAQSection from "@/components/landing/faq-section";
 import CTASection from "@/components/landing/cta-section";
+import ApplicationFormWrapper from "@/components/landing/application-form-wrapper";
 import { NotificationsDemo } from "@/components/landing/notifications-demo";
 
 export default function Home() {
@@ -34,6 +35,7 @@ export default function Home() {
       <TestimonialsSection />
       <FAQSection />
       <CTASection />
+      <ApplicationFormWrapper />
     </>
   );
 }
