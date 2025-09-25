@@ -3,12 +3,14 @@ import { Button } from '@/components/ui/button'
 import { Bell } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
+import { ReactNode } from 'react'
 
 interface HeaderProps {
   sidebarCollapsed?: boolean
+  actions?: ReactNode
 }
 
-export function Header({ sidebarCollapsed = false }: HeaderProps) {
+export function Header({ sidebarCollapsed = false, actions }: HeaderProps) {
   const pathname = usePathname()
 
   // Get page title based on current route
@@ -45,6 +47,13 @@ export function Header({ sidebarCollapsed = false }: HeaderProps) {
 
       {/* Right Section */}
       <div className="flex items-center gap-4">
+        {/* Custom Actions */}
+        {actions && (
+          <div className="flex gap-3">
+            {actions}
+          </div>
+        )}
+        
         {/* Notifications */}
         <Button 
           variant="ghost" 

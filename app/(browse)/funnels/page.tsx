@@ -1,5 +1,6 @@
 'use client';
 import { faker } from '@faker-js/faker';
+import { useHeader } from '../layout';
 import {
   KanbanBoard,
   KanbanCard,
@@ -28,6 +29,7 @@ const FunnelsPage = () => {
   const [columns, setColumns] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [isClient, setIsClient] = useState(false);
+  // Sem ações customizadas para esta página
 
   useEffect(() => {
     // Garantir que os dados sejam gerados apenas no cliente
@@ -64,10 +66,11 @@ const FunnelsPage = () => {
     setLeads(generatedLeads);
   }, []);
 
+
   // Mostrar loading enquanto os dados não são carregados
   if (!isClient || columns.length === 0) {
     return (
-      <div className="container mx-auto p-6">
+      <div className="mx-4 mb-4 mt-2">
         <div className="flex items-center justify-center h-64">
           <div className="text-muted-foreground">Carregando...</div>
         </div>
@@ -76,8 +79,7 @@ const FunnelsPage = () => {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      
+    <div className="mx-4 mb-4 mt-2">
       <KanbanProvider
         columns={columns}
         data={leads}
