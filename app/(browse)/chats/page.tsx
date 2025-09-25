@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { RainbowButton } from '@/components/ui/rainbow-button';
 import { 
   Search, 
   MoreVertical,
@@ -18,7 +19,8 @@ import {
   Clock,
   Check,
   CheckCheck,
-  MessageSquare
+  MessageSquare,
+  Sparkles
 } from 'lucide-react';
 import { faker } from '@faker-js/faker';
 
@@ -146,7 +148,18 @@ export default function ChatsPage() {
   }
 
   return (
-    <div className="mx-4 mb-4 mt-4 h-[calc(100vh-8rem)]">
+    <div className="mx-4 mb-4 mt-4 h-[calc(100vh-8rem)] relative">
+      {/* Botão de IA */}
+      <div className="absolute top-4 right-4 z-10">
+        <RainbowButton 
+          size="sm"
+          onClick={() => console.log('IA ativada')}
+        >
+          <Sparkles className="h-4 w-4" />
+          <span className="text-sm font-medium">IA</span>
+        </RainbowButton>
+      </div>
+      
       <div className="flex h-full border border-[#04CDD470] rounded-2xl bg-background/95 backdrop-blur-md overflow-hidden max-h-[calc(100vh-8rem)]">
         {/* Sidebar de Chats */}
         <div className="w-1/3 border-r border-border/50 flex flex-col">
