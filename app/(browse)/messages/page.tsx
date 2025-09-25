@@ -16,7 +16,11 @@ import {
   Calendar,
   Edit,
   Trash2,
-  Copy
+  Copy,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight
 } from 'lucide-react';
 import { faker } from '@faker-js/faker';
 
@@ -127,6 +131,8 @@ export default function MessagesPage() {
     content: '',
     category: 'welcome' as MessageTemplate['category'],
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     setIsClient(true);
@@ -140,6 +146,60 @@ export default function MessagesPage() {
     const matchesFilter = statusFilter === 'all' || message.status === statusFilter;
     return matchesSearch && matchesFilter;
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredScheduledMessages.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedScheduledMessages = filteredScheduledMessages.slice(startIndex, endIndex);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      const startPage = Math.max(1, currentPage - 2);
+      const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+      
+      if (startPage > 1) {
+        pages.push(1);
+        if (startPage > 2) {
+          pages.push('...');
+        }
+      }
+      
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+      
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          pages.push('...');
+        }
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
+  };
 
   const handleCreateTemplate = () => {
     if (newTemplate.name && newTemplate.content) {
@@ -251,7 +311,7 @@ export default function MessagesPage() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="space-y-0">
-                {filteredScheduledMessages.map((message) => (
+                {paginatedScheduledMessages.map((message) => (
                   <div key={message.id} className="border-b border-border/30 p-4 hover:bg-muted/30 transition-colors">
                     <div className="flex items-start gap-4">
                       <Avatar className="h-10 w-10 border border-border/50">
@@ -302,6 +362,107 @@ export default function MessagesPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <Card className="border-[#04CDD470] bg-background/95 backdrop-blur-md">
+              <CardContent className="p-4">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                  {/* Items per page selector */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Mostrar:</span>
+                    <select
+                      value={itemsPerPage}
+                      onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+                      className="px-3 py-1 text-sm border border-[#04CDD470] rounded-md bg-background focus:border-[#04CDD4] focus:ring-[#04CDD4] focus:outline-none"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={50}>50</option>
+                    </select>
+                    <span className="text-sm text-muted-foreground">por página</span>
+                  </div>
+
+                  {/* Page info */}
+                  <div className="text-sm text-muted-foreground">
+                    Mostrando {startIndex + 1} a {Math.min(endIndex, filteredScheduledMessages.length)} de {filteredScheduledMessages.length} mensagens
+                  </div>
+
+                  {/* Pagination controls */}
+                  <div className="flex items-center gap-2">
+                    {/* First page */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(1)}
+                      disabled={currentPage === 1}
+                      className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4] disabled:opacity-50"
+                    >
+                      <ChevronsLeft className="h-4 w-4" />
+                    </Button>
+
+                    {/* Previous page */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4] disabled:opacity-50"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+
+                    {/* Page numbers */}
+                    <div className="flex items-center gap-1">
+                      {getPageNumbers().map((page, index) => (
+                        <div key={index}>
+                          {page === '...' ? (
+                            <span className="px-3 py-1 text-sm text-muted-foreground">...</span>
+                          ) : (
+                            <Button
+                              variant={currentPage === page ? 'default' : 'outline'}
+                              size="sm"
+                              onClick={() => handlePageChange(page as number)}
+                              className={
+                                currentPage === page
+                                  ? 'bg-[#04CDD4] hover:bg-[#04CDD4]/90 text-white'
+                                  : 'border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4]'
+                              }
+                            >
+                              {page}
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Next page */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4] disabled:opacity-50"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+
+                    {/* Last page */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(totalPages)}
+                      disabled={currentPage === totalPages}
+                      className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4] disabled:opacity-50"
+                    >
+                      <ChevronsRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         {/* Templates */}
