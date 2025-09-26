@@ -43,7 +43,9 @@ import {
   Clock,
   Zap,
   ArrowLeft,
-  Home
+  Home,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -315,6 +317,7 @@ function FunnelExplorerContent() {
   const [nodes, setNodes, onNodesChange] = useNodesState(selectedFunnel.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(selectedFunnel.edges);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<any, any> | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
   // Esconder sidebar quando entrar na página
   React.useEffect(() => {
@@ -322,6 +325,19 @@ function FunnelExplorerContent() {
     return () => showSidebar(); // Mostrar sidebar quando sair
   }, [hideSidebar, showSidebar]);
 
+  // Auto fit view inicial para centralizar
+  React.useEffect(() => {
+    if (reactFlowInstance) {
+      setTimeout(() => {
+        reactFlowInstance.fitView({
+          padding: 0.2,
+          includeHiddenNodes: false,
+          minZoom: 0.1,
+          maxZoom: 1.5
+        });
+      }, 100);
+    }
+  }, [reactFlowInstance]);
 
   // Atualizar nós e arestas quando o funil selecionado mudar
   React.useEffect(() => {
@@ -485,127 +501,154 @@ function FunnelExplorerContent() {
 
       {/* Conteúdo Principal - Layout Horizontal */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Painel Lateral Compacto */}
-        <div className="w-80 flex-shrink-0 border-r border-border/50 bg-background/95 backdrop-blur-md overflow-y-auto">
-          <div className="p-4 space-y-4">
-            {/* Seletor de Funil */}
-            <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-foreground">Template</h3>
-              <select
-                value={selectedFunnel.id}
-                onChange={(e) => {
-                  const funnel = initialFunnels.find(f => f.id === e.target.value);
-                  if (funnel) setSelectedFunnel(funnel);
-                }}
-                className="w-full px-3 py-2 text-sm border border-primary-200 dark:border-primary-800/50 rounded-md bg-background hover:bg-primary-100 dark:hover:bg-primary-900/30 focus:border-primary-300 dark:focus:border-primary-700/50 focus:ring-[#04CDD4] focus:outline-none"
+        {/* Painel Lateral Colapsável */}
+        <div className={`${sidebarCollapsed ? 'w-12' : 'w-80'} flex-shrink-0 border-r border-border/50 bg-background/95 backdrop-blur-md overflow-y-auto transition-all duration-300`}>
+          {sidebarCollapsed ? (
+            /* Sidebar Colapsada */
+            <div className="p-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarCollapsed(false)}
+                className="w-full h-8 p-0 hover:bg-primary-100 dark:hover:bg-primary-900/30"
               >
-                {initialFunnels.map((funnel) => (
-                  <option key={funnel.id} value={funnel.id}>
-                    {funnel.name}
-                  </option>
-                ))}
-              </select>
-              <p className="text-xs text-muted-foreground">
-                {selectedFunnel.description}
-              </p>
+                <ChevronRight className="h-4 w-4" />
+              </Button>
             </div>
-
-            {/* Estatísticas Compactas */}
-            <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-foreground">Estatísticas</h3>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="bg-background/80 p-2 rounded border border-border/50">
-                  <div className="flex items-center gap-1 mb-1">
-                    <Target className="h-3 w-3 text-primary" />
-                    <span className="text-xs font-medium text-foreground">Conversão</span>
-                  </div>
-                  <div className="text-lg font-bold text-primary">{totalConversion}</div>
-                </div>
-                
-                <div className="bg-background/80 p-2 rounded border border-border/50">
-                  <div className="flex items-center gap-1 mb-1">
-                    <Users className="h-3 w-3 text-primary" />
-                    <span className="text-xs font-medium text-foreground">Leads</span>
-                  </div>
-                  <div className="text-lg font-bold text-primary">
-                    {(nodes[0]?.data as FunnelNodeData)?.count || 0}
-                  </div>
-                </div>
+          ) : (
+            /* Sidebar Expandida */
+            <div className="p-4 space-y-4">
+              {/* Botão para colapsar */}
+              <div className="flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSidebarCollapsed(true)}
+                  className="h-6 w-6 p-0 hover:bg-primary-100 dark:hover:bg-primary-900/30"
+                >
+                  <ChevronLeft className="h-3 w-3" />
+                </Button>
               </div>
-            </div>
-
-            {/* Estágios Compactos */}
-            <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-foreground">Estágios</h3>
+              
+              {/* Seletor de Funil */}
               <div className="space-y-2">
-                {nodes.map((node, index) => {
-                  const nodeData = node.data as FunnelNodeData;
-                  return (
-                    <div key={node.id} className="bg-background/80 p-2 rounded border border-border/50">
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-2">
-                          <div 
-                            className="w-2 h-2 rounded-full"
-                            style={{ backgroundColor: nodeData.color }}
-                          />
-                          <span className="text-xs font-medium text-foreground">{nodeData.label}</span>
-                        </div>
-                        <Badge variant="outline" className="text-xs px-1 py-0">
-                          {nodeData.conversion}
-                        </Badge>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {nodeData.count} {nodeData.label.toLowerCase()}
-                      </div>
-                    </div>
-                  );
-                })}
+                <h3 className="text-sm font-semibold text-foreground">Template</h3>
+                <select
+                  value={selectedFunnel.id}
+                  onChange={(e) => {
+                    const funnel = initialFunnels.find(f => f.id === e.target.value);
+                    if (funnel) setSelectedFunnel(funnel);
+                  }}
+                  className="w-full px-3 py-2 text-sm border border-primary-200 dark:border-primary-800/50 rounded-md bg-background hover:bg-primary-100 dark:hover:bg-primary-900/30 focus:border-primary-300 dark:focus:border-primary-700/50 focus:ring-[#04CDD4] focus:outline-none"
+                >
+                  {initialFunnels.map((funnel) => (
+                    <option key={funnel.id} value={funnel.id}>
+                      {funnel.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-muted-foreground">
+                  {selectedFunnel.description}
+                </p>
               </div>
-            </div>
 
-            {/* Ações Rápidas Compactas */}
-            <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-foreground">Adicionar</h3>
-              <div className="grid grid-cols-2 gap-1">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => addNode('lead')}
-                  className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-xs h-8"
-                >
-                  <Users className="h-3 w-3 mr-1" />
-                  Lead
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => addNode('qualification')}
-                  className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-xs h-8"
-                >
-                  <CheckCircle className="h-3 w-3 mr-1" />
-                  Qualif.
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => addNode('proposal')}
-                  className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-xs h-8"
-                >
-                  <MessageSquare className="h-3 w-3 mr-1" />
-                  Proposta
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => addNode('closing')}
-                  className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-xs h-8"
-                >
-                  <Zap className="h-3 w-3 mr-1" />
-                  Fechar
-                </Button>
+              {/* Estatísticas Compactas */}
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold text-foreground">Estatísticas</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="bg-background/80 p-2 rounded border border-border/50">
+                    <div className="flex items-center gap-1 mb-1">
+                      <Target className="h-3 w-3 text-primary" />
+                      <span className="text-xs font-medium text-foreground">Conversão</span>
+                    </div>
+                    <div className="text-lg font-bold text-primary">{totalConversion}</div>
+                  </div>
+                  
+                  <div className="bg-background/80 p-2 rounded border border-border/50">
+                    <div className="flex items-center gap-1 mb-1">
+                      <Users className="h-3 w-3 text-primary" />
+                      <span className="text-xs font-medium text-foreground">Leads</span>
+                    </div>
+                    <div className="text-lg font-bold text-primary">
+                      {(nodes[0]?.data as FunnelNodeData)?.count || 0}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Estágios Compactos */}
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold text-foreground">Estágios</h3>
+                <div className="space-y-2">
+                  {nodes.map((node, index) => {
+                    const nodeData = node.data as FunnelNodeData;
+                    return (
+                      <div key={node.id} className="bg-background/80 p-2 rounded border border-border/50">
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center gap-2">
+                            <div 
+                              className="w-2 h-2 rounded-full"
+                              style={{ backgroundColor: nodeData.color }}
+                            />
+                            <span className="text-xs font-medium text-foreground">{nodeData.label}</span>
+                          </div>
+                          <Badge variant="outline" className="text-xs px-1 py-0">
+                            {nodeData.conversion}
+                          </Badge>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {nodeData.count} {nodeData.label.toLowerCase()}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Ações Rápidas Compactas */}
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold text-foreground">Adicionar</h3>
+                <div className="grid grid-cols-2 gap-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addNode('lead')}
+                    className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-xs h-8"
+                  >
+                    <Users className="h-3 w-3 mr-1" />
+                    Lead
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addNode('qualification')}
+                    className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-xs h-8"
+                  >
+                    <CheckCircle className="h-3 w-3 mr-1" />
+                    Qualif.
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addNode('proposal')}
+                    className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-xs h-8"
+                  >
+                    <MessageSquare className="h-3 w-3 mr-1" />
+                    Proposta
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addNode('closing')}
+                    className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-xs h-8"
+                  >
+                    <Zap className="h-3 w-3 mr-1" />
+                    Fechar
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Área do React Flow - Máxima Largura */}
