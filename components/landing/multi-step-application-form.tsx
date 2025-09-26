@@ -431,7 +431,7 @@ export default function MultiStepApplicationForm({ isOpen, onClose }: MultiStepA
       <DialogContent className="max-w-6xl w-[95vw] sm:w-[90vw] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold text-center">
-            <Highlighter color="#04CDD4" action="highlight">Aplique-se</Highlighter> para ter acesso ao Ailum
+            Conte-nos como sua clínica pretende <Highlighter color="#04CDD4" action="highlight">evoluir</Highlighter> com o Ailum
           </DialogTitle>
         </DialogHeader>
 

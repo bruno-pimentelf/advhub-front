@@ -7,9 +7,11 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 
 const menuItems = [
-    { name: 'Soluções', href: '#link' },
-    { name: 'Como funciona', href: '#link' },
-    { name: 'Sobre nós', href: '#link' },
+    { name: 'Início', href: '#top' },
+    { name: 'Benefícios', href: '#benefits' },
+    { name: 'Como funciona', href: '#how-it-works' },
+    { name: 'Funcionalidades', href: '#features' },
+    { name: 'FAQ', href: '#faq' },
 ]
 
 export const HeroHeader = () => {
@@ -23,6 +25,28 @@ export const HeroHeader = () => {
         window.addEventListener('scroll', handleScroll)
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
+
+    const handleLinkClick = (href: string) => {
+        setMenuState(false) // Fecha o menu mobile
+        if (href === '#top') {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            })
+        } else if (href.startsWith('#')) {
+            const element = document.querySelector(href)
+            if (element) {
+                const headerHeight = 80 // Altura aproximada do header
+                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
+                const offsetPosition = elementPosition - headerHeight
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                })
+            }
+        }
+    }
     return (
         <header>
             <nav
@@ -51,11 +75,11 @@ export const HeroHeader = () => {
                             <ul className="flex gap-8 text-sm">
                                 {menuItems.map((item, index) => (
                                     <li key={index}>
-                                        <Link
-                                            href={item.href}
+                                        <button
+                                            onClick={() => handleLinkClick(item.href)}
                                             className="text-muted-foreground hover:text-accent-foreground block duration-150">
                                             <span>{item.name}</span>
-                                        </Link>
+                                        </button>
                                     </li>
                                 ))}
                             </ul>
@@ -66,11 +90,11 @@ export const HeroHeader = () => {
                                 <ul className="space-y-6 text-base">
                                     {menuItems.map((item, index) => (
                                         <li key={index}>
-                                            <Link
-                                                href={item.href}
+                                            <button
+                                                onClick={() => handleLinkClick(item.href)}
                                                 className="text-muted-foreground hover:text-accent-foreground block duration-150">
                                                 <span>{item.name}</span>
-                                            </Link>
+                                            </button>
                                         </li>
                                     ))}
                                 </ul>
@@ -86,12 +110,10 @@ export const HeroHeader = () => {
                                     </Link>
                                 </Button>
                                 <Button
-                                    asChild
                                     size="sm"
+                                    onClick={() => handleLinkClick('#application-form')}
                                     className={cn(isScrolled ? 'lg:inline-flex' : 'hidden')}>
-                                    <Link href="#application-form">
-                                        <span>Aplique-se</span>
-                                    </Link>
+                                    <span>Aplique-se</span>
                                 </Button>
                             </div>
                         </div>

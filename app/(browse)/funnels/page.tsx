@@ -102,38 +102,38 @@ const FunnelsPage = () => {
       image: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=04CDD4&color=fff&size=64&bold=true`,
     }));
 
-    // Dados específicos para clínicas médicas
+    // Dados específicos para pacientes
     const clinicLeads = [
-      { name: "Dr. Carlos Silva - Clínica CardioVida", type: "cardiologia" },
-      { name: "Dra. Ana Santos - OdontoCare", type: "odontologia" },
-      { name: "Dr. Roberto Lima - Clínica Dermatológica", type: "dermatologia" },
-      { name: "Dra. Maria Oliveira - FisioTotal", type: "fisioterapia" },
-      { name: "Dr. João Costa - Clínica Oftalmológica", type: "oftalmologia" },
-      { name: "Dra. Patricia Alves - GinecoSaúde", type: "ginecologia" },
-      { name: "Dr. Fernando Rocha - Ortopedia Plus", type: "ortopedia" },
-      { name: "Dra. Juliana Mendes - Pediatria Feliz", type: "pediatria" },
-      { name: "Dr. Marcelo Souza - Clínica Neurológica", type: "neurologia" },
-      { name: "Dra. Camila Ferreira - EndoClinic", type: "endocrinologia" },
-      { name: "Dr. Rafael Torres - UroVida", type: "urologia" },
-      { name: "Dra. Beatriz Nunes - Clínica Psiquiátrica", type: "psiquiatria" },
-      { name: "Dr. Lucas Martins - GastroSaúde", type: "gastroenterologia" },
-      { name: "Dra. Fernanda Costa - Clínica de Estética", type: "estetica" },
-      { name: "Dr. André Silva - Clínica Vascular", type: "cirurgia_vascular" },
-      { name: "Dra. Larissa Oliveira - Clínica de Nutrição", type: "nutricao" },
-      { name: "Dr. Gustavo Santos - Clínica de Acupuntura", type: "acupuntura" },
-      { name: "Dra. Renata Lima - Clínica de Psicologia", type: "psicologia" },
-      { name: "Dr. Diego Alves - Clínica de Otorrino", type: "otorrinolaringologia" },
-      { name: "Dra. Vanessa Rocha - Clínica de Mastologia", type: "mastologia" }
+      { name: "Maria Silva - Consulta de Cardiologia", type: "cardiologia" },
+      { name: "João Santos - Tratamento Odontológico", type: "odontologia" },
+      { name: "Ana Costa - Consulta Dermatológica", type: "dermatologia" },
+      { name: "Pedro Oliveira - Sessão de Fisioterapia", type: "fisioterapia" },
+      { name: "Carla Lima - Exame Oftalmológico", type: "oftalmologia" },
+      { name: "Roberto Souza - Consulta Ginecológica", type: "ginecologia" },
+      { name: "Fernanda Mendes - Consulta Ortopédica", type: "ortopedia" },
+      { name: "Lucas Ferreira - Consulta Pediátrica", type: "pediatria" },
+      { name: "Mariana Rocha - Consulta Neurológica", type: "neurologia" },
+      { name: "Diego Alves - Consulta Endocrinológica", type: "endocrinologia" },
+      { name: "Camila Silva - Consulta Urológica", type: "urologia" },
+      { name: "André Lima - Consulta Psiquiátrica", type: "psiquiatria" },
+      { name: "Juliana Martins - Consulta Gastroenterológica", type: "gastroenterologia" },
+      { name: "Marcelo Costa - Consulta de Estética", type: "estetica" },
+      { name: "Beatriz Silva - Consulta Vascular", type: "cirurgia_vascular" },
+      { name: "Rafael Oliveira - Consulta Nutricional", type: "nutricao" },
+      { name: "Larissa Santos - Sessão de Acupuntura", type: "acupuntura" },
+      { name: "Gustavo Lima - Sessão de Psicologia", type: "psicologia" },
+      { name: "Vanessa Alves - Consulta Otorrinolaringológica", type: "otorrinolaringologia" },
+      { name: "Renata Rocha - Consulta de Mastologia", type: "mastologia" }
     ];
 
-    const generatedLeads = clinicLeads.map((clinic) => ({
+    const generatedLeads = clinicLeads.map((patient) => ({
       id: faker.string.uuid(),
-      name: clinic.name,
+      name: patient.name,
       startAt: faker.date.past({ years: 0.5, refDate: new Date() }),
       endAt: faker.date.future({ years: 0.5, refDate: new Date() }),
       column: faker.helpers.arrayElement(generatedColumns).id,
       owner: faker.helpers.arrayElement(generatedUsers),
-      type: clinic.type,
+      type: patient.type,
     }));
 
     setColumns(generatedColumns);

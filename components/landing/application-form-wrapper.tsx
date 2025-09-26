@@ -18,7 +18,7 @@ export default function ApplicationFormWrapper() {
           <div className="text-center mb-12 sm:mb-16">
             <BlurFade direction="up" delay={0.2}>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-foreground mb-6 sm:mb-8 leading-tight">
-                <Highlighter color="#04CDD4" action="highlight">Aplique-se</Highlighter> para ter acesso ao Ailum
+                Conte-nos como sua clínica pretende <Highlighter color="#04CDD4" action="highlight">evoluir</Highlighter> com o Ailum
               </h2>
             </BlurFade>
             

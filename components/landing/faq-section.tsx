@@ -122,7 +122,7 @@ export default function FAQSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
   return (
-    <section ref={ref} className="py-24 md:py-32 bg-white">
+    <section id="faq" ref={ref} className="py-24 md:py-32 bg-white">
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
         <motion.div
           variants={transitionVariants.container}
