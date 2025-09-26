@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react'
 import { useInView } from 'motion/react'
 import { motion } from 'motion/react'
 import { Highlighter } from '@/components/ui/highlighter'
-import { RainbowButton } from '@/components/ui/rainbow-button'
+import { Button } from '@/components/ui/button'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -155,9 +155,15 @@ export default function FAQSection() {
           className="text-center mt-16"
         >
           <motion.div variants={transitionVariants.item}>
-            <RainbowButton size="lg" className="text-lg px-8 py-4">
-              EU QUERO
-            </RainbowButton>
+            <Button 
+              size="lg" 
+              className="text-lg px-8 py-4 bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all duration-300"
+              asChild
+            >
+              <a href="#application-form">
+                EU QUERO
+              </a>
+            </Button>
           </motion.div>
         </motion.div>
       </div>

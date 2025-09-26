@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Plus, Search, Settings } from 'lucide-react';
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
@@ -86,24 +87,54 @@ const FunnelsPage = () => {
       color: stage.color,
     }));
 
-    const generatedUsers = Array.from({ length: 4 })
-      .fill(null)
-      .map(() => ({
-        id: faker.string.uuid(),
-        name: faker.person.fullName(),
-        image: faker.image.avatar(),
-      }));
+    // Usuários da equipe de vendas
+    const teamUsers = [
+      { name: "Ana Carolina", role: "Gerente de Vendas" },
+      { name: "Pedro Santos", role: "Executivo de Contas" },
+      { name: "Mariana Costa", role: "Analista Comercial" },
+      { name: "Rafael Oliveira", role: "Consultor de Vendas" }
+    ];
 
-    const generatedLeads = Array.from({ length: 20 })
-      .fill(null)
-      .map(() => ({
-        id: faker.string.uuid(),
-        name: capitalize(faker.company.buzzPhrase()),
-        startAt: faker.date.past({ years: 0.5, refDate: new Date() }),
-        endAt: faker.date.future({ years: 0.5, refDate: new Date() }),
-        column: faker.helpers.arrayElement(generatedColumns).id,
-        owner: faker.helpers.arrayElement(generatedUsers),
-      }));
+    const generatedUsers = teamUsers.map((user) => ({
+      id: faker.string.uuid(),
+      name: user.name,
+      role: user.role,
+      image: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=04CDD4&color=fff&size=64&bold=true`,
+    }));
+
+    // Dados específicos para clínicas médicas
+    const clinicLeads = [
+      { name: "Dr. Carlos Silva - Clínica CardioVida", type: "cardiologia" },
+      { name: "Dra. Ana Santos - OdontoCare", type: "odontologia" },
+      { name: "Dr. Roberto Lima - Clínica Dermatológica", type: "dermatologia" },
+      { name: "Dra. Maria Oliveira - FisioTotal", type: "fisioterapia" },
+      { name: "Dr. João Costa - Clínica Oftalmológica", type: "oftalmologia" },
+      { name: "Dra. Patricia Alves - GinecoSaúde", type: "ginecologia" },
+      { name: "Dr. Fernando Rocha - Ortopedia Plus", type: "ortopedia" },
+      { name: "Dra. Juliana Mendes - Pediatria Feliz", type: "pediatria" },
+      { name: "Dr. Marcelo Souza - Clínica Neurológica", type: "neurologia" },
+      { name: "Dra. Camila Ferreira - EndoClinic", type: "endocrinologia" },
+      { name: "Dr. Rafael Torres - UroVida", type: "urologia" },
+      { name: "Dra. Beatriz Nunes - Clínica Psiquiátrica", type: "psiquiatria" },
+      { name: "Dr. Lucas Martins - GastroSaúde", type: "gastroenterologia" },
+      { name: "Dra. Fernanda Costa - Clínica de Estética", type: "estetica" },
+      { name: "Dr. André Silva - Clínica Vascular", type: "cirurgia_vascular" },
+      { name: "Dra. Larissa Oliveira - Clínica de Nutrição", type: "nutricao" },
+      { name: "Dr. Gustavo Santos - Clínica de Acupuntura", type: "acupuntura" },
+      { name: "Dra. Renata Lima - Clínica de Psicologia", type: "psicologia" },
+      { name: "Dr. Diego Alves - Clínica de Otorrino", type: "otorrinolaringologia" },
+      { name: "Dra. Vanessa Rocha - Clínica de Mastologia", type: "mastologia" }
+    ];
+
+    const generatedLeads = clinicLeads.map((clinic) => ({
+      id: faker.string.uuid(),
+      name: clinic.name,
+      startAt: faker.date.past({ years: 0.5, refDate: new Date() }),
+      endAt: faker.date.future({ years: 0.5, refDate: new Date() }),
+      column: faker.helpers.arrayElement(generatedColumns).id,
+      owner: faker.helpers.arrayElement(generatedUsers),
+      type: clinic.type,
+    }));
 
     setColumns(generatedColumns);
     setUsers(generatedUsers);
@@ -226,15 +257,25 @@ const FunnelsPage = () => {
                       </div>
                     </div>
                     {lead.owner && (
-                      <Avatar className="h-6 w-6 shrink-0 border border-border/50">
-                        <AvatarImage src={lead.owner.image} />
-                        <AvatarFallback 
-                          className="text-xs text-foreground"
-                          style={{ backgroundColor: `${column.color}10` }}
-                        >
-                          {lead.owner.name?.slice(0, 2)}
-                        </AvatarFallback>
-                      </Avatar>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Avatar className="h-6 w-6 shrink-0 border border-border/50 cursor-pointer">
+                              <AvatarImage src={lead.owner.image} />
+                              <AvatarFallback 
+                                className="text-xs text-foreground"
+                                style={{ backgroundColor: `${column.color}10` }}
+                              >
+                                {lead.owner.name?.slice(0, 2)}
+                              </AvatarFallback>
+                            </Avatar>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="font-medium">{lead.owner.name}</p>
+                            <p className="text-xs text-muted-foreground">{lead.owner.role}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     )}
                   </div>
                 </KanbanCard>

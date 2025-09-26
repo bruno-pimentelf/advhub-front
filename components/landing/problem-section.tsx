@@ -6,7 +6,9 @@ import { BlurFade } from '@/components/ui/blur-fade'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { motion } from 'motion/react'
 import { Highlighter } from '@/components/ui/highlighter'
-import { RainbowButton } from '@/components/ui/rainbow-button'
+import { Button } from '@/components/ui/button'
+import { ShineBorder } from '@/components/ui/shine-border'
+import Image from 'next/image'
 
 const transitionVariants = {
   container: {
@@ -67,31 +69,37 @@ export default function ProblemSection() {
 
           <motion.div variants={transitionVariants.item}>
             <div className="relative mb-12">
-              <div className="bg-gradient-to-r from-[#04CDD4]/10 to-[#03a8a8]/10 rounded-2xl p-8 border border-[#04CDD4]/20">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-[#04CDD4] rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-semibold text-foreground mb-4">
-                    [VÍDEO DEMONSTRATIVO OU PRINTS]
-                  </h3>
-                  <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                    Assista a um breve vídeo ou veja prints de como o Ailum pode transformar sua clínica.
-                  </p>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl max-w-5xl mx-auto">
+                <div className="relative bg-background rounded-2xl p-2">
+                  <Image
+                    src="/funis.png"
+                    alt="Interface de Funis de Vendas do Ailum CRM"
+                    width={1200}
+                    height={800}
+                    className="rounded-xl w-full h-auto"
+                    priority
+                  />
+                  <ShineBorder
+                    borderWidth={2}
+                    duration={8}
+                    shineColor={["#04CDD4", "#00B4B8", "#04CDD4"]}
+                    className="rounded-2xl"
+                  />
                 </div>
               </div>
             </div>
           </motion.div>
 
           <motion.div variants={transitionVariants.item}>
-            <RainbowButton size="lg" className="text-lg px-8 py-4" asChild>
+            <Button 
+              size="lg" 
+              className="text-lg px-8 py-4 bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all duration-300"
+              asChild
+            >
               <a href="#application-form">
                 QUERO SABER MAIS
               </a>
-            </RainbowButton>
+            </Button>
           </motion.div>
         </motion.div>
       </div>

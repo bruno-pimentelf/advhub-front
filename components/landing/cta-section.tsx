@@ -3,7 +3,7 @@
 import React from 'react'
 import { BlurFade } from '@/components/ui/blur-fade'
 import { Highlighter } from '@/components/ui/highlighter'
-import { RainbowButton } from '@/components/ui/rainbow-button'
+import { Button } from '@/components/ui/button'
 import { ShinyButton } from '@/components/ui/shiny-button'
 import { Pointer } from '@/components/ui/pointer'
 import { 
@@ -93,11 +93,15 @@ export default function CTASection() {
                   <Star className="w-6 h-6 text-yellow-500" />
                 </div>
               </Pointer>
-              <RainbowButton size="lg" className="text-xl px-12 py-6" asChild>
+              <Button 
+                size="lg" 
+                className="text-xl px-12 py-6 bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all duration-300"
+                asChild
+              >
                 <a href="#application-form">
                   É para mim
                 </a>
-              </RainbowButton>
+              </Button>
             </div>
           </BlurFade>
         </div>

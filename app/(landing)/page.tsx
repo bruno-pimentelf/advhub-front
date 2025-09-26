@@ -30,6 +30,7 @@ export default function Home() {
               Notificações em tempo real do que está acontecendo na sua clínica
             </p>
           </div>
+          
           <NotificationsDemo />
         </div>
       </section>

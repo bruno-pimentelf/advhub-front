@@ -4,7 +4,7 @@ import React from 'react'
 import { Marquee } from '@/components/ui/marquee'
 import { BlurFade } from '@/components/ui/blur-fade'
 import { Highlighter } from '@/components/ui/highlighter'
-import { RainbowButton } from '@/components/ui/rainbow-button'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 const reviews = [
@@ -161,11 +161,15 @@ export default function TestimonialsSection() {
           </BlurFade>
 
           <BlurFade direction="up" delay={0.8}>
-            <RainbowButton size="lg" className="text-lg px-8 py-4" asChild>
+            <Button 
+              size="lg" 
+              className="text-lg px-8 py-4 bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all duration-300"
+              asChild
+            >
               <a href="#application-form">
                 Eu quero!
               </a>
-            </RainbowButton>
+            </Button>
           </BlurFade>
         </div>
       </div>

@@ -3,7 +3,7 @@
 import React, { useRef } from 'react'
 import { useInView, motion } from 'motion/react'
 import { Highlighter } from '@/components/ui/highlighter'
-import { RainbowButton } from '@/components/ui/rainbow-button'
+import { Button } from '@/components/ui/button'
 import { BentoGrid, BentoCard } from '@/components/ui/bento-grid'
 import { 
   Users, 
@@ -128,11 +128,15 @@ export default function FeaturesSection() {
           </motion.div>
 
           <motion.div variants={transitionVariants.item}>
-            <RainbowButton size="lg" className="text-lg px-8 py-4" asChild>
+            <Button 
+              size="lg" 
+              className="text-lg px-8 py-4 bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all duration-300"
+              asChild
+            >
               <a href="#application-form">
                 Quero saber mais!
               </a>
-            </RainbowButton>
+            </Button>
           </motion.div>
         </motion.div>
       </div>

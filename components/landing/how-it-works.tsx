@@ -9,7 +9,7 @@ import { Separator } from '@/components/ui/separator'
 import { BlurFade } from '@/components/ui/blur-fade'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { Highlighter } from '@/components/ui/highlighter'
-import { RainbowButton } from '@/components/ui/rainbow-button'
+import { Button } from '@/components/ui/button'
 import { 
   Brain, 
   Users, 
@@ -236,11 +236,15 @@ export default function HowItWorks() {
           </motion.div>
 
           <motion.div variants={transitionVariants.item}>
-            <RainbowButton size="lg" className="text-lg px-8 py-4" asChild>
+            <Button 
+              size="lg" 
+              className="text-lg px-8 py-4 bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all duration-300"
+              asChild
+            >
               <a href="#application-form">
                 QUERO SABER MAIS
               </a>
-            </RainbowButton>
+            </Button>
           </motion.div>
         </motion.div>
       </div>
