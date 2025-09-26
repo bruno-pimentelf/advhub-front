@@ -5,6 +5,7 @@ import { BlurFade } from '@/components/ui/blur-fade'
 import { Highlighter } from '@/components/ui/highlighter'
 import { Button } from '@/components/ui/button'
 import { ShinyButton } from '@/components/ui/shiny-button'
+import { useSmoothScroll } from '@/hooks/use-smooth-scroll'
 import { Pointer } from '@/components/ui/pointer'
 import { 
   CheckCircle, 
@@ -39,6 +40,8 @@ const advantages = [
 ]
 
 export default function CTASection() {
+  const { scrollToElement } = useSmoothScroll()
+  
   return (
     <section className="py-24 md:py-32 bg-white relative overflow-hidden">
       {/* Background decoration */}
@@ -95,12 +98,10 @@ export default function CTASection() {
               </Pointer>
               <Button 
                 size="lg" 
+                onClick={() => scrollToElement('#application-form')}
                 className="text-xl px-12 py-6 bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all duration-300"
-                asChild
               >
-                <a href="#application-form">
-                  É para mim
-                </a>
+                É para mim
               </Button>
             </div>
           </BlurFade>
@@ -116,11 +117,12 @@ export default function CTASection() {
                   Não perca a oportunidade de transformar sua clínica com a tecnologia mais avançada do mercado.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                  <a href="#application-form">
-                    <ShinyButton className="text-lg px-8 py-4 bg-white text-gray-900 hover:bg-gray-100">
-                      APLIQUE-SE
-                    </ShinyButton>
-                  </a>
+                  <ShinyButton 
+                    onClick={() => scrollToElement('#application-form')}
+                    className="text-lg px-8 py-4 bg-white text-gray-900 hover:bg-gray-100"
+                  >
+                    APLIQUE-SE
+                  </ShinyButton>
                 </div>
               </div>
             </div>

@@ -1,3 +1,5 @@
+"use client"
+
 import HeroSection from "@/components/landing/hero-section";
 import ProblemSection from "@/components/landing/problem-section";
 import BenefitsSection from "@/components/landing/benefits-section";

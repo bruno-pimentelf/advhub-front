@@ -10,6 +10,7 @@ import { BlurFade } from '@/components/ui/blur-fade'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { Highlighter } from '@/components/ui/highlighter'
 import { Button } from '@/components/ui/button'
+import { useSmoothScroll } from '@/hooks/use-smooth-scroll'
 import { 
   Brain, 
   Users, 
@@ -160,6 +161,7 @@ const FeatureCard = ({ feature, index }: { feature: typeof features[0], index: n
 export default function HowItWorks() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const { scrollToElement } = useSmoothScroll()
 
   return (
     <section id="how-it-works" ref={ref} className="py-24 md:py-32 bg-white">
@@ -238,12 +240,10 @@ export default function HowItWorks() {
           <motion.div variants={transitionVariants.item}>
             <Button 
               size="lg" 
+              onClick={() => scrollToElement('#application-form')}
               className="text-lg px-8 py-4 bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all duration-300"
-              asChild
             >
-              <a href="#application-form">
-                QUERO SABER MAIS
-              </a>
+              QUERO SABER MAIS
             </Button>
           </motion.div>
         </motion.div>

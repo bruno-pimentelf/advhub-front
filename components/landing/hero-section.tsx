@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { TextEffect } from '@/components/ui/text-effect'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { HeroHeader } from './header'
+import { useSmoothScroll } from '@/hooks/use-smooth-scroll'
 
 const transitionVariants = {
     item: {
@@ -28,6 +29,8 @@ const transitionVariants = {
 }
 
 export default function HeroSection() {
+    const { scrollToElement } = useSmoothScroll()
+    
     return (
         <>
             <HeroHeader />
@@ -145,12 +148,10 @@ export default function HeroSection() {
                                             key={1}
                                             className="bg-foreground/10 rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5">
                                             <Button
-                                                asChild
                                                 size="lg"
+                                                onClick={() => scrollToElement('#application-form')}
                                                 className="rounded-xl px-5 text-base">
-                                                <Link href="#application-form">
-                                                    <span className="text-nowrap">Aplique-se</span>
-                                                </Link>
+                                                <span className="text-nowrap">Aplique-se</span>
                                             </Button>
                                         </div>
                                     </AnimatedGroup>

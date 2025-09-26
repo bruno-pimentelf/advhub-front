@@ -9,6 +9,7 @@ import { Highlighter } from '@/components/ui/highlighter'
 import { Button } from '@/components/ui/button'
 import { ShineBorder } from '@/components/ui/shine-border'
 import Image from 'next/image'
+import { useSmoothScroll } from '@/hooks/use-smooth-scroll'
 
 const transitionVariants = {
   container: {
@@ -41,6 +42,7 @@ const transitionVariants = {
 export default function ProblemSection() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const { scrollToElement } = useSmoothScroll()
 
   return (
     <section ref={ref} className="pt-20 md:pt-28 pb-24 md:pb-32 bg-white">
@@ -93,12 +95,10 @@ export default function ProblemSection() {
           <motion.div variants={transitionVariants.item}>
             <Button 
               size="lg" 
+              onClick={() => scrollToElement('#application-form')}
               className="text-lg px-8 py-4 bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all duration-300"
-              asChild
             >
-              <a href="#application-form">
-                QUERO SABER MAIS
-              </a>
+              QUERO SABER MAIS
             </Button>
           </motion.div>
         </motion.div>
