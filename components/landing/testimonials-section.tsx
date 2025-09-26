@@ -123,7 +123,7 @@ const ReviewCard = ({
 export default function TestimonialsSection() {
   return (
     <section className="py-24 md:py-32 bg-white">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="text-center mb-16">
           <BlurFade direction="up" delay={0.2}>
             <h2 className="text-4xl md:text-5xl font-medium text-foreground mb-8">

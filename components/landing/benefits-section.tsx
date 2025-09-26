@@ -94,16 +94,16 @@ export default function BenefitsSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
   return (
-    <section ref={ref} className="py-24 md:py-32 bg-white">
-      <div className="mx-auto max-w-7xl px-6">
+    <section ref={ref} className="py-16 sm:py-24 md:py-32 bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <motion.div
           variants={transitionVariants.container}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
         >
           <motion.div variants={transitionVariants.item}>
-            <h2 className="text-4xl md:text-5xl font-medium text-foreground mb-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-foreground mb-6 sm:mb-8 leading-tight">
               Com o <Highlighter color="#04CDD4" action="highlight">Ailum</Highlighter>, você vai:
             </h2>
           </motion.div>

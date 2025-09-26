@@ -428,7 +428,7 @@ export default function MultiStepApplicationForm({ isOpen, onClose }: MultiStepA
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl w-[90vw] max-h-[90vh] overflow-y-auto p-6">
+      <DialogContent className="max-w-6xl w-[95vw] sm:w-[90vw] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold text-center">
             <Highlighter color="#04CDD4" action="highlight">Aplique-se</Highlighter> para ter acesso ao Ailum
@@ -479,7 +479,7 @@ export default function MultiStepApplicationForm({ isOpen, onClose }: MultiStepA
 
         {/* Form Content */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="max-w-4xl mx-auto px-4">
+          <div className="max-w-4xl mx-auto px-2 sm:px-4">
             <AnimatePresence mode="wait">
               {renderStepContent()}
             </AnimatePresence>

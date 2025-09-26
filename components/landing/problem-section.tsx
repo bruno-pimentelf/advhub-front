@@ -44,7 +44,7 @@ export default function ProblemSection() {
 
   return (
     <section ref={ref} className="pt-20 md:pt-28 pb-24 md:pb-32 bg-white">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <motion.div
           variants={transitionVariants.container}
           initial="hidden"
@@ -52,7 +52,7 @@ export default function ProblemSection() {
           className="text-center"
         >
           <motion.div variants={transitionVariants.item}>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-foreground mb-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-foreground mb-6 sm:mb-8 leading-tight">
               Cansado de{' '}
               <Highlighter color="#04CDD4" action="highlight">
                 perder vendas
@@ -62,14 +62,14 @@ export default function ProblemSection() {
           </motion.div>
 
           <motion.div variants={transitionVariants.item}>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-4xl mx-auto">
+            <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed">
               Nosso <Highlighter color="#04CDD4" action="underline">CRM Powered by AI</Highlighter> vai te ajudar a aumentar as vendas, fidelizar seus pacientes e organizar a rotina da sua secretária!
             </p>
           </motion.div>
 
           <motion.div variants={transitionVariants.item}>
             <div className="relative mb-12">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl max-w-5xl mx-auto">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl max-w-5xl mx-auto px-4 sm:px-0">
                 <div className="relative bg-background rounded-2xl p-2">
                   <Image
                     src="/funis.png"

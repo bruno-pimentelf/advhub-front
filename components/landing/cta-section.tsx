@@ -44,7 +44,7 @@ export default function CTASection() {
       {/* Background decoration */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#04CDD4]/5 to-[#03a8a8]/5" />
       
-      <div className="mx-auto max-w-7xl px-6 relative">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
         <div className="text-center mb-16">
           <BlurFade direction="up" delay={0.2}>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-foreground mb-8">

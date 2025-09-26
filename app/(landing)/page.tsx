@@ -20,13 +20,13 @@ export default function Home() {
       <FAQStructuredData />
       <HeroSection />
       <ProblemSection />
-      <section className="py-16 bg-white">
-        <div className="mx-auto max-w-4xl px-6">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-semibold text-foreground mb-4">
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-foreground mb-3 sm:mb-4">
               Veja o Ailum em ação
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-sm sm:text-base text-muted-foreground">
               Notificações em tempo real do que está acontecendo na sua clínica
             </p>
           </div>
@@ -38,7 +38,7 @@ export default function Home() {
       <HowItWorks />
       <TargetAudience />
       <FeaturesSection />
-      <TestimonialsSection />
+      {/* <TestimonialsSection /> */}
       <FAQSection />
       <CTASection />
       <ApplicationFormWrapper />

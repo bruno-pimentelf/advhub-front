@@ -78,7 +78,7 @@ export default function FeaturesSection() {
 
   return (
     <section ref={ref} className="py-24 md:py-32 bg-white">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <motion.div
           variants={transitionVariants.container}
           initial="hidden"

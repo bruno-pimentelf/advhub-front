@@ -87,10 +87,10 @@ export default function HeroSection() {
                             />
                         </AnimatedGroup>
                         <div className="absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,var(--color-background)_75%)]"></div>
-                        <div className="mx-auto max-w-7xl px-6">
-                            <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+                        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+                            <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
                                 {/* Left Column - Text Content */}
-                                <div className="flex-1 lg:flex-[0.8] text-left">
+                                <div className="flex-1 lg:flex-[0.8] text-center lg:text-left">
                                     <AnimatedGroup variants={transitionVariants}>
                                         <Link
                                             href="#link"
@@ -115,7 +115,7 @@ export default function HeroSection() {
                                         preset="fade-in-blur"
                                         speedSegment={0.3}
                                         as="h1"
-                                        className="mt-8 md:text-left text-center text-6xl font-medium md:text-5xl lg:mt-16 xl:text-[4.25rem]">
+                                        className="mt-8 text-center lg:text-left text-4xl sm:text-5xl md:text-6xl lg:text-5xl xl:text-[4.25rem] font-medium leading-tight">
                                         Modernize sua clínica com o CRM do futuro
                                     </TextEffect>
                                     <TextEffect
@@ -140,7 +140,7 @@ export default function HeroSection() {
                                             },
                                             ...transitionVariants,
                                         }}
-                                        className="mt-12 flex flex-col items-start gap-2 md:flex-row">
+                                        className="mt-12 flex flex-col items-center lg:items-start gap-4 md:flex-row">
                                         <div
                                             key={1}
                                             className="bg-foreground/10 rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5">
