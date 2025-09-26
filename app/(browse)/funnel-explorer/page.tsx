@@ -314,7 +314,7 @@ function FunnelExplorerContent() {
   const [selectedFunnel, setSelectedFunnel] = useState(initialFunnels[0]);
   const [nodes, setNodes, onNodesChange] = useNodesState(selectedFunnel.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(selectedFunnel.edges);
-  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<any, any> | null>(null);
 
   // Esconder sidebar quando entrar na página
   React.useEffect(() => {
@@ -378,7 +378,7 @@ function FunnelExplorerContent() {
   }, [setNodes, setEdges]);
 
   const addNode = useCallback((type: string) => {
-    const newNode: Node = {
+    const newNode = {
       id: `${Date.now()}`,
       type,
       position: { x: Math.random() * 500 + 100, y: Math.random() * 300 + 100 },
@@ -635,7 +635,6 @@ function FunnelExplorerContent() {
               maskColor="hsl(var(--background) / 0.1)"
             />
             <Background 
-              variant="dots" 
               gap={20} 
               size={1} 
               color="var(--border)"

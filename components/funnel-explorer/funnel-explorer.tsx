@@ -231,7 +231,7 @@ export function FunnelExplorer({ onClose, onSelectFunnel }: FunnelExplorerProps)
   const [selectedFunnel, setSelectedFunnel] = useState(initialFunnels[0]);
   const [nodes, setNodes, onNodesChange] = useNodesState(selectedFunnel.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(selectedFunnel.edges);
-  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<any, any> | null>(null);
 
   // Atualizar nós e arestas quando o funil selecionado mudar
   React.useEffect(() => {
@@ -289,7 +289,7 @@ export function FunnelExplorer({ onClose, onSelectFunnel }: FunnelExplorerProps)
   }, [setNodes, setEdges]);
 
   const addNode = useCallback((type: string) => {
-    const newNode: Node = {
+    const newNode = {
       id: `${Date.now()}`,
       type,
       position: { x: Math.random() * 500 + 100, y: Math.random() * 300 + 100 },
@@ -544,13 +544,12 @@ export function FunnelExplorer({ onClose, onSelectFunnel }: FunnelExplorerProps)
                 <Controls className="bg-background/95 border border-border/50" />
                 <MiniMap 
                   className="bg-background/95 border border-border/50"
-                  nodeColor={(node) => node.data.color}
+                  nodeColor={(node) => (node.data as any).color || '#04CDD4'}
                   nodeStrokeWidth={3}
                   zoomable
                   pannable
                 />
                 <Background 
-                  variant="dots" 
                   gap={20} 
                   size={1} 
                   color="var(--border)"
