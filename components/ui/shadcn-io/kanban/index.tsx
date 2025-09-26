@@ -77,11 +77,10 @@ export const KanbanBoard = ({ id, children, className }: KanbanBoardProps) => {
   return (
     <div
       className={cn(
-        'flex size-full min-h-40 flex-col divide-y overflow-hidden rounded-2xl border bg-background/95 backdrop-blur-md text-xs shadow-lg ring-2 transition-all duration-300',
+        'flex size-full min-h-40 flex-col divide-y overflow-hidden rounded-2xl border border-primary/30 bg-background/95 backdrop-blur-md text-xs shadow-lg ring-2 transition-all duration-300',
         isOver ? 'ring-[#04CDD4] shadow-[#04CDD4]/20' : 'ring-transparent',
         className
       )}
-      style={{ borderColor: '#04CDD470' }}
       ref={setNodeRef}
     >
       {children}

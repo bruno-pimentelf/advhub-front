@@ -4,6 +4,7 @@ import { Bell } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 interface HeaderProps {
   sidebarCollapsed?: boolean
@@ -12,6 +13,9 @@ interface HeaderProps {
 
 export function Header({ sidebarCollapsed = false, actions }: HeaderProps) {
   const pathname = usePathname()
+
+  // Check if we're on the landing page
+  const isLandingPage = pathname === '/' && !pathname.startsWith('/funnels') && !pathname.startsWith('/contacts') && !pathname.startsWith('/messages') && !pathname.startsWith('/chats') && !pathname.startsWith('/calendar') && !pathname.startsWith('/settings')
 
   // Get page title based on current route
   const getPageTitle = () => {
@@ -24,6 +28,8 @@ export function Header({ sidebarCollapsed = false, actions }: HeaderProps) {
         return 'Contatos'
       case '/messages':
         return 'Mensagens'
+      case '/chats':
+        return 'Chats'
       case '/settings':
         return 'Configurações'
       case '/calendar':
@@ -36,9 +42,8 @@ export function Header({ sidebarCollapsed = false, actions }: HeaderProps) {
   return (
     <header 
       className={cn(
-        "mx-4 mt-4 px-6 transition-all duration-300 h-16 flex items-center justify-between bg-background/95 backdrop-blur-md border rounded-2xl"
+        "mx-4 mt-4 px-6 transition-all duration-300 h-16 flex items-center justify-between bg-background/95 backdrop-blur-md border border-primary/30 rounded-2xl"
       )}
-      style={{ borderColor: '#04CDD470' }}
     >
       {/* Page Title */}
       <h1 className="text-xl font-semibold">
@@ -53,6 +58,9 @@ export function Header({ sidebarCollapsed = false, actions }: HeaderProps) {
             {actions}
           </div>
         )}
+        
+        {/* Theme Toggle - only show on browse pages */}
+        {!isLandingPage && <ThemeToggle />}
         
         {/* Notifications */}
         <Button 

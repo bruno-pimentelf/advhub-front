@@ -160,14 +160,14 @@ export default function ChatsPage() {
         </RainbowButton>
       </div>
       
-      <div className="flex h-full border border-[#04CDD470] rounded-2xl bg-background/95 backdrop-blur-md overflow-hidden max-h-[calc(100vh-8rem)]">
+      <div className="flex h-full border border-primary/30 rounded-2xl bg-background/95 backdrop-blur-md overflow-hidden max-h-[calc(100vh-8rem)]">
         {/* Sidebar de Chats */}
         <div className="w-1/3 border-r border-border/50 flex flex-col">
           {/* Header da Sidebar */}
           <div className="p-4 border-b border-border/50">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-foreground">Conversas</h2>
-              <Button variant="ghost" size="sm" className="hover:bg-[#04CDD410]">
+              <Button variant="ghost" size="sm" className="hover:bg-primary-100 dark:hover:bg-primary-900/30">
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </div>
@@ -179,7 +179,7 @@ export default function ChatsPage() {
                 placeholder="Buscar conversas..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 border-[#04CDD470] focus:border-[#04CDD4] focus:ring-[#04CDD4]"
+                className="pl-10 border-primary/30 focus:border-primary focus:ring-[#04CDD4]"
               />
             </div>
           </div>
@@ -192,19 +192,19 @@ export default function ChatsPage() {
                 key={chat.id}
                 onClick={() => setSelectedChat(chat)}
                 className={`p-4 border-b border-border/30 cursor-pointer transition-colors hover:bg-muted/30 ${
-                  selectedChat?.id === chat.id ? 'bg-[#04CDD410] border-r-2 border-r-[#04CDD4]' : ''
+                  selectedChat?.id === chat.id ? 'bg-primary-100 dark:bg-primary-900/30 border-r-2 border-r-primary' : ''
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div className="relative">
                     <Avatar className="h-12 w-12 border border-border/50">
                       <AvatarImage src={chat.avatar} />
-                      <AvatarFallback className="bg-[#04CDD410] text-foreground">
+                      <AvatarFallback className="bg-primary-100 dark:bg-primary-900/30 text-foreground">
                         {chat.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
                     {chat.isOnline && (
-                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-background rounded-full" />
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-background rounded-full dark:bg-green-400" />
                     )}
                   </div>
                   
@@ -213,9 +213,9 @@ export default function ChatsPage() {
                       <h3 className="font-medium text-foreground truncate">{chat.name}</h3>
                       <div className="flex items-center gap-1">
                         {chat.isAutoReply && (
-                          <div className="flex items-center gap-1 bg-[#04CDD410] px-2 py-1 rounded-full">
-                            <Bot className="h-3 w-3 text-[#04CDD4]" />
-                            <span className="text-xs text-[#04CDD4] font-medium">Auto</span>
+                          <div className="flex items-center gap-1 bg-primary-100 dark:bg-primary-900/30 px-2 py-1 rounded-full">
+                            <Bot className="h-3 w-3 text-primary" />
+                            <span className="text-xs text-primary font-medium">Auto</span>
                           </div>
                         )}
                         <span className="text-xs text-muted-foreground">
@@ -234,12 +234,12 @@ export default function ChatsPage() {
                         </p>
                         {chat.isAutoReply && (
                           <div className="w-[15%] flex justify-center">
-                            <Bot className="h-4 w-4 text-[#04CDD4] flex-shrink-0" />
+                            <Bot className="h-4 w-4 text-primary flex-shrink-0" />
                           </div>
                         )}
                       </div>
                       {chat.unreadCount > 0 && (
-                        <Badge className="bg-[#04CDD4] text-white text-xs min-w-[20px] h-5 flex items-center justify-center ml-2">
+                        <Badge className="bg-primary text-white text-xs min-w-[20px] h-5 flex items-center justify-center ml-2">
                           {chat.unreadCount}
                         </Badge>
                       )}
@@ -263,12 +263,12 @@ export default function ChatsPage() {
                     <div className="relative">
                       <Avatar className="h-10 w-10 border border-border/50">
                         <AvatarImage src={selectedChat.avatar} />
-                        <AvatarFallback className="bg-[#04CDD410] text-foreground">
+                        <AvatarFallback className="bg-primary-100 dark:bg-primary-900/30 text-foreground">
                           {selectedChat.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                       {selectedChat.isOnline && (
-                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-background rounded-full" />
+                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-background rounded-full dark:bg-green-400" />
                       )}
                     </div>
                     <div>
@@ -278,9 +278,9 @@ export default function ChatsPage() {
                           {selectedChat.isOnline ? 'Online' : 'Offline'}
                         </span>
                         {selectedChat.isAutoReply && (
-                          <div className="flex items-center gap-1 bg-[#04CDD410] px-2 py-1 rounded-full">
-                            <Bot className="h-3 w-3 text-[#04CDD4]" />
-                            <span className="text-xs text-[#04CDD4] font-medium">Resposta automática</span>
+                          <div className="flex items-center gap-1 bg-primary-100 dark:bg-primary-900/30 px-2 py-1 rounded-full">
+                            <Bot className="h-3 w-3 text-primary" />
+                            <span className="text-xs text-primary font-medium">Resposta automática</span>
                           </div>
                         )}
                       </div>
@@ -288,7 +288,7 @@ export default function ChatsPage() {
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" className="hover:bg-[#04CDD410]">
+                    <Button variant="ghost" size="sm" className="hover:bg-primary-100 dark:hover:bg-primary-900/30">
                       <Info className="h-4 w-4" />
                     </Button>
                   </div>
@@ -307,11 +307,11 @@ export default function ChatsPage() {
                         <div
                           className={`max-w-[70%] p-3 rounded-2xl ${
                             message.isFromUser
-                              ? 'bg-[#04CDD4] text-white rounded-br-md'
+                              ? 'bg-primary text-white dark:bg-primary-600 rounded-br-md'
                               : 'bg-background border border-border/50 text-foreground rounded-bl-md'
                           }`}
                         >
-                          <p className="text-sm">{message.text}</p>
+                          <p className={`text-sm ${message.isFromUser ? 'font-semibold' : ''}`}>{message.text}</p>
                           <div className={`flex items-center justify-end gap-1 mt-1 ${
                             message.isFromUser ? 'text-white/70' : 'text-muted-foreground'
                           }`}>
@@ -340,7 +340,7 @@ export default function ChatsPage() {
               {/* Input de Mensagem */}
               <div className="p-4 border-t border-border/50 bg-background/50">
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" className="hover:bg-[#04CDD410]">
+                  <Button variant="ghost" size="sm" className="hover:bg-primary-100 dark:hover:bg-primary-900/30">
                     <Paperclip className="h-4 w-4" />
                   </Button>
                   <div className="flex-1 relative">
@@ -349,12 +349,12 @@ export default function ChatsPage() {
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                      className="pr-12 border-[#04CDD470] focus:border-[#04CDD4] focus:ring-[#04CDD4]"
+                      className="pr-12 border-primary/30 focus:border-primary focus:ring-[#04CDD4]"
                     />
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="absolute right-1 top-1/2 transform -translate-y-1/2 hover:bg-[#04CDD410]"
+                      className="absolute right-1 top-1/2 transform -translate-y-1/2 hover:bg-primary-100 dark:hover:bg-primary-900/30"
                     >
                       <Smile className="h-4 w-4" />
                     </Button>
@@ -362,7 +362,7 @@ export default function ChatsPage() {
                   <Button
                     onClick={handleSendMessage}
                     disabled={!newMessage.trim()}
-                    className="bg-[#04CDD4] hover:bg-[#04CDD4]/90 text-white disabled:opacity-50"
+                    className="bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700 disabled:opacity-50"
                   >
                     <Send className="h-4 w-4" />
                   </Button>

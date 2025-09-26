@@ -53,12 +53,6 @@ const navigationItems = [
     icon: Calendar,
     description: "Agenda e eventos",
   },
-  {
-    title: "Configurações",
-    href: "/settings",
-    icon: Settings,
-    description: "Configurações do sistema",
-  },
 ];
 
 // Componente do dropdown do usuário
@@ -93,7 +87,7 @@ const UserDropdown = () => {
         className="w-full justify-between px-3 py-2 h-auto"
       >
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#04CDD410' }}>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-primary-100 dark:bg-primary-900/30">
             <User className="w-4 h-4 text-foreground" />
           </div>
           <div className="text-left flex-1 min-w-0">
@@ -118,7 +112,7 @@ const UserDropdown = () => {
               variant="ghost"
               size="sm"
               onClick={handleLogout}
-              className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30"
+              className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-950/30"
             >
               <LogOut className="w-4 h-4 mr-2" />
               Sair
@@ -178,10 +172,10 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
                   className="w-full h-10 p-0 hover:bg-opacity-10"
                   style={{ backgroundColor: 'transparent' }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#04CDD410';
+                    e.currentTarget.classList.add('bg-primary-100', 'dark:bg-primary-900/30');
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.classList.remove('bg-primary-100', 'dark:bg-primary-900/30');
                   }}
                 >
                   <Menu className="w-4 h-4" />
@@ -208,21 +202,17 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
                         "group relative flex items-center justify-center p-3 rounded-lg transition-all duration-200",
                         "hover:bg-opacity-10",
                         isActive
-                          ? "border"
+                          ? "border bg-primary-100 dark:bg-primary-900/30 border-primary-200 dark:border-primary-800/50"
                           : "text-muted-foreground hover:text-foreground"
                       )}
-                      style={{
-                        backgroundColor: isActive ? '#04CDD410' : undefined,
-                        borderColor: isActive ? '#04CDD470' : undefined,
-                      }}
                       onMouseEnter={(e) => {
                         if (!isActive) {
-                          e.currentTarget.style.backgroundColor = '#04CDD410';
+                          e.currentTarget.classList.add('bg-primary-100', 'dark:bg-primary-900/30');
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (!isActive) {
-                          e.currentTarget.style.backgroundColor = '';
+                          e.currentTarget.classList.remove('bg-primary-100', 'dark:bg-primary-900/30');
                         }
                       }}
                     >
@@ -230,7 +220,7 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
                       
                       {/* Active indicator */}
                       {isActive && (
-                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full" style={{ backgroundColor: '#04CDD4' }} />
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full" style={{ backgroundColor: 'var(--primary)' }} />
                       )}
                     </Link>
                   </TooltipTrigger>
@@ -250,7 +240,7 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
             <div className="flex items-center justify-center">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-20 transition-all duration-200" style={{ backgroundColor: '#04CDD410' }}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-20 transition-all duration-200 bg-primary-100 dark:bg-primary-900/30">
                     <User className="w-4 h-4 text-foreground" />
                   </div>
                 </TooltipTrigger>
@@ -279,10 +269,13 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
         />
       )}
       
-      <div className={`
-        fixed inset-y-0 left-4 z-50 w-64 bg-background/95 backdrop-blur-md border rounded-2xl my-4
-        ${isMobileOpen ? 'block' : 'lg:block hidden'}
-      `} style={{ borderColor: '#04CDD470' }}>
+      <div 
+        className={`
+          fixed inset-y-0 left-4 z-50 w-64 bg-background/95 backdrop-blur-md border rounded-2xl my-4
+          ${isMobileOpen ? 'block' : 'lg:block hidden'}
+        `}
+        style={{ borderColor: '#04CDD470' }}
+      >
         <div className="flex h-full flex-col">
           {/* Logo */}
           <div className="flex h-16 items-center px-6 border-b border-border/50">
@@ -336,21 +329,17 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
                   "group relative flex items-center px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200",
                   "hover:text-foreground",
                   isActive
-                    ? "border"
+                    ? "border bg-primary-100 dark:bg-primary-900/30 border-primary-200 dark:border-primary-800/50"
                     : "text-muted-foreground"
                 )}
-                style={{
-                  backgroundColor: isActive ? '#04CDD410' : undefined,
-                  borderColor: isActive ? '#04CDD470' : undefined,
-                }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.backgroundColor = '#04CDD410';
+                    e.currentTarget.classList.add('bg-primary-100', 'dark:bg-primary-900/30');
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.backgroundColor = '';
+                    e.currentTarget.classList.remove('bg-primary-100', 'dark:bg-primary-900/30');
                   }
                 }}
               >
@@ -368,7 +357,7 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
                 
                 {/* Active indicator */}
                 {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full" style={{ backgroundColor: '#04CDD4' }} />
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full" style={{ backgroundColor: 'var(--primary)' }} />
                 )}
               </Link>
             );

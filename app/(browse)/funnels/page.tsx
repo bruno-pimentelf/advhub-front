@@ -34,10 +34,10 @@ const funnelTemplates = {
     name: 'Vendas Geral',
     description: 'Funil padrão para vendas B2B',
     stages: [
-      { id: 'leads', name: 'Leads', color: '#04CDD4' },
-      { id: 'qualificados', name: 'Qualificados', color: '#04CDD4' },
-      { id: 'propostas', name: 'Propostas', color: '#04CDD4' },
-      { id: 'fechados', name: 'Fechados', color: '#04CDD4' },
+      { id: 'leads', name: 'Leads', color: 'var(--primary)' },
+      { id: 'qualificados', name: 'Qualificados', color: 'var(--primary)' },
+      { id: 'propostas', name: 'Propostas', color: 'var(--primary)' },
+      { id: 'fechados', name: 'Fechados', color: 'var(--primary)' },
     ]
   },
   'ecommerce': {
@@ -139,6 +139,7 @@ const FunnelsPage = () => {
       <div className="mb-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
+            <span className="text-sm font-medium text-foreground">Funil Selecionado:</span>
             <Select value={selectedFunnel} onValueChange={handleFunnelChange}>
               <SelectTrigger className="w-[200px] h-10">
                 <SelectValue>
@@ -171,7 +172,7 @@ const FunnelsPage = () => {
             <Button 
               size="sm"
               onClick={() => setShowCreateFunnel(true)}
-              className="flex items-center gap-2 bg-[#04CDD4] hover:bg-[#04CDD4]/90"
+              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700"
             >
               <Plus className="h-4 w-4" />
               Criar Funil

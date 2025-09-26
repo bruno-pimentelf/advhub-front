@@ -93,28 +93,28 @@ const generateTemplates = (): MessageTemplate[] => {
 const getStatusColor = (status: ScheduledMessage['status']) => {
   switch (status) {
     case 'scheduled':
-      return 'bg-[#04CDD410] text-[#04CDD4] border-[#04CDD470]';
+      return 'bg-primary-100 text-primary-600 border-primary-200 dark:bg-primary-900/30 dark:text-primary-400 dark:border-primary-800/50';
     case 'sent':
-      return 'bg-green-100 text-green-800 border-green-200';
+      return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800/50';
     case 'failed':
-      return 'bg-red-100 text-red-800 border-red-200';
+      return 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800/50';
     default:
-      return 'bg-gray-100 text-gray-800 border-gray-200';
+      return 'bg-muted text-muted-foreground border-border';
   }
 };
 
 const getCategoryColor = (category: MessageTemplate['category']) => {
   switch (category) {
     case 'welcome':
-      return 'bg-blue-100 text-blue-800 border-blue-200';
+      return 'bg-primary-100 text-primary-600 border-primary-200 dark:bg-primary-900/30 dark:text-primary-400 dark:border-primary-800/50';
     case 'followup':
-      return 'bg-purple-100 text-purple-800 border-purple-200';
+      return 'bg-secondary text-secondary-foreground border-border';
     case 'reminder':
-      return 'bg-orange-100 text-orange-800 border-orange-200';
+      return 'bg-accent text-accent-foreground border-border';
     case 'promotion':
-      return 'bg-pink-100 text-pink-800 border-pink-200';
+      return 'bg-primary-200 text-primary-700 border-primary-300 dark:bg-primary-800/30 dark:text-primary-300 dark:border-primary-700/50';
     default:
-      return 'bg-gray-100 text-gray-800 border-gray-200';
+      return 'bg-muted text-muted-foreground border-border';
   }
 };
 
@@ -230,24 +230,24 @@ export default function MessagesPage() {
   return (
     <div className="mx-4 mb-4 mt-4 space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-6 bg-transparent border border-[#04CDD4]/30 rounded-lg p-1 h-auto min-h-[3rem]">
+        <TabsList className="grid w-full grid-cols-3 mb-6 bg-transparent border border-primary/30 rounded-lg p-1 h-auto min-h-[3rem]">
           <TabsTrigger 
             value="scheduled" 
-            className="data-[state=active]:bg-[#04CDD4] data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-[#04CDD4]/25 rounded-lg transition-all duration-200 hover:bg-[#04CDD410] hover:text-[#04CDD4] py-3 px-4"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/25 rounded-lg transition-all duration-200 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary py-3 px-4"
           >
             <Clock className="h-4 w-4 mr-2" />
             Agendadas
           </TabsTrigger>
           <TabsTrigger 
             value="templates"
-            className="data-[state=active]:bg-[#04CDD4] data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-[#04CDD4]/25 rounded-lg transition-all duration-200 hover:bg-[#04CDD410] hover:text-[#04CDD4] py-3 px-4"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/25 rounded-lg transition-all duration-200 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary py-3 px-4"
           >
             <FileText className="h-4 w-4 mr-2" />
             Templates
           </TabsTrigger>
           <TabsTrigger 
             value="schedule"
-            className="data-[state=active]:bg-[#04CDD4] data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-[#04CDD4]/25 rounded-lg transition-all duration-200 hover:bg-[#04CDD410] hover:text-[#04CDD4] py-3 px-4"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/25 rounded-lg transition-all duration-200 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary py-3 px-4"
           >
             <Calendar className="h-4 w-4 mr-2" />
             Agendar
@@ -257,7 +257,7 @@ export default function MessagesPage() {
         {/* Mensagens Agendadas */}
         <TabsContent value="scheduled" className="space-y-6">
           {/* Filters */}
-          <Card className="border-[#04CDD470] bg-background/95 backdrop-blur-md">
+          <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
             <CardContent className="p-4">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="relative flex-1">
@@ -266,7 +266,7 @@ export default function MessagesPage() {
                     placeholder="Buscar mensagens..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 border-[#04CDD470] focus:border-[#04CDD4] focus:ring-[#04CDD4]"
+                    className="pl-10 border-primary/30 focus:border-primary focus:ring-[#04CDD4]"
                   />
                 </div>
                 <div className="flex gap-2">
@@ -274,7 +274,7 @@ export default function MessagesPage() {
                     variant={statusFilter === 'all' ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setStatusFilter('all')}
-                    className={statusFilter === 'all' ? 'bg-[#04CDD4] hover:bg-[#04CDD4]/90' : 'border-[#04CDD470] hover:bg-[#04CDD410]'}
+                    className={statusFilter === 'all' ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700' : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30'}
                   >
                     Todas
                   </Button>
@@ -282,7 +282,7 @@ export default function MessagesPage() {
                     variant={statusFilter === 'scheduled' ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setStatusFilter('scheduled')}
-                    className={statusFilter === 'scheduled' ? 'bg-[#04CDD4] hover:bg-[#04CDD4]/90' : 'border-[#04CDD470] hover:bg-[#04CDD410]'}
+                    className={statusFilter === 'scheduled' ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700' : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30'}
                   >
                     Agendadas
                   </Button>
@@ -290,7 +290,7 @@ export default function MessagesPage() {
                     variant={statusFilter === 'sent' ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setStatusFilter('sent')}
-                    className={statusFilter === 'sent' ? 'bg-[#04CDD4] hover:bg-[#04CDD4]/90' : 'border-[#04CDD470] hover:bg-[#04CDD410]'}
+                    className={statusFilter === 'sent' ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700' : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30'}
                   >
                     Enviadas
                   </Button>
@@ -300,11 +300,11 @@ export default function MessagesPage() {
           </Card>
 
           {/* Messages List */}
-          <Card className="border-[#04CDD470] bg-background/95 backdrop-blur-md">
+          <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
             <CardHeader className="border-b border-border/50">
               <CardTitle className="flex items-center justify-between">
                 <span>Mensagens Agendadas</span>
-                <Badge variant="outline" className="border-[#04CDD470] text-[#04CDD4]">
+                <Badge variant="outline" className="border-primary/30 text-primary">
                   {filteredScheduledMessages.length} mensagens
                 </Badge>
               </CardTitle>
@@ -316,7 +316,7 @@ export default function MessagesPage() {
                     <div className="flex items-start gap-4">
                       <Avatar className="h-10 w-10 border border-border/50">
                         <AvatarImage src={message.contact.avatar} />
-                        <AvatarFallback className="bg-[#04CDD410] text-foreground">
+                        <AvatarFallback className="bg-primary-100 dark:bg-primary-900/30 text-foreground">
                           {message.contact.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
@@ -349,10 +349,10 @@ export default function MessagesPage() {
                       </div>
                       
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="sm" className="hover:bg-[#04CDD410]">
+                        <Button variant="ghost" size="sm" className="hover:bg-primary-100 dark:hover:bg-primary-900/30">
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="hover:bg-[#04CDD410]">
+                        <Button variant="ghost" size="sm" className="hover:bg-primary-100 dark:hover:bg-primary-900/30">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -365,7 +365,7 @@ export default function MessagesPage() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <Card className="border-[#04CDD470] bg-background/95 backdrop-blur-md">
+            <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
               <CardContent className="p-4">
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                   {/* Items per page selector */}
@@ -374,7 +374,7 @@ export default function MessagesPage() {
                     <select
                       value={itemsPerPage}
                       onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-                      className="px-3 py-1 text-sm border border-[#04CDD470] rounded-md bg-background focus:border-[#04CDD4] focus:ring-[#04CDD4] focus:outline-none"
+                      className="px-3 py-1 text-sm border border-primary/30 rounded-md bg-background focus:border-primary focus:ring-[#04CDD4] focus:outline-none"
                     >
                       <option value={5}>5</option>
                       <option value={10}>10</option>
@@ -397,7 +397,7 @@ export default function MessagesPage() {
                       size="sm"
                       onClick={() => handlePageChange(1)}
                       disabled={currentPage === 1}
-                      className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4] disabled:opacity-50"
+                      className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary disabled:opacity-50"
                     >
                       <ChevronsLeft className="h-4 w-4" />
                     </Button>
@@ -408,7 +408,7 @@ export default function MessagesPage() {
                       size="sm"
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                      className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4] disabled:opacity-50"
+                      className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary disabled:opacity-50"
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
@@ -426,8 +426,8 @@ export default function MessagesPage() {
                               onClick={() => handlePageChange(page as number)}
                               className={
                                 currentPage === page
-                                  ? 'bg-[#04CDD4] hover:bg-[#04CDD4]/90 text-white'
-                                  : 'border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4]'
+                                  ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700'
+                                  : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary'
                               }
                             >
                               {page}
@@ -443,7 +443,7 @@ export default function MessagesPage() {
                       size="sm"
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                      className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4] disabled:opacity-50"
+                      className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary disabled:opacity-50"
                     >
                       <ChevronRight className="h-4 w-4" />
                     </Button>
@@ -454,7 +454,7 @@ export default function MessagesPage() {
                       size="sm"
                       onClick={() => handlePageChange(totalPages)}
                       disabled={currentPage === totalPages}
-                      className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4] disabled:opacity-50"
+                      className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary disabled:opacity-50"
                     >
                       <ChevronsRight className="h-4 w-4" />
                     </Button>
@@ -467,13 +467,13 @@ export default function MessagesPage() {
 
         {/* Templates */}
         <TabsContent value="templates" className="space-y-6">
-          <Card className="border-[#04CDD470] bg-background/95 backdrop-blur-md">
+          <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
             <CardHeader className="border-b border-border/50">
               <div className="flex items-center justify-between">
                 <CardTitle className="m-0">Templates de Mensagem</CardTitle>
                 <Button 
                   size="sm"
-                  className="bg-[#04CDD4] hover:bg-[#04CDD4]/90 text-white"
+                  className="bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700"
                   onClick={() => setShowNewTemplate(true)}
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -507,13 +507,13 @@ export default function MessagesPage() {
                       </div>
                       
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="sm" className="hover:bg-[#04CDD410]">
+                        <Button variant="ghost" size="sm" className="hover:bg-primary-100 dark:hover:bg-primary-900/30">
                           <Copy className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="hover:bg-[#04CDD410]">
+                        <Button variant="ghost" size="sm" className="hover:bg-primary-100 dark:hover:bg-primary-900/30">
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="hover:bg-[#04CDD410]">
+                        <Button variant="ghost" size="sm" className="hover:bg-primary-100 dark:hover:bg-primary-900/30">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -527,7 +527,7 @@ export default function MessagesPage() {
 
         {/* Agendar Mensagem */}
         <TabsContent value="schedule" className="space-y-6">
-          <Card className="border-[#04CDD470] bg-background/95 backdrop-blur-md">
+          <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
             <CardHeader className="border-b border-border/50">
               <CardTitle>Agendar Nova Mensagem</CardTitle>
             </CardHeader>
@@ -537,13 +537,13 @@ export default function MessagesPage() {
                   <label className="text-sm font-medium text-foreground mb-2 block">
                     Contato
                   </label>
-                  <Input placeholder="Nome do contato" className="border-[#04CDD470] focus:border-[#04CDD4]" />
+                  <Input placeholder="Nome do contato" className="border-primary/30 focus:border-primary" />
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-2 block">
                     Telefone
                   </label>
-                  <Input placeholder="(11) 99999-9999" className="border-[#04CDD470] focus:border-[#04CDD4]" />
+                  <Input placeholder="(11) 99999-9999" className="border-primary/30 focus:border-primary" />
                 </div>
               </div>
               
@@ -553,7 +553,7 @@ export default function MessagesPage() {
                 </label>
                 <Textarea 
                   placeholder="Digite sua mensagem aqui..."
-                  className="border-[#04CDD470] focus:border-[#04CDD4] min-h-[100px]"
+                  className="border-primary/30 focus:border-primary min-h-[100px]"
                 />
               </div>
               
@@ -562,22 +562,22 @@ export default function MessagesPage() {
                   <label className="text-sm font-medium text-foreground mb-2 block">
                     Data
                   </label>
-                  <Input type="date" className="border-[#04CDD470] focus:border-[#04CDD4]" />
+                  <Input type="date" className="border-primary/30 focus:border-primary" />
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-2 block">
                     Horário
                   </label>
-                  <Input type="time" className="border-[#04CDD470] focus:border-[#04CDD4]" />
+                  <Input type="time" className="border-primary/30 focus:border-primary" />
                 </div>
     </div>
               
               <div className="flex gap-3 pt-4">
-                <Button className="bg-[#04CDD4] hover:bg-[#04CDD4]/90 text-white">
+                <Button className="bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700">
                   <Calendar className="h-4 w-4 mr-2" />
                   Agendar Mensagem
                 </Button>
-                <Button variant="outline" className="border-[#04CDD470] hover:bg-[#04CDD410]">
+                <Button variant="outline" className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30">
                   <Send className="h-4 w-4 mr-2" />
                   Enviar Agora
                 </Button>
@@ -590,7 +590,7 @@ export default function MessagesPage() {
       {/* Modal para Novo Template */}
       {showNewTemplate && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card className="w-full max-w-md border-[#04CDD470] bg-background/95 backdrop-blur-md">
+          <Card className="w-full max-w-md border-primary/30 bg-background/95 backdrop-blur-md">
             <CardHeader className="border-b border-border/50">
               <CardTitle>Novo Template</CardTitle>
             </CardHeader>
@@ -603,7 +603,7 @@ export default function MessagesPage() {
                   placeholder="Ex: Boas-vindas"
                   value={newTemplate.name}
                   onChange={(e) => setNewTemplate({...newTemplate, name: e.target.value})}
-                  className="border-[#04CDD470] focus:border-[#04CDD4]"
+                  className="border-primary/30 focus:border-primary"
                 />
               </div>
               
@@ -614,7 +614,7 @@ export default function MessagesPage() {
                 <select 
                   value={newTemplate.category}
                   onChange={(e) => setNewTemplate({...newTemplate, category: e.target.value as MessageTemplate['category']})}
-                  className="w-full px-3 py-2 border border-[#04CDD470] rounded-md bg-background focus:border-[#04CDD4] focus:ring-[#04CDD4] focus:outline-none"
+                  className="w-full px-3 py-2 border border-primary/30 rounded-md bg-background focus:border-primary focus:ring-[#04CDD4] focus:outline-none"
                 >
                   <option value="welcome">Boas-vindas</option>
                   <option value="followup">Follow-up</option>
@@ -631,20 +631,20 @@ export default function MessagesPage() {
                   placeholder="Digite o conteúdo do template..."
                   value={newTemplate.content}
                   onChange={(e) => setNewTemplate({...newTemplate, content: e.target.value})}
-                  className="border-[#04CDD470] focus:border-[#04CDD4] min-h-[100px]"
+                  className="border-primary/30 focus:border-primary min-h-[100px]"
                 />
               </div>
               
               <div className="flex gap-3 pt-4">
                 <Button 
-                  className="bg-[#04CDD4] hover:bg-[#04CDD4]/90 text-white"
+                  className="bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700"
                   onClick={handleCreateTemplate}
                 >
                   Criar Template
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="border-[#04CDD470] hover:bg-[#04CDD410]"
+                  className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30"
                   onClick={() => setShowNewTemplate(false)}
                 >
                   Cancelar

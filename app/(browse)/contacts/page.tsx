@@ -54,13 +54,13 @@ const generateContacts = (): Contact[] => {
 const getStatusColor = (status: Contact['status']) => {
   switch (status) {
     case 'active':
-      return 'bg-green-100 text-green-800 border-green-200';
+      return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800/50';
     case 'inactive':
-      return 'bg-gray-100 text-gray-800 border-gray-200';
+      return 'bg-muted text-muted-foreground border-border';
     case 'lead':
-      return 'bg-[#04CDD410] text-[#04CDD4] border-[#04CDD470]';
+      return 'bg-primary-100 text-primary-600 border-primary-200 dark:bg-primary-900/30 dark:text-primary-400 dark:border-primary-800/50';
     default:
-      return 'bg-gray-100 text-gray-800 border-gray-200';
+      return 'bg-muted text-muted-foreground border-border';
   }
 };
 
@@ -152,7 +152,7 @@ export default function ContactsPage() {
   return (
     <div className="mx-4 mb-4 mt-4 space-y-4">
       {/* Filters */}
-      <Card className="border-[#04CDD470] bg-background/95 backdrop-blur-md">
+      <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
         <CardContent className="p-4">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
@@ -161,7 +161,7 @@ export default function ContactsPage() {
                 placeholder="Buscar contatos..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 border-[#04CDD470] focus:border-[#04CDD4] focus:ring-[#04CDD4]"
+                className="pl-10 border-primary/30 focus:border-primary focus:ring-[#04CDD4]"
               />
             </div>
             <div className="flex gap-2">
@@ -169,7 +169,7 @@ export default function ContactsPage() {
                 variant={filterStatus === 'all' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setFilterStatus('all')}
-                className={filterStatus === 'all' ? 'bg-[#04CDD4] hover:bg-[#04CDD4]/90' : 'border-[#04CDD470] hover:bg-[#04CDD410]'}
+                className={filterStatus === 'all' ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700' : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30'}
               >
                 Todos
               </Button>
@@ -177,7 +177,7 @@ export default function ContactsPage() {
                 variant={filterStatus === 'lead' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setFilterStatus('lead')}
-                className={filterStatus === 'lead' ? 'bg-[#04CDD4] hover:bg-[#04CDD4]/90' : 'border-[#04CDD470] hover:bg-[#04CDD410]'}
+                className={filterStatus === 'lead' ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700' : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30'}
               >
                 Leads
               </Button>
@@ -185,7 +185,7 @@ export default function ContactsPage() {
                 variant={filterStatus === 'active' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setFilterStatus('active')}
-                className={filterStatus === 'active' ? 'bg-[#04CDD4] hover:bg-[#04CDD4]/90' : 'border-[#04CDD470] hover:bg-[#04CDD410]'}
+                className={filterStatus === 'active' ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700' : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30'}
               >
                 Ativos
               </Button>
@@ -195,12 +195,12 @@ export default function ContactsPage() {
       </Card>
 
       {/* Contacts Table */}
-      <Card className="border-[#04CDD470] bg-background/95 backdrop-blur-md">
+      <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
         <CardHeader className="border-b border-border/50">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-3">
               <CardTitle className="m-0">Lista de Contatos</CardTitle>
-              <Badge variant="outline" className="border-[#04CDD470] text-[#04CDD4]">
+              <Badge variant="outline" className="border-primary/30 text-primary">
                 {filteredContacts.length} contatos
               </Badge>
             </div>
@@ -209,7 +209,7 @@ export default function ContactsPage() {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4]"
+                className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary"
               >
                 <Download className="h-4 w-4 mr-2" />
                 Exportar
@@ -217,21 +217,21 @@ export default function ContactsPage() {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4]"
+                className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary"
               >
                 <FileSpreadsheet className="h-4 w-4 mr-2" />
                 Importar
               </Button>
               <Button 
                 size="sm"
-                className="bg-[#04CDD4] hover:bg-[#04CDD4]/90 text-white"
+                className="bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700"
               >
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Importar do WhatsApp
               </Button>
               <Button 
                 size="sm"
-                className="bg-[#04CDD4] hover:bg-[#04CDD4]/90 text-white"
+                className="bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Novo
@@ -259,7 +259,7 @@ export default function ContactsPage() {
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10 border border-border/50">
                           <AvatarImage src={contact.avatar} />
-                          <AvatarFallback className="bg-[#04CDD410] text-foreground">
+                          <AvatarFallback className="bg-primary-100 dark:bg-primary-900/30 text-foreground">
                             {contact.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
@@ -270,7 +270,7 @@ export default function ContactsPage() {
                               <Badge 
                                 key={index} 
                                 variant="outline" 
-                                className="text-xs border-[#04CDD470] text-[#04CDD4]"
+                                className="text-xs border-primary/30 text-primary"
                               >
                                 {tag}
                               </Badge>
@@ -303,7 +303,7 @@ export default function ContactsPage() {
                       </span>
                     </td>
                     <td className="p-4">
-                      <Button variant="ghost" size="sm" className="hover:bg-[#04CDD410]">
+                      <Button variant="ghost" size="sm" className="hover:bg-primary-100 dark:hover:bg-primary-900/30">
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </td>
@@ -317,7 +317,7 @@ export default function ContactsPage() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <Card className="border-[#04CDD470] bg-background/95 backdrop-blur-md">
+        <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
           <CardContent className="p-4">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               {/* Items per page selector */}
@@ -326,7 +326,7 @@ export default function ContactsPage() {
                 <select
                   value={itemsPerPage}
                   onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-                  className="px-3 py-1 text-sm border border-[#04CDD470] rounded-md bg-background focus:border-[#04CDD4] focus:ring-[#04CDD4] focus:outline-none"
+                  className="px-3 py-1 text-sm border border-primary/30 rounded-md bg-background focus:border-primary focus:ring-[#04CDD4] focus:outline-none"
                 >
                   <option value={5}>5</option>
                   <option value={10}>10</option>
@@ -349,7 +349,7 @@ export default function ContactsPage() {
                   size="sm"
                   onClick={() => handlePageChange(1)}
                   disabled={currentPage === 1}
-                  className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4] disabled:opacity-50"
+                  className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary disabled:opacity-50"
                 >
                   <ChevronsLeft className="h-4 w-4" />
                 </Button>
@@ -360,7 +360,7 @@ export default function ContactsPage() {
                   size="sm"
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4] disabled:opacity-50"
+                  className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary disabled:opacity-50"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
@@ -378,8 +378,8 @@ export default function ContactsPage() {
                           onClick={() => handlePageChange(page as number)}
                           className={
                             currentPage === page
-                              ? 'bg-[#04CDD4] hover:bg-[#04CDD4]/90 text-white'
-                              : 'border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4]'
+                              ? 'bg-primary hover:bg-primary/90 text-white'
+                              : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary'
                           }
                         >
                           {page}
@@ -395,7 +395,7 @@ export default function ContactsPage() {
                   size="sm"
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4] disabled:opacity-50"
+                  className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary disabled:opacity-50"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Button>
@@ -406,7 +406,7 @@ export default function ContactsPage() {
                   size="sm"
                   onClick={() => handlePageChange(totalPages)}
                   disabled={currentPage === totalPages}
-                  className="border-[#04CDD470] hover:bg-[#04CDD410] hover:border-[#04CDD4] disabled:opacity-50"
+                  className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary disabled:opacity-50"
                 >
                   <ChevronsRight className="h-4 w-4" />
                 </Button>
