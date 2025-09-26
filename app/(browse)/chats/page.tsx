@@ -239,7 +239,7 @@ export default function ChatsPage() {
                         )}
                       </div>
                       {chat.unreadCount > 0 && (
-                        <Badge className="bg-primary text-white text-xs min-w-[20px] h-5 flex items-center justify-center ml-2">
+                        <Badge className="bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 text-xs min-w-[20px] h-5 flex items-center justify-center ml-2 font-semibold">
                           {chat.unreadCount}
                         </Badge>
                       )}

@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Plus, Search, Settings } from 'lucide-react';
+import Link from 'next/link';
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -74,7 +75,6 @@ const FunnelsPage = () => {
   const [isClient, setIsClient] = useState(false);
   const [selectedFunnel, setSelectedFunnel] = useState<string>('vendas-geral');
   const [showCreateFunnel, setShowCreateFunnel] = useState(false);
-  const [showExploreFunnels, setShowExploreFunnels] = useState(false);
 
   // Função para carregar dados baseado no funil selecionado
   const loadFunnelData = (funnelId: string) => {
@@ -153,6 +153,7 @@ const FunnelsPage = () => {
   };
 
 
+
   // Mostrar loading enquanto os dados não são carregados
   if (!isClient || columns.length === 0) {
     return (
@@ -191,19 +192,20 @@ const FunnelsPage = () => {
           </div>
           
           <div className="flex items-center gap-2">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => setShowExploreFunnels(true)}
-              className="flex items-center gap-2"
-            >
-              <Search className="h-4 w-4" />
-              Explorar
-            </Button>
+            <Link href="/funnel-explorer">
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="flex items-center gap-2 border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50"
+              >
+                <Search className="h-4 w-4" />
+                Explorar
+              </Button>
+            </Link>
             <Button 
               size="sm"
               onClick={() => setShowCreateFunnel(true)}
-              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700"
+              className="flex items-center gap-2 bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold"
             >
               <Plus className="h-4 w-4" />
               Criar Funil
@@ -300,19 +302,6 @@ const FunnelsPage = () => {
         </div>
       )}
 
-      {showExploreFunnels && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-background rounded-lg p-6 max-w-md w-full mx-4">
-            <h2 className="text-xl font-bold mb-4">Explorar Funis</h2>
-            <p className="text-muted-foreground mb-4">
-              Esta funcionalidade será implementada posteriormente.
-            </p>
-            <Button onClick={() => setShowExploreFunnels(false)} className="w-full">
-              Fechar
-            </Button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

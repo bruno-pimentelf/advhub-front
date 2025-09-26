@@ -15,7 +15,8 @@ import {
   Menu,
   User,
   ChevronDown,
-  MessageCircle
+  MessageCircle,
+  Compass
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -52,6 +53,12 @@ const navigationItems = [
     href: "/calendar",
     icon: Calendar,
     description: "Agenda e eventos",
+  },
+  {
+    title: "Explorador",
+    href: "/funnel-explorer",
+    icon: Compass,
+    description: "Editor visual de funis",
   },
 ];
 

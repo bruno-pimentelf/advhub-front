@@ -166,26 +166,35 @@ export default function ContactsPage() {
             </div>
             <div className="flex gap-2">
               <Button
-                variant={filterStatus === 'all' ? 'default' : 'outline'}
+                variant="outline"
                 size="sm"
                 onClick={() => setFilterStatus('all')}
-                className={filterStatus === 'all' ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700' : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30'}
+                className={filterStatus === 'all' 
+                  ? 'bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold' 
+                  : 'border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50'
+                }
               >
                 Todos
               </Button>
               <Button
-                variant={filterStatus === 'lead' ? 'default' : 'outline'}
+                variant="outline"
                 size="sm"
                 onClick={() => setFilterStatus('lead')}
-                className={filterStatus === 'lead' ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700' : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30'}
+                className={filterStatus === 'lead' 
+                  ? 'bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold' 
+                  : 'border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50'
+                }
               >
                 Leads
               </Button>
               <Button
-                variant={filterStatus === 'active' ? 'default' : 'outline'}
+                variant="outline"
                 size="sm"
                 onClick={() => setFilterStatus('active')}
-                className={filterStatus === 'active' ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700' : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30'}
+                className={filterStatus === 'active' 
+                  ? 'bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold' 
+                  : 'border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50'
+                }
               >
                 Ativos
               </Button>
@@ -209,7 +218,7 @@ export default function ContactsPage() {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary"
+                className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50"
               >
                 <Download className="h-4 w-4 mr-2" />
                 Exportar
@@ -217,21 +226,21 @@ export default function ContactsPage() {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary"
+                className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50"
               >
                 <FileSpreadsheet className="h-4 w-4 mr-2" />
                 Importar
               </Button>
               <Button 
                 size="sm"
-                className="bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700"
+                className="bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold"
               >
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Importar do WhatsApp
               </Button>
               <Button 
                 size="sm"
-                className="bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700"
+                className="bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Novo
@@ -326,7 +335,7 @@ export default function ContactsPage() {
                 <select
                   value={itemsPerPage}
                   onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-                  className="px-3 py-1 text-sm border border-primary/30 rounded-md bg-background focus:border-primary focus:ring-[#04CDD4] focus:outline-none"
+                  className="px-3 py-1 text-sm border border-primary-200 dark:border-primary-800/50 rounded-md bg-background hover:bg-primary-100 dark:hover:bg-primary-900/30 focus:border-primary-300 dark:focus:border-primary-700/50 focus:ring-[#04CDD4] focus:outline-none"
                 >
                   <option value={5}>5</option>
                   <option value={10}>10</option>

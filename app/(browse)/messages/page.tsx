@@ -271,26 +271,35 @@ export default function MessagesPage() {
                 </div>
                 <div className="flex gap-2">
                   <Button
-                    variant={statusFilter === 'all' ? 'default' : 'outline'}
+                    variant="outline"
                     size="sm"
                     onClick={() => setStatusFilter('all')}
-                    className={statusFilter === 'all' ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700' : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30'}
+                    className={statusFilter === 'all' 
+                      ? 'bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold' 
+                      : 'border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50'
+                    }
                   >
                     Todas
                   </Button>
                   <Button
-                    variant={statusFilter === 'scheduled' ? 'default' : 'outline'}
+                    variant="outline"
                     size="sm"
                     onClick={() => setStatusFilter('scheduled')}
-                    className={statusFilter === 'scheduled' ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700' : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30'}
+                    className={statusFilter === 'scheduled' 
+                      ? 'bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold' 
+                      : 'border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50'
+                    }
                   >
                     Agendadas
                   </Button>
                   <Button
-                    variant={statusFilter === 'sent' ? 'default' : 'outline'}
+                    variant="outline"
                     size="sm"
                     onClick={() => setStatusFilter('sent')}
-                    className={statusFilter === 'sent' ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700' : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30'}
+                    className={statusFilter === 'sent' 
+                      ? 'bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold' 
+                      : 'border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50'
+                    }
                   >
                     Enviadas
                   </Button>
@@ -374,7 +383,7 @@ export default function MessagesPage() {
                     <select
                       value={itemsPerPage}
                       onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-                      className="px-3 py-1 text-sm border border-primary/30 rounded-md bg-background focus:border-primary focus:ring-[#04CDD4] focus:outline-none"
+                      className="px-3 py-1 text-sm border border-primary-200 dark:border-primary-800/50 rounded-md bg-background hover:bg-primary-100 dark:hover:bg-primary-900/30 focus:border-primary-300 dark:focus:border-primary-700/50 focus:ring-[#04CDD4] focus:outline-none"
                     >
                       <option value={5}>5</option>
                       <option value={10}>10</option>
