@@ -1,9 +1,9 @@
 import emailjs from '@emailjs/browser'
 
 // Configurações do EmailJS - Substitua pelos seus valores
-const EMAILJS_SERVICE_ID = 'service_zdzkw3k' // Seu Service ID do EmailJS
-const EMAILJS_TEMPLATE_ID = 'template_4qb3cjs' // Seu Template ID do EmailJS
-const EMAILJS_PUBLIC_KEY = 'ejp3Lo6DsFVQgYOit' // Sua Public Key do EmailJS
+const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_ailum'
+const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'template_ailum_form'
+const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'ejp3Lo6DsFVQgYOit'
 
 // Inicializar EmailJS
 emailjs.init(EMAILJS_PUBLIC_KEY)
