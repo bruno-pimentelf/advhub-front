@@ -322,6 +322,21 @@ function FunnelExplorerContent() {
     return () => showSidebar(); // Mostrar sidebar quando sair
   }, [hideSidebar, showSidebar]);
 
+  // Auto fit view quando o React Flow for inicializado
+  React.useEffect(() => {
+    if (reactFlowInstance) {
+      // Aguarda um pouco para garantir que os nós foram renderizados
+      setTimeout(() => {
+        reactFlowInstance.fitView({
+          padding: 0.2, // 20% de padding ao redor do conteúdo
+          includeHiddenNodes: false,
+          minZoom: 0.1,
+          maxZoom: 1.5
+        });
+      }, 100);
+    }
+  }, [reactFlowInstance, nodes]);
+
   // Atualizar nós e arestas quando o funil selecionado mudar
   React.useEffect(() => {
     setNodes(selectedFunnel.nodes);
@@ -618,7 +633,6 @@ function FunnelExplorerContent() {
             onInit={setReactFlowInstance}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
-            fitView
             className="bg-muted/10"
           >
             <Controls 
