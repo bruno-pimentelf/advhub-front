@@ -105,10 +105,10 @@ export const ThemeToggleButton = ({
       css = `
         @supports (view-transition-name: root) {
           ::view-transition-old(root) {
-            animation: fade-out 0.4s ease-out;
+            animation: fade-out 0.2s ease-out;
           }
           ::view-transition-new(root) {
-            animation: gif-reveal 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: gif-reveal 1.2s cubic-bezier(0.4, 0, 0.2, 1);
             mask-image: url('${url}');
             mask-size: 0%;
             mask-repeat: no-repeat;
@@ -123,10 +123,10 @@ export const ThemeToggleButton = ({
             0% {
               mask-size: 0%;
             }
-            20% {
+            15% {
               mask-size: 35%;
             }
-            60% {
+            50% {
               mask-size: 35%;
             }
             100% {
