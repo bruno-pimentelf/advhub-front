@@ -13,6 +13,7 @@ import { Progress } from '@/components/ui/progress'
 import { Card, CardContent } from '@/components/ui/card'
 import { Highlighter } from '@/components/ui/highlighter'
 import { CheckCircle, ArrowRight, ArrowLeft, User, Building2, TrendingUp, MessageSquare } from 'lucide-react'
+import { sendApplicationEmail } from '@/lib/email-service'
 
 const steps = [
   {
@@ -79,6 +80,8 @@ interface MultiStepApplicationFormProps {
 
 export default function MultiStepApplicationForm({ isOpen, onClose }: MultiStepApplicationFormProps) {
   const [currentStep, setCurrentStep] = useState(1)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -114,11 +117,48 @@ export default function MultiStepApplicationForm({ isOpen, onClose }: MultiStepA
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Form submitted:', formData)
-    // Handle form submission here
-    onClose()
+    setIsSubmitting(true)
+    setSubmitStatus('idle')
+
+    try {
+      const success = await sendApplicationEmail(formData)
+      
+      if (success) {
+        setSubmitStatus('success')
+        console.log('Formulário enviado com sucesso!')
+        // Fechar o modal após 2 segundos
+        setTimeout(() => {
+          onClose()
+          // Reset form
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            clinicName: '',
+            specialties: '',
+            monthlyAppointments: '',
+            hasSecretary: '',
+            paidMedia: '',
+            monthlyInvestment: '',
+            monthlyRevenue: '',
+            mainChallenges: '',
+            improvements: '',
+            whySelected: ''
+          })
+          setCurrentStep(1)
+          setSubmitStatus('idle')
+        }, 2000)
+      } else {
+        setSubmitStatus('error')
+      }
+    } catch (error) {
+      console.error('Erro ao enviar formulário:', error)
+      setSubmitStatus('error')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const isStepValid = (step: number) => {
@@ -471,15 +511,46 @@ export default function MultiStepApplicationForm({ isOpen, onClose }: MultiStepA
             ) : (
               <Button
                 type="submit"
-                disabled={!isStepValid(currentStep)}
+                disabled={!isStepValid(currentStep) || isSubmitting}
                 className="flex items-center space-x-2 bg-gradient-to-r from-[#04CDD4] to-[#03a8a8] hover:from-[#03a8a8] hover:to-[#04CDD4]"
               >
-                <CheckCircle className="w-4 h-4" />
-                <span>APLIQUE-SE</span>
+                {isSubmitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>ENVIANDO...</span>
+                  </>
+                ) : submitStatus === 'success' ? (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    <span>ENVIADO!</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    <span>APLIQUE-SE</span>
+                  </>
+                )}
               </Button>
             )}
           </div>
         </form>
+
+        {/* Status Messages */}
+        {submitStatus === 'error' && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mx-4">
+            <p className="text-sm text-red-600 text-center">
+              <strong>Erro ao enviar aplicação.</strong> Tente novamente ou entre em contato conosco.
+            </p>
+          </div>
+        )}
+
+        {submitStatus === 'success' && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mx-4">
+            <p className="text-sm text-green-600 text-center">
+              <strong>Aplicação enviada com sucesso!</strong> Entraremos em contato em breve.
+            </p>
+          </div>
+        )}
 
         {/* Info Text */}
         <div className="bg-gradient-to-r from-[#04CDD4]/5 to-[#03a8a8]/5 rounded-lg p-4 border border-[#04CDD4]/20 mx-4">
