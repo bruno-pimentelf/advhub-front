@@ -26,6 +26,12 @@ export interface FormSubmissionData {
 
 export const sendApplicationEmail = async (formData: FormSubmissionData): Promise<boolean> => {
   try {
+    // Debug: verificar se as variáveis estão sendo carregadas
+    console.log('EmailJS Config:', {
+      serviceId: EMAILJS_SERVICE_ID,
+      templateId: EMAILJS_TEMPLATE_ID,
+      publicKey: EMAILJS_PUBLIC_KEY
+    })
     // Preparar dados para o template
     const templateParams = {
       to_email: 'ailumcrm@gmail.com',
