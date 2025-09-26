@@ -9,10 +9,15 @@ import FAQSection from "@/components/landing/faq-section";
 import CTASection from "@/components/landing/cta-section";
 import ApplicationFormWrapper from "@/components/landing/application-form-wrapper";
 import { NotificationsDemo } from "@/components/landing/notifications-demo";
+import { StructuredData, FAQStructuredData } from "@/components/seo/structured-data";
 
 export default function Home() {
   return (
     <>
+      <StructuredData type="organization" />
+      <StructuredData type="software" />
+      <StructuredData type="service" />
+      <FAQStructuredData />
       <HeroSection />
       <ProblemSection />
       <section className="py-16 bg-white">

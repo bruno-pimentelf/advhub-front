@@ -13,8 +13,73 @@ const geistMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ailum CRM",
-  description: "CRM completo para clínicas que não perde a essência do atendimento humano, com IA para melhorar a experiência do paciente e otimizar o seu negócio.",
+  title: {
+    default: "Ailum CRM - Sistema de Gestão para Clínicas Médicas",
+    template: "%s | Ailum CRM"
+  },
+  description: "CRM completo para clínicas médicas com IA. Gerencie pacientes, agendamentos, funis de vendas e marketing digital. Aumente sua receita mantendo o atendimento humano.",
+  keywords: [
+    "CRM clínicas médicas",
+    "sistema gestão clínica",
+    "agendamento online",
+    "marketing digital clínicas",
+    "funnels vendas medicina",
+    "IA para clínicas",
+    "gestão pacientes",
+    "software clínica médica",
+    "automação marketing saúde",
+    "CRM saúde"
+  ],
+  authors: [{ name: "Ailum CRM" }],
+  creator: "Ailum CRM",
+  publisher: "Ailum CRM",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://ailumcrm.com.br'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    url: 'https://ailumcrm.com.br',
+    title: 'Ailum CRM - Sistema de Gestão para Clínicas Médicas',
+    description: 'CRM completo para clínicas médicas com IA. Gerencie pacientes, agendamentos, funis de vendas e marketing digital.',
+    siteName: 'Ailum CRM',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Ailum CRM - Sistema de Gestão para Clínicas',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Ailum CRM - Sistema de Gestão para Clínicas Médicas',
+    description: 'CRM completo para clínicas médicas com IA. Gerencie pacientes, agendamentos, funis de vendas e marketing digital.',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code',
+    yandex: 'your-yandex-verification-code',
+    yahoo: 'your-yahoo-verification-code',
+  },
 };
 
 export default function RootLayout({
@@ -23,7 +88,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
