@@ -407,7 +407,7 @@ export default function MultiStepApplicationForm({ isOpen, onClose }: MultiStepA
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="whySelected">Por que sua clínica deve ser selecionada para ter acesso ao Ailum? *</Label>
+              <Label htmlFor="whySelected">Conte-nos como sua clínica pretende evoluir com o Ailum *</Label>
               <Textarea
                 id="whySelected"
                 value={formData.whySelected}
@@ -415,7 +415,7 @@ export default function MultiStepApplicationForm({ isOpen, onClose }: MultiStepA
                 required
                 rows={4}
                 className="border-[#04CDD4]/20 focus:border-[#04CDD4]"
-                placeholder="Conte-nos por que sua clínica merece ter acesso ao Ailum..."
+                placeholder="Conte-nos como sua clínica pretende evoluir com o Ailum..."
               />
             </div>
           </motion.div>
