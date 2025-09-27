@@ -1,3 +1,5 @@
+'use client'
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,11 +13,38 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/landing/logo"
 import { AnimatedGroup } from "@/components/ui/animated-group"
+import { useState } from "react"
+import { useAuth as useAuthContext } from "@/contexts/auth-context"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const { signIn } = useAuthContext()
+  const router = useRouter()
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    try {
+      await signIn(email, password)
+      toast.success("Login realizado com sucesso!")
+      
+      // Não redirecionamos aqui, deixamos o ProtectedRoute fazer isso
+      // quando detectar que o usuário está autenticado
+    } catch (error: any) {
+      toast.error(error.message || "Erro ao fazer login")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <AnimatedGroup 
@@ -124,7 +153,7 @@ export function LoginForm({
             </div>
           </CardHeader>
           <CardContent>
-            <form>
+            <form onSubmit={handleSubmit}>
               <AnimatedGroup 
                 variants={{
                   container: {
@@ -160,6 +189,8 @@ export function LoginForm({
                       id="email"
                       type="email"
                       placeholder="miguel@ailum.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                     />
                   </div>
@@ -176,6 +207,8 @@ export function LoginForm({
                     <Input 
                       id="password" 
                       type="password" 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       required 
                     />
                   </div>
@@ -183,8 +216,9 @@ export function LoginForm({
                     <Button 
                       type="submit" 
                       className="w-full"
+                      disabled={isLoading}
                     >
-                      Entrar
+                      {isLoading ? "Entrando..." : "Entrar"}
                     </Button>
                   </div>
                 </div>

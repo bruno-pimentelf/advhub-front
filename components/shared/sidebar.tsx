@@ -22,6 +22,9 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
+import { useAuth as useAuthHook } from "@/hooks/use-auth";
+import { useAuth as useAuthContext } from "@/contexts/auth-context";
+import { toast } from "sonner";
 
 const navigationItems = [
   {
@@ -62,15 +65,42 @@ const navigationItems = [
   },
 ];
 
+// Componente do tooltip do usuário (para sidebar retraída)
+const UserTooltip = () => {
+  const { authUser } = useAuthHook();
+  
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-20 transition-all duration-200 bg-primary-100 dark:bg-primary-900/30">
+          <User className="w-4 h-4 text-foreground" />
+        </div>
+      </TooltipTrigger>
+      <TooltipContent side="right">
+        <div>
+          <p className="font-medium">{authUser?.displayName || authUser?.email?.split('@')[0] || 'Usuário'}</p>
+          <p className="text-xs opacity-80">{authUser?.email || 'email@exemplo.com'}</p>
+        </div>
+      </TooltipContent>
+    </Tooltip>
+  );
+};
+
 // Componente do dropdown do usuário
 const UserDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { authUser } = useAuthHook();
+  const { logout } = useAuthContext();
 
-  const handleLogout = () => {
-    // TODO: Implement logout logic
-    console.log("Logout clicked");
-    setIsOpen(false);
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("Logout realizado com sucesso!");
+      setIsOpen(false);
+    } catch (error: any) {
+      toast.error(error.message || "Erro ao fazer logout");
+    }
   };
 
   // Fechar dropdown quando clicar fora
@@ -99,10 +129,10 @@ const UserDropdown = () => {
           </div>
           <div className="text-left flex-1 min-w-0">
             <div className="text-sm font-medium text-foreground truncate">
-              Miguel
+              {authUser?.displayName || authUser?.email?.split('@')[0] || 'Usuário'}
             </div>
             <div className="text-xs text-muted-foreground truncate">
-              miguel@ailum.com
+              {authUser?.email || 'email@exemplo.com'}
             </div>
           </div>
         </div>
@@ -245,19 +275,7 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
           {/* Footer com dropdown do usuário compacto */}
           <div className="p-2 border-t border-border/50">
             <div className="flex items-center justify-center">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-20 transition-all duration-200 bg-primary-100 dark:bg-primary-900/30">
-                    <User className="w-4 h-4 text-foreground" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  <div>
-                    <p className="font-medium">Miguel</p>
-                    <p className="text-xs opacity-80">miguel@ailum.com</p>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
+              <UserTooltip />
             </div>
           </div>
         </div>

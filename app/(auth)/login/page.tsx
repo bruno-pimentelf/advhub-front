@@ -1,8 +1,16 @@
 import { LoginForm } from "@/components/login-form"
+import { ThemeProvider } from "@/components/theme-provider"
 
 export default function Page() {
   return (
-    <div className="min-h-screen w-full relative bg-white">
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      forcedTheme="light"
+      enableSystem={false}
+      disableTransitionOnChange
+    >
+      <div className="min-h-screen w-full relative bg-white">
       {/* Cool Blue Glow Top */}
       <div
         className="absolute inset-0 z-0"
@@ -25,6 +33,7 @@ export default function Page() {
           <LoginForm />
         </div>
       </div>
-    </div>
+      </div>
+    </ThemeProvider>
   )
 }

@@ -1,10 +1,11 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import { Bell } from 'lucide-react'
+import { Bell, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { toast } from 'sonner'
 
 interface HeaderProps {
   sidebarCollapsed?: boolean
@@ -82,6 +83,7 @@ export function Header({ sidebarCollapsed = false, actions }: HeaderProps) {
             3
           </span>
         </Button>
+
       </div>
     </header>
   )
