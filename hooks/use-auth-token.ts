@@ -10,6 +10,7 @@ export function useAuthToken() {
     if (user) {
       // Quando o usuário está logado, define o token nos cookies
       user.getIdToken().then((token) => {
+        console.log('🔑 ID Token para API:', token)
         // Define o cookie com configurações mais permissivas para desenvolvimento
         document.cookie = `auth-token=${token}; path=/; max-age=3600; samesite=lax`
       }).catch((error) => {
