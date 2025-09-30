@@ -3,6 +3,7 @@ import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/auth-context";
 import { AuthWrapper } from "@/components/auth/auth-wrapper";
+import { GoogleTag } from "@/components/analytics/google-tag";
 
 const geistSans = Roboto({
   variable: "--font-geist-sans",
@@ -91,6 +92,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        <GoogleTag />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

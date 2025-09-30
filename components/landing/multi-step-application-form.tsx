@@ -14,6 +14,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Highlighter } from '@/components/ui/highlighter'
 import { CheckCircle, ArrowRight, ArrowLeft, User, Building2, TrendingUp, MessageSquare } from 'lucide-react'
 import { sendApplicationEmail } from '@/lib/email-service'
+import { useConversionTracking } from '@/hooks/use-conversion-tracking'
 
 const steps = [
   {
@@ -82,6 +83,7 @@ export default function MultiStepApplicationForm({ isOpen, onClose }: MultiStepA
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const { trackLeadGeneration } = useConversionTracking()
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -128,6 +130,15 @@ export default function MultiStepApplicationForm({ isOpen, onClose }: MultiStepA
       if (success) {
         setSubmitStatus('success')
         console.log('Formulário enviado com sucesso!')
+        
+        // Track Google Ads conversion
+        trackLeadGeneration({
+          email: formData.email,
+          phone: formData.phone,
+          name: formData.name,
+          clinicName: formData.clinicName
+        })
+        
         // Fechar o modal após 2 segundos
         setTimeout(() => {
           onClose()
