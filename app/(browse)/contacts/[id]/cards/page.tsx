@@ -21,58 +21,38 @@ import {
   Trash2
 } from 'lucide-react'
 import { useContato } from '@/hooks/use-contatos'
-import { useCards } from '@/hooks/use-cards'
+import { useFunisByContato } from '@/hooks/use-contatos-funil'
 import { useFunis } from '@/hooks/use-funis'
-import { CreateCardModal } from '@/components/cards/create-card-modal'
-import { EditCardModal } from '@/components/cards/edit-card-modal'
-import { DeleteCardModal } from '@/components/cards/delete-card-modal'
 import { LoadingState, ErrorState, EmptyState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatFirestoreDate } from '@/lib/utils/date-utils'
-import type { Card as CardType } from '@/lib/api'
+import type { ContatoFunilWithContato } from '@/lib/api'
 
-const getPriorityColor = (priority: CardType['priority']) => {
-  switch (priority) {
-    case 'alta':
-      return 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800/50'
-    case 'média':
-      return 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800/50'
-    case 'baixa':
-      return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800/50'
-    default:
-      return 'bg-muted text-muted-foreground border-border'
+const getEstagioColor = (estagioName: string) => {
+  // Cores baseadas no nome do estágio
+  const colors = {
+    'Primeiro Contato': 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50',
+    'Interessado': 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800/50',
+    'Proposta': 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800/50',
+    'Negociação': 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800/50',
+    'Fechado': 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800/50',
+    'Perdido': 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800/50',
   }
+  
+  return colors[estagioName as keyof typeof colors] || 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/30 dark:text-gray-400 dark:border-gray-800/50'
 }
 
-const getChannelColor = (channel: CardType['channel']) => {
-  switch (channel) {
-    case 'Indicação':
-      return 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50'
-    case 'Redes Sociais':
-      return 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800/50'
-    case 'Google':
-      return 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800/50'
-    default:
-      return 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/30 dark:text-gray-400 dark:border-gray-800/50'
-  }
-}
-
-// Componente de skeleton para um card individual
-const CardSkeleton = () => (
+// Componente de skeleton para um funil individual
+const FunilSkeleton = () => (
   <div className="border-b border-border/30 p-4">
     <div className="flex items-center justify-between">
       <div className="flex-1">
         <div className="flex items-center gap-3 mb-2">
           <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-6 w-16 rounded-full" />
           <Skeleton className="h-6 w-20 rounded-full" />
         </div>
         
         <div className="flex items-center gap-4 text-sm">
-          <div className="flex items-center gap-1">
-            <Skeleton className="h-4 w-4" />
-            <Skeleton className="h-4 w-20" />
-          </div>
           <div className="flex items-center gap-1">
             <Skeleton className="h-4 w-4" />
             <Skeleton className="h-4 w-24" />
@@ -92,16 +72,16 @@ const CardSkeleton = () => (
   </div>
 )
 
-// Componente de skeleton para a lista de cards
-const CardsListSkeleton = () => (
+// Componente de skeleton para a lista de funis
+const FunisListSkeleton = () => (
   <Card className="border-primary/30 bg-background/95 backdrop-blur-md py-0">
     <CardContent className="p-0">
       <div className="space-y-0">
-        <CardSkeleton />
-        <CardSkeleton />
-        <CardSkeleton />
-        <CardSkeleton />
-        <CardSkeleton />
+        <FunilSkeleton />
+        <FunilSkeleton />
+        <FunilSkeleton />
+        <FunilSkeleton />
+        <FunilSkeleton />
       </div>
       <div className="px-4 py-3 border-t border-border/50 bg-muted/30">
         <div className="flex items-center justify-between">
@@ -112,29 +92,29 @@ const CardsListSkeleton = () => (
   </Card>
 )
 
-export default function ContactCardsPage() {
+export default function ContactFunisPage() {
   const params = useParams()
   const router = useRouter()
   const contactId = params.id as string
   const { isHidden } = useSidebar()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true)
 
-  const [showCreateCard, setShowCreateCard] = useState(false)
-  const [showEditCard, setShowEditCard] = useState(false)
-  const [showDeleteCard, setShowDeleteCard] = useState(false)
-  const [selectedCard, setSelectedCard] = useState<CardType | null>(null)
-  const [selectedFunilId, setSelectedFunilId] = useState<string | null>(null)
+  const [showAddToFunil, setShowAddToFunil] = useState(false)
+  const [showEditFunil, setShowEditFunil] = useState(false)
+  const [showRemoveFromFunil, setShowRemoveFromFunil] = useState(false)
+  const [selectedContatoFunil, setSelectedContatoFunil] = useState<any | null>(null)
 
   const { contato, isLoadingContato, contatoError } = useContato(contactId)
-  const { funis, selectedFunilId: currentFunilId, setSelectedFunilId: setGlobalFunilId } = useFunis()
-  const { cards, isLoadingCards, cardsError, refetchCards } = useCards(selectedFunilId || undefined, contactId)
-
-  // Usar o funil selecionado globalmente ou o primeiro disponível
-  useEffect(() => {
-    if (funis.length > 0 && !selectedFunilId) {
-      setSelectedFunilId(currentFunilId || funis[0].id)
-    }
-  }, [funis, currentFunilId, selectedFunilId])
+  const { funis } = useFunis()
+  const { 
+    funisContato, 
+    isLoadingFunisContato, 
+    funisContatoError, 
+    handleAddContatoToFunil,
+    handleMoveContatoInFunil,
+    handleRemoveContatoFromFunil,
+    refetchFunisContato 
+  } = useFunisByContato(contactId)
 
   // Pré-carregar dados do contato assim que o componente é montado
   useEffect(() => {
@@ -170,29 +150,25 @@ export default function ContactCardsPage() {
     return () => observer.disconnect();
   }, []);
 
-  const handleCreateCard = () => {
-    if (!selectedFunilId) {
-      // Se não há funil selecionado, mostrar erro
-      return
-    }
-    setShowCreateCard(true)
+  const handleAddToFunil = () => {
+    setShowAddToFunil(true)
   }
 
-  const handleEditCard = (card: CardType) => {
-    setSelectedCard(card)
-    setShowEditCard(true)
+  const handleEditFunil = (contatoFunil: any) => {
+    setSelectedContatoFunil(contatoFunil)
+    setShowEditFunil(true)
   }
 
-  const handleDeleteCard = (card: CardType) => {
-    setSelectedCard(card)
-    setShowDeleteCard(true)
+  const handleRemoveFromFunil = (contatoFunil: any) => {
+    setSelectedContatoFunil(contatoFunil)
+    setShowRemoveFromFunil(true)
   }
 
   const handleCloseModals = () => {
-    setShowCreateCard(false)
-    setShowEditCard(false)
-    setShowDeleteCard(false)
-    setSelectedCard(null)
+    setShowAddToFunil(false)
+    setShowEditFunil(false)
+    setShowRemoveFromFunil(false)
+    setSelectedContatoFunil(null)
   }
 
   // Loading state
@@ -225,19 +201,19 @@ export default function ContactCardsPage() {
 
         {/* Conteúdo principal skeleton */}
         <div className="mx-4 pt-16 space-y-2">
-          <CardsListSkeleton />
+          <FunisListSkeleton />
         </div>
       </div>
     )
   }
 
   // Error state
-  if (contatoError) {
+  if (contatoError || funisContatoError) {
     return (
       <div className="mx-4 mb-4 mt-2">
         <ErrorState
-          title="Erro ao carregar contato"
-          message="Não foi possível carregar as informações do contato."
+          title="Erro ao carregar dados"
+          message="Não foi possível carregar as informações do contato ou seus funis."
           onRetry={() => window.location.reload()}
           retryLabel="Recarregar página"
         />
@@ -306,29 +282,13 @@ export default function ContactCardsPage() {
           </div>
           
           <div className="flex items-center gap-2">
-            {funis.length > 1 && (
-              <Select value={selectedFunilId || ''} onValueChange={setSelectedFunilId}>
-                <SelectTrigger className="w-[180px] h-10">
-                  <SelectValue placeholder="Selecione um funil" />
-                </SelectTrigger>
-                <SelectContent>
-                  {funis.map((funil) => (
-                    <SelectItem key={funil.id} value={funil.id}>
-                      {funil.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-            
             <Button
-              onClick={handleCreateCard}
-              disabled={!selectedFunilId}
+              onClick={handleAddToFunil}
               size="sm"
               className="flex items-center gap-2 bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold cursor-pointer"
             >
               <Plus className="h-4 w-4" />
-              Novo Card
+              Adicionar a Funil
             </Button>
           </div>
         </div>
@@ -336,62 +296,53 @@ export default function ContactCardsPage() {
 
       {/* Conteúdo principal */}
       <div className="mx-4 pt-16 space-y-2">
-        {/* Lista de Cards */}
+        {/* Lista de Funis */}
         <Card className="border-primary/30 bg-background/95 backdrop-blur-md py-0">
           <CardContent className="p-0">
-            {isLoadingCards ? (
+            {isLoadingFunisContato ? (
               <div className="space-y-0">
-                <CardSkeleton />
-                <CardSkeleton />
-                <CardSkeleton />
-                <CardSkeleton />
-                <CardSkeleton />
+                <FunilSkeleton />
+                <FunilSkeleton />
+                <FunilSkeleton />
+                <FunilSkeleton />
+                <FunilSkeleton />
               </div>
-            ) : cardsError ? (
+            ) : funisContatoError ? (
               <ErrorState
-                title="Erro ao carregar cards"
-                message="Não foi possível carregar os cards do contato."
-                onRetry={refetchCards}
+                title="Erro ao carregar funis"
+                message="Não foi possível carregar os funis do contato."
+                onRetry={refetchFunisContato}
                 retryLabel="Tentar novamente"
               />
-            ) : cards.length === 0 ? (
+            ) : funisContato.length === 0 ? (
               <EmptyState
-                title="Nenhum card encontrado"
-                message="Este contato ainda não possui cards neste funil."
-                actionLabel="Criar Primeiro Card"
-                onAction={handleCreateCard}
+                title="Nenhum funil encontrado"
+                message="Este contato ainda não foi adicionado a nenhum funil."
+                actionLabel="Adicionar a Funil"
+                onAction={handleAddToFunil}
                 icon={<Plus className="h-8 w-8 text-muted-foreground" />}
               />
             ) : (
               <div className="space-y-0">
-                {cards.map((card) => (
-                  <div key={card.id} className="border-b border-border/30 p-4 hover:bg-muted/30 transition-colors">
+                {funisContato.map((contatoFunil) => (
+                  <div key={`${contatoFunil.contatoId}-${contatoFunil.funilId}`} className="border-b border-border/30 p-4 hover:bg-muted/30 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-medium text-foreground">{card.title}</h3>
-                          <Badge className={`${getPriorityColor(card.priority)} border`}>
-                            {card.priority}
-                          </Badge>
-                          <Badge className={`${getChannelColor(card.channel)} border`}>
-                            {card.channel}
+                          <h3 className="font-medium text-foreground">{contatoFunil.funilName}</h3>
+                          <Badge className={`${getEstagioColor(contatoFunil.estagioName)} border`}>
+                            {contatoFunil.estagioName}
                           </Badge>
                         </div>
                         
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <div className="flex items-center gap-1">
-                            <DollarSign className="h-4 w-4" />
-                            R$ {card.estimatedValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            <Calendar className="h-4 w-4" />
+                            Adicionado: {formatFirestoreDate(contatoFunil.addedAt)}
                           </div>
-                          {card.serviceOfInterest && (
-                            <div className="flex items-center gap-1">
-                              <Tag className="h-4 w-4" />
-                              {card.serviceOfInterest}
-                            </div>
-                          )}
                           <div className="flex items-center gap-1">
                             <Calendar className="h-4 w-4" />
-                            {formatFirestoreDate(card.lastContactAt)}
+                            Último movimento: {formatFirestoreDate(contatoFunil.lastMovedAt)}
                           </div>
                         </div>
                       </div>
@@ -400,7 +351,7 @@ export default function ContactCardsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleEditCard(card)}
+                          onClick={() => handleEditFunil(contatoFunil)}
                           className="hover:bg-primary-100 dark:hover:bg-primary-900/30 cursor-pointer"
                         >
                           <Edit className="h-4 w-4" />
@@ -408,7 +359,7 @@ export default function ContactCardsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleDeleteCard(card)}
+                          onClick={() => handleRemoveFromFunil(contatoFunil)}
                           className="hover:bg-destructive/10 text-destructive cursor-pointer"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -422,7 +373,7 @@ export default function ContactCardsPage() {
             <div className="px-4 py-3 border-t border-border/50 bg-muted/30">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">
-                  {cards.length} cards carregados
+                  {funisContato.length} funis carregados
                 </span>
               </div>
             </div>
@@ -431,24 +382,104 @@ export default function ContactCardsPage() {
       </div>
 
       {/* Modais */}
-      <CreateCardModal
-        isOpen={showCreateCard}
-        onClose={handleCloseModals}
-        contatoId={contactId}
-        funilId={selectedFunilId || ''}
-      />
+      {showAddToFunil && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-background p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">Adicionar a Funil</h3>
+            <div className="space-y-4">
+              <Select onValueChange={async (funilId) => {
+                try {
+                  await handleAddContatoToFunil({ funilId })
+                  handleCloseModals()
+                } catch (error) {
+                  // Error já é tratado no hook
+                }
+              }}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione um funil" />
+                </SelectTrigger>
+                <SelectContent>
+                  {funis.map((funil) => (
+                    <SelectItem key={funil.id} value={funil.id}>
+                      {funil.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="flex gap-2 justify-end">
+                <Button variant="outline" onClick={handleCloseModals}>
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-      <EditCardModal
-        isOpen={showEditCard}
-        onClose={handleCloseModals}
-        card={selectedCard}
-      />
+      {showEditFunil && selectedContatoFunil && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-background p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">Mover no Funil</h3>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Funil: {selectedContatoFunil.funilName}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Estágio atual: {selectedContatoFunil.estagioName}
+              </p>
+              <div className="flex gap-2 justify-end">
+                <Button variant="outline" onClick={handleCloseModals}>
+                  Cancelar
+                </Button>
+                <Button 
+                  onClick={async () => {
+                    try {
+                      // Aqui você pode implementar a lógica para mover para outro estágio
+                      // Por enquanto, apenas fecha o modal
+                      handleCloseModals()
+                    } catch (error) {
+                      // Error já é tratado no hook
+                    }
+                  }}
+                >
+                  Mover
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-      <DeleteCardModal
-        isOpen={showDeleteCard}
-        onClose={handleCloseModals}
-        card={selectedCard}
-      />
+      {showRemoveFromFunil && selectedContatoFunil && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-background p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">Remover do Funil</h3>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Tem certeza que deseja remover este contato do funil <strong>{selectedContatoFunil.funilName}</strong>?
+              </p>
+              <div className="flex gap-2 justify-end">
+                <Button variant="outline" onClick={handleCloseModals}>
+                  Cancelar
+                </Button>
+                <Button 
+                  variant="destructive"
+                  onClick={async () => {
+                    try {
+                      await handleRemoveContatoFromFunil(selectedContatoFunil.funilId)
+                      handleCloseModals()
+                    } catch (error) {
+                      // Error já é tratado no hook
+                    }
+                  }}
+                >
+                  Remover
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

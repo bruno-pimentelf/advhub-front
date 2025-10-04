@@ -15,14 +15,14 @@ import { Plus, Search, Settings, Loader2, AlertCircle, Trash2, MoreVertical, Cop
 import Link from 'next/link';
 import { useSidebar } from '@/contexts/sidebar-context';
 import { useFunis, useEstagios } from '@/hooks/use-funis';
-import { useCards } from '@/hooks/use-cards';
+import { useContatosFunil } from '@/hooks/use-contatos-funil';
 import { CreateFunnelModal } from '@/components/funnels/create-funnel-modal';
 import { DeleteFunnelModal } from '@/components/funnels/delete-funnel-modal';
 import { LoadingState, ErrorState, EmptyState } from '@/components/ui/loading-state';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatFirestoreDate } from '@/lib/utils/date-utils';
 import { toast } from 'sonner';
-import type { Card, CardWithContact } from '@/lib/api';
+import type { ContatoFunilWithContato } from '@/lib/api';
 
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
   month: 'short',
@@ -35,22 +35,21 @@ const shortDateFormatter = new Intl.DateTimeFormat('pt-BR', {
   day: 'numeric',
 });
 
-// Função para converter Card da API para formato do Kanban (memoizada)
-const convertCardToKanban = (card: CardWithContact) => ({
-  id: card.id,
-  name: card.title,
-  column: card.estagioId,
-  priority: card.priority,
-  estimatedValue: card.estimatedValue,
-  serviceOfInterest: card.serviceOfInterest,
-  channel: card.channel,
-  lastContactAt: card.lastContactAt,
-  createdAt: card.createdAt,
-  contato: card.contato
+// Função para converter ContatoFunil da API para formato do Kanban (memoizada)
+const convertContatoFunilToKanban = (contatoFunil: ContatoFunilWithContato) => ({
+  id: `${contatoFunil.contatoId}-${contatoFunil.funilId}`, // ID único para o Kanban
+  name: contatoFunil.contato.name,
+  column: contatoFunil.estagioId,
+  funilId: contatoFunil.funilId,
+  funilName: contatoFunil.funilName,
+  estagioName: contatoFunil.estagioName,
+  addedAt: contatoFunil.addedAt,
+  lastMovedAt: contatoFunil.lastMovedAt,
+  contato: contatoFunil.contato
 });
 
-// Componente de skeleton para o card
-const CardSkeleton = () => (
+// Componente de skeleton para o contato no funil
+const ContatoFunilSkeleton = () => (
   <div className="flex flex-col h-full p-4 border rounded-xl min-h-[140px]">
     {/* Header com Avatar, Nome e Tempo */}
     <div className="flex items-start justify-between mb-3">
@@ -97,11 +96,11 @@ const ColumnSkeleton = () => (
       <Skeleton className="h-5 w-6 rounded-full ml-auto" />
     </div>
     
-    {/* Cards skeleton */}
+    {/* Contatos skeleton */}
     <div className="space-y-3">
-      <CardSkeleton />
-      <CardSkeleton />
-      <CardSkeleton />
+      <ContatoFunilSkeleton />
+      <ContatoFunilSkeleton />
+      <ContatoFunilSkeleton />
     </div>
   </div>
 );
@@ -130,27 +129,27 @@ const FunnelsPage = () => {
   } = useEstagios(selectedFunilId || undefined);
 
   const {
-    cards: apiCards,
-    isLoadingCards,
-    cardsError,
-    handleMoveCard
-  } = useCards(selectedFunilId || undefined);
+    contatosFunil: apiContatosFunil,
+    isLoadingContatosFunil,
+    contatosFunilError,
+    handleMoveContatoInFunil
+  } = useContatosFunil(selectedFunilId || undefined);
 
   // Estado local para controlar o drag and drop
-  const [localCards, setLocalCards] = useState<ReturnType<typeof convertCardToKanban>[]>([]);
-  const [isMovingCard, setIsMovingCard] = useState<string | null>(null);
+  const [localContatos, setLocalContatos] = useState<ReturnType<typeof convertContatoFunilToKanban>[]>([]);
+  const [isMovingContato, setIsMovingContato] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Converter cards da API para formato do Kanban (memoizado)
-  const cards = useMemo(() => apiCards.map(convertCardToKanban), [apiCards]);
+  // Converter contatos da API para formato do Kanban (memoizado)
+  const contatos = useMemo(() => apiContatosFunil.map(convertContatoFunilToKanban), [apiContatosFunil]);
 
   // Inicializar estado local apenas uma vez
   useEffect(() => {
-    if (!isInitialized && apiCards.length > 0) {
-      setLocalCards(apiCards.map(convertCardToKanban));
+    if (!isInitialized && apiContatosFunil.length > 0) {
+      setLocalContatos(apiContatosFunil.map(convertContatoFunilToKanban));
       setIsInitialized(true);
     }
-  }, [apiCards, isInitialized]);
+  }, [apiContatosFunil, isInitialized]);
 
   // Selecionar primeiro funil automaticamente quando carregar
   useEffect(() => {
@@ -202,31 +201,40 @@ const FunnelsPage = () => {
     setFunilToDelete(null);
   };
 
-  // Função para lidar com movimento de cards no Kanban (movimento otimista)
-  const handleCardMove = async (cardId: string, newEstagioId: string) => {
-    // Marcar card como sendo movido
-    setIsMovingCard(cardId);
+  // Função para lidar com movimento de contatos no Kanban (movimento otimista)
+  const handleContatoMove = async (contatoId: string, newEstagioId: string) => {
+    // Marcar contato como sendo movido
+    setIsMovingContato(contatoId);
     
     try {
+      // Encontrar o contato funil correspondente
+      const contatoFunil = apiContatosFunil.find(cf => 
+        `${cf.contatoId}-${cf.funilId}` === contatoId
+      );
+      
+      if (!contatoFunil) {
+        throw new Error('Contato não encontrado no funil');
+      }
+      
       // Chamar API em background
-      await handleMoveCard(cardId, { newEstagioId });
+      await handleMoveContatoInFunil(contatoFunil.contatoId, contatoFunil.funilId, { newEstagioId });
     } catch (error) {
-      console.error('Erro ao mover card:', error);
+      console.error('Erro ao mover contato:', error);
       
       // Reverter movimento se API falhar
-      setLocalCards(prevCards => 
-        prevCards.map(card => 
-          card.id === cardId 
-            ? { ...card, column: cards.find(c => c.id === cardId)?.column || card.column }
-            : card
+      setLocalContatos(prevContatos => 
+        prevContatos.map(contato => 
+          contato.id === contatoId 
+            ? { ...contato, column: contatos.find(c => c.id === contatoId)?.column || contato.column }
+            : contato
         )
       );
       
       // Mostrar toast de erro
-      toast.error('Erro ao mover card. Tente novamente.');
+      toast.error('Erro ao mover contato. Tente novamente.');
     } finally {
       // Remover indicador de movimento
-      setIsMovingCard(null);
+      setIsMovingContato(null);
     }
   };
 
@@ -371,8 +379,8 @@ const FunnelsPage = () => {
 
       {/* Conteúdo principal */}
       <div className="mx-4 pt-16 overflow-x-auto">
-        {/* Loading dos estágios e cards */}
-        {(isLoadingEstagios || isLoadingCards) && (
+        {/* Loading dos estágios e contatos */}
+        {(isLoadingEstagios || isLoadingContatosFunil) && (
           <div className="min-w-max">
             <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">
               <ColumnSkeleton />
@@ -393,11 +401,11 @@ const FunnelsPage = () => {
           />
         )}
 
-        {/* Error dos cards */}
-        {cardsError && (
+        {/* Error dos contatos */}
+        {contatosFunilError && (
           <ErrorState
-            title="Erro ao carregar cards"
-            message="Não foi possível carregar os cards deste funil."
+            title="Erro ao carregar contatos"
+            message="Não foi possível carregar os contatos deste funil."
             onRetry={() => window.location.reload()}
             retryLabel="Recarregar página"
             className="mb-4"
@@ -405,23 +413,23 @@ const FunnelsPage = () => {
         )}
 
         {/* Kanban Board */}
-        {!isLoadingEstagios && !estagiosError && !isLoadingCards && !cardsError && columns.length > 0 && (
+        {!isLoadingEstagios && !estagiosError && !isLoadingContatosFunil && !contatosFunilError && columns.length > 0 && (
         <div className="min-w-max">
           <KanbanProvider
             columns={columns}
-            data={localCards}
-            onDataChange={(newCards) => {
+            data={localContatos}
+            onDataChange={(newContatos) => {
               // Atualizar estado local imediatamente (movimento otimista)
-              setLocalCards(newCards);
+              setLocalContatos(newContatos);
               
-              // Encontrar o card que foi movido
-              const movedCard = newCards.find((newCard, index) => 
-                newCard.column !== cards[index]?.column
+              // Encontrar o contato que foi movido
+              const movedContato = newContatos.find((newContato, index) => 
+                newContato.column !== contatos[index]?.column
               );
               
-              if (movedCard) {
+              if (movedContato) {
                 // Chamar API em background
-                handleCardMove(movedCard.id, movedCard.column);
+                handleContatoMove(movedContato.id, movedContato.column);
               }
             }}
             className="grid-cols-[repeat(auto-fit,minmax(300px,1fr))]"
@@ -436,17 +444,17 @@ const FunnelsPage = () => {
                   />
                   <span className="font-semibold text-foreground">{column.name}</span>
                   <span className="ml-auto text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                    {localCards.filter(card => card.column === column.id).length}
+                    {localContatos.filter(contato => contato.column === column.id).length}
                   </span>
                 </div>
               </KanbanHeader>
               <KanbanCards id={column.id}>
-                {(card: (typeof cards)[number]) => (
+                {(contato: (typeof contatos)[number]) => (
                   <KanbanCard
                     column={column.id}
-                    id={card.id}
-                    key={card.id}
-                    name={card.name}
+                    id={contato.id}
+                    key={contato.id}
+                    name={contato.name}
                     dragHandle={
                       <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-10">
                         <div className="flex items-center justify-center w-8 h-8 bg-background/80 dark:bg-background/90 border border-border/50 rounded-lg shadow-sm backdrop-blur-sm cursor-grab active:cursor-grabbing hover:bg-background/90 dark:hover:bg-background/95 transition-colors">
@@ -455,9 +463,9 @@ const FunnelsPage = () => {
                       </div>
                     }
                   >
-                    <div className={`flex flex-col h-full relative ${isMovingCard === card.id ? 'opacity-75' : ''}`}>
+                    <div className={`flex flex-col h-full relative ${isMovingContato === contato.id ? 'opacity-75' : ''}`}>
                       {/* Indicador de sincronização */}
-                      {isMovingCard === card.id && (
+                      {isMovingContato === contato.id && (
                         <div className="absolute top-2 right-2">
                           <div className="h-2 w-2 bg-blue-500 rounded-full animate-pulse" title="Sincronizando..."></div>
                         </div>
@@ -467,17 +475,17 @@ const FunnelsPage = () => {
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           <Avatar className="h-10 w-10 border border-border/50">
-                            <AvatarImage src={card.contato.photoUrl} />
+                            <AvatarImage src={contato.contato.photoUrl} />
                             <AvatarFallback className="bg-primary-100 dark:bg-primary-900/30 text-foreground text-sm">
-                              {card.contato.name.split(' ').map(n => n[0]).join('')}
+                              {contato.contato.name.split(' ').map(n => n[0]).join('')}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0">
                             <p className="m-0 font-semibold text-sm text-foreground leading-tight truncate">
-                              {card.contato.name}
+                              {contato.contato.name}
                             </p>
                             <p className="m-0 text-xs text-muted-foreground truncate">
-                              ...{card.contato.phone.slice(-4)}
+                              ...{contato.contato.phone.slice(-4)}
                             </p>
                           </div>
                         </div>
@@ -488,41 +496,37 @@ const FunnelsPage = () => {
                             style={{ backgroundColor: column.color }}
                           ></div>
                           <span className="text-xs text-muted-foreground">
-                            {formatFirestoreDate(card.lastContactAt, 'short')}
+                            {formatFirestoreDate(contato.lastMovedAt, 'short')}
                           </span>
                         </div>
                       </div>
                       
-                      {/* Última mensagem do contato */}
+                      {/* Informações do funil */}
                       <div className="mb-4">
                         <p className="m-0 text-sm text-foreground/70 leading-tight">
-                          {card.contato.lastMessage || "Mensagem"}
+                          Funil: {contato.funilName}
+                        </p>
+                        <p className="m-0 text-xs text-muted-foreground leading-tight">
+                          Estágio: {contato.estagioName}
                         </p>
                       </div>
                       
-                      {/* Footer com Prioridade, Valor e Telefone */}
+                      {/* Footer com Data de Adição e Telefone */}
                       <div className="flex items-center justify-between mt-auto">
                         <div className="flex items-center gap-2">
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                            card.priority === 'alta' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
-                            card.priority === 'média' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                            'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                          }`}>
-                            {card.priority}
-                          </span>
                           <span className="text-xs text-muted-foreground">
-                            R$ {card.estimatedValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            Adicionado: {formatFirestoreDate(contato.addedAt, 'short')}
                           </span>
                         </div>
                         
                         {/* Telefone clicável no rodapé */}
                         <button
-                          onClick={() => handleCopyPhone(card.contato.phone)}
+                          onClick={() => handleCopyPhone(contato.contato.phone)}
                           className="flex items-center gap-1 px-2 py-1 rounded-full bg-muted/50 hover:bg-muted transition-colors text-xs text-muted-foreground hover:text-foreground"
                           title="Clique para copiar telefone"
                         >
                           <Phone className="h-3 w-3" />
-                          <span className="font-mono">{card.contato.phone.slice(-4)}</span>
+                          <span className="font-mono">{contato.contato.phone.slice(-4)}</span>
                         </button>
                       </div>
                     </div>

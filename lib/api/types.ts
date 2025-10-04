@@ -108,7 +108,36 @@ export interface ContatosResponse {
   total: number
 }
 
-// ===== CARDS =====
+// ===== CONTATO FUNIL =====
+export interface ContatoFunil {
+  contatoId: string
+  funilId: string
+  estagioId: string
+  estagioName: string    // denormalizado
+  funilName: string      // denormalizado
+  addedAt: string | { _seconds: number; _nanoseconds: number }
+  lastMovedAt: string | { _seconds: number; _nanoseconds: number }
+}
+
+// ContatoFunil com dados do contato incluídos
+export interface ContatoFunilWithContato extends ContatoFunil {
+  contato: Contato
+}
+
+export interface AddContatoToFunilRequest {
+  funilId: string
+}
+
+export interface MoveContatoInFunilRequest {
+  newEstagioId: string
+}
+
+export interface ContatosFunilResponse {
+  contatosFunil: ContatoFunilWithContato[]
+  total: number
+}
+
+// ===== CARDS (DEPRECATED - MANTIDO PARA COMPATIBILIDADE) =====
 export interface Card {
   id: string
   clinicaId: string

@@ -257,7 +257,7 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="right">
-                  <p>Expandir sidebar</p>
+                  <p>Expandir</p>
                 </TooltipContent>
               </Tooltip>
             </div>
