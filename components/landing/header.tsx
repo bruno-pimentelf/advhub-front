@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Logo } from '@/components/landing/logo'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { AuthCheckButton } from '@/components/auth/auth-check-button'
 import React from 'react'
 import { cn } from '@/lib/utils'
 
@@ -100,15 +101,12 @@ export const HeroHeader = () => {
                                 </ul>
                             </div>
                             <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                                <Button
-                                    asChild
+                                <AuthCheckButton
                                     size="sm"
                                     variant="outline"
                                     className="lg:inline-flex">
-                                    <Link href="/login">
-                                        <span>Entrar</span>
-                                    </Link>
-                                </Button>
+                                    <span>Entrar</span>
+                                </AuthCheckButton>
                                 <Button
                                     size="sm"
                                     onClick={() => handleLinkClick('#application-form')}
