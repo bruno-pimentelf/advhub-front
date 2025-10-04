@@ -30,6 +30,7 @@ import { useContatos } from '@/hooks/use-contatos';
 import { ContactModal } from '@/components/contacts/contact-modal';
 import { DeleteContactModal } from '@/components/contacts/delete-contact-modal';
 import { LoadingState, ErrorState, EmptyState } from '@/components/ui/loading-state';
+import { Skeleton } from '@/components/ui/skeleton';
 import { formatFirestoreDate } from '@/lib/utils/date-utils';
 import type { Contato } from '@/lib/api';
 
@@ -43,6 +44,83 @@ const getStatusColor = (status: Contato['status']) => {
       return 'bg-muted text-muted-foreground border-border';
   }
 };
+
+// Componente de skeleton para a linha da tabela de contatos
+const ContactRowSkeleton = () => (
+  <tr className="border-b border-border/30">
+    <td className="p-3">
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-10 w-10 rounded-full" />
+        <div>
+          <Skeleton className="h-4 w-24 mb-1" />
+        </div>
+      </div>
+    </td>
+    <td className="p-3">
+      <div className="flex items-center gap-2">
+        <Skeleton className="h-4 w-4" />
+        <Skeleton className="h-4 w-20" />
+      </div>
+    </td>
+    <td className="p-3">
+      <div className="flex items-center gap-2">
+        <Skeleton className="h-4 w-4" />
+        <Skeleton className="h-4 w-32" />
+      </div>
+    </td>
+    <td className="p-3">
+      <Skeleton className="h-6 w-16 rounded-full" />
+    </td>
+    <td className="p-3">
+      <Skeleton className="h-4 w-20" />
+    </td>
+    <td className="p-3">
+      <div className="flex items-center gap-1">
+        <Skeleton className="h-8 w-8 rounded" />
+        <Skeleton className="h-8 w-8 rounded" />
+      </div>
+    </td>
+  </tr>
+);
+
+// Componente de skeleton para a tabela completa
+const ContactsTableSkeleton = () => (
+  <Card className="border-primary/30 bg-background/95 backdrop-blur-md py-0">
+    <CardContent className="p-0">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-border/50">
+              <th className="text-left p-3 font-semibold text-sm text-muted-foreground">Contato</th>
+              <th className="text-left p-3 font-semibold text-sm text-muted-foreground">Telefone</th>
+              <th className="text-left p-3 font-semibold text-sm text-muted-foreground">Email</th>
+              <th className="text-left p-3 font-semibold text-sm text-muted-foreground">Status</th>
+              <th className="text-left p-3 font-semibold text-sm text-muted-foreground">Último Contato</th>
+              <th className="text-left p-3 font-semibold text-sm text-muted-foreground">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ContactRowSkeleton />
+            <ContactRowSkeleton />
+            <ContactRowSkeleton />
+            <ContactRowSkeleton />
+            <ContactRowSkeleton />
+            <ContactRowSkeleton />
+            <ContactRowSkeleton />
+            <ContactRowSkeleton />
+            <ContactRowSkeleton />
+            <ContactRowSkeleton />
+          </tbody>
+        </table>
+      </div>
+      <div className="px-4 py-3 border-t border-border/50 bg-muted/30">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-4 w-32" />
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+);
 
 
 export default function ContactsPage() {
@@ -168,8 +246,28 @@ export default function ContactsPage() {
   // Loading state
   if (isLoadingContatos) {
     return (
-      <div className="mx-4 mb-4 mt-4">
-        <LoadingState message="Carregando contatos..." size="lg" />
+      <div className="mb-4 mt-2 overflow-x-hidden">
+        {/* Header skeleton */}
+        <header className={`fixed top-0 right-0 z-50 mb-3 pb-3 pt-2 border-b border-border bg-background/95 backdrop-blur-md transition-all duration-300 ease-in-out ${isHidden ? 'left-0' : sidebarCollapsed ? 'left-16' : 'left-56'}`}>
+          <div className="flex items-center justify-between px-4">
+            <div className="flex items-center gap-3 flex-1">
+              <div className="relative flex-1 max-w-md">
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-8 w-24" />
+              <Skeleton className="h-8 w-32" />
+              <Skeleton className="h-8 w-16" />
+            </div>
+          </div>
+        </header>
+
+        {/* Conteúdo principal skeleton */}
+        <div className="mx-4 pt-16 space-y-2">
+          <ContactsTableSkeleton />
+        </div>
       </div>
     );
   }

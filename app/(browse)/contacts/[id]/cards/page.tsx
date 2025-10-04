@@ -27,6 +27,7 @@ import { CreateCardModal } from '@/components/cards/create-card-modal'
 import { EditCardModal } from '@/components/cards/edit-card-modal'
 import { DeleteCardModal } from '@/components/cards/delete-card-modal'
 import { LoadingState, ErrorState, EmptyState } from '@/components/ui/loading-state'
+import { Skeleton } from '@/components/ui/skeleton'
 import { formatFirestoreDate } from '@/lib/utils/date-utils'
 import type { Card as CardType } from '@/lib/api'
 
@@ -56,6 +57,61 @@ const getChannelColor = (channel: CardType['channel']) => {
   }
 }
 
+// Componente de skeleton para um card individual
+const CardSkeleton = () => (
+  <div className="border-b border-border/30 p-4">
+    <div className="flex items-center justify-between">
+      <div className="flex-1">
+        <div className="flex items-center gap-3 mb-2">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-6 w-16 rounded-full" />
+          <Skeleton className="h-6 w-20 rounded-full" />
+        </div>
+        
+        <div className="flex items-center gap-4 text-sm">
+          <div className="flex items-center gap-1">
+            <Skeleton className="h-4 w-4" />
+            <Skeleton className="h-4 w-20" />
+          </div>
+          <div className="flex items-center gap-1">
+            <Skeleton className="h-4 w-4" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+          <div className="flex items-center gap-1">
+            <Skeleton className="h-4 w-4" />
+            <Skeleton className="h-4 w-16" />
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-1">
+        <Skeleton className="h-8 w-8 rounded" />
+        <Skeleton className="h-8 w-8 rounded" />
+      </div>
+    </div>
+  </div>
+)
+
+// Componente de skeleton para a lista de cards
+const CardsListSkeleton = () => (
+  <Card className="border-primary/30 bg-background/95 backdrop-blur-md py-0">
+    <CardContent className="p-0">
+      <div className="space-y-0">
+        <CardSkeleton />
+        <CardSkeleton />
+        <CardSkeleton />
+        <CardSkeleton />
+        <CardSkeleton />
+      </div>
+      <div className="px-4 py-3 border-t border-border/50 bg-muted/30">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-4 w-32" />
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+)
+
 export default function ContactCardsPage() {
   const params = useParams()
   const router = useRouter()
@@ -71,7 +127,7 @@ export default function ContactCardsPage() {
 
   const { contato, isLoadingContato, contatoError } = useContato(contactId)
   const { funis, selectedFunilId: currentFunilId, setSelectedFunilId: setGlobalFunilId } = useFunis()
-  const { cards, isLoadingCards, cardsError, refetchCards } = useCards(selectedFunilId || undefined)
+  const { cards, isLoadingCards, cardsError, refetchCards } = useCards(selectedFunilId || undefined, contactId)
 
   // Usar o funil selecionado globalmente ou o primeiro disponível
   useEffect(() => {
@@ -134,8 +190,35 @@ export default function ContactCardsPage() {
   // Loading state
   if (isLoadingContato) {
     return (
-      <div className="mx-4 mb-4 mt-2">
-        <LoadingState message="Carregando contato..." size="lg" />
+      <div className="mb-4 mt-2 overflow-x-hidden">
+        {/* Header skeleton */}
+        <header className={`fixed top-0 right-0 z-50 mb-3 pb-3 pt-2 border-b border-border bg-background/95 backdrop-blur-md transition-all duration-300 ease-in-out ${isHidden ? 'left-0' : sidebarCollapsed ? 'left-16' : 'left-56'}`}>
+          <div className="flex items-center justify-between px-4">
+            <div className="flex items-center gap-4">
+              <Skeleton className="h-8 w-16" />
+              <div className="flex items-center gap-3">
+                <Skeleton className="h-8 w-8 rounded-full" />
+                <div>
+                  <Skeleton className="h-5 w-32 mb-1" />
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-3 w-20" />
+                    <Skeleton className="h-3 w-24" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-8 w-24" />
+              <Skeleton className="h-8 w-20" />
+            </div>
+          </div>
+        </header>
+
+        {/* Conteúdo principal skeleton */}
+        <div className="mx-4 pt-16 space-y-2">
+          <CardsListSkeleton />
+        </div>
       </div>
     )
   }
@@ -249,7 +332,13 @@ export default function ContactCardsPage() {
         <Card className="border-primary/30 bg-background/95 backdrop-blur-md py-0">
           <CardContent className="p-0">
             {isLoadingCards ? (
-              <LoadingState message="Carregando cards..." size="md" />
+              <div className="space-y-0">
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+              </div>
             ) : cardsError ? (
               <ErrorState
                 title="Erro ao carregar cards"

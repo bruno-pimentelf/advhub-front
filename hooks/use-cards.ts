@@ -16,15 +16,20 @@ import {
 } from '@/lib/api'
 
 // Hook para gerenciar cards de um funil
-export function useCards(funilId?: string) {
+export function useCards(funilId?: string, contatoId?: string) {
   const {
-    data: cards = [],
+    data: allCards = [],
     isLoading: isLoadingCards,
     error: cardsError,
     refetch: refetchCards
   } = useGetCardsByFunilQuery(funilId!, {
     skip: !funilId
   })
+
+  // Filtrar cards por contato se contatoId for fornecido
+  const cards = contatoId 
+    ? allCards.filter(card => card.contatoId === contatoId)
+    : allCards
 
   // Buscar todos os contatos para combinar com os cards
   const {

@@ -45,19 +45,19 @@ export function OnboardingProgress({
       "fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center",
       className
     )}>
-      <div className="bg-white rounded-lg p-6 shadow-xl max-w-sm w-full mx-4">
+      <div className="bg-background border border-border rounded-lg p-6 shadow-xl max-w-sm w-full mx-4">
         <div className="flex flex-col items-center gap-4">
           <LoadingSpinner size="lg" />
           <div className="text-center w-full">
-            <h3 className="font-semibold text-gray-900 mb-2">
+            <h3 className="font-semibold text-foreground mb-2">
               Configurando sua conta
             </h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               {currentStep || "Configurando sua conta..."}
             </p>
             <div className="w-full">
               <Progress value={progress} className="h-2" />
-              <p className="text-xs text-gray-500 mt-2 text-center">
+              <p className="text-xs text-muted-foreground mt-2 text-center">
                 {progress}% concluído
               </p>
             </div>
