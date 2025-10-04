@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Plus, Search, Settings, Loader2, AlertCircle, Trash2, MoreVertical, Copy, Phone } from 'lucide-react';
+import { Plus, Search, Settings, Loader2, AlertCircle, Trash2, MoreVertical, Copy, Phone, GripHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { useSidebar } from '@/contexts/sidebar-context';
 import { useFunis, useEstagios } from '@/hooks/use-funis';
@@ -447,6 +447,13 @@ const FunnelsPage = () => {
                     id={card.id}
                     key={card.id}
                     name={card.name}
+                    dragHandle={
+                      <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-30">
+                        <div className="flex items-center justify-center w-8 h-8 bg-background/80 dark:bg-background/90 border border-border/50 rounded-lg shadow-sm backdrop-blur-sm cursor-grab active:cursor-grabbing hover:bg-background/90 dark:hover:bg-background/95 transition-colors">
+                          <GripHorizontal className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </div>
+                    }
                   >
                     <div className={`flex flex-col h-full relative ${isMovingCard === card.id ? 'opacity-75' : ''}`}>
                       {/* Indicador de sincronização */}
@@ -455,6 +462,7 @@ const FunnelsPage = () => {
                           <div className="h-2 w-2 bg-blue-500 rounded-full animate-pulse" title="Sincronizando..."></div>
                         </div>
                       )}
+                      
                       {/* Header com Avatar, Nome e Tempo */}
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3 flex-1 min-w-0">

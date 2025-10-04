@@ -91,6 +91,7 @@ export const KanbanBoard = ({ id, children, className }: KanbanBoardProps) => {
 export type KanbanCardProps<T extends KanbanItemProps = KanbanItemProps> = T & {
   children?: ReactNode;
   className?: string;
+  dragHandle?: ReactNode;
 };
 
 export const KanbanCard = <T extends KanbanItemProps = KanbanItemProps>({
@@ -98,6 +99,7 @@ export const KanbanCard = <T extends KanbanItemProps = KanbanItemProps>({
   name,
   children,
   className,
+  dragHandle,
 }: KanbanCardProps<T>) => {
   const {
     attributes,
@@ -118,17 +120,25 @@ export const KanbanCard = <T extends KanbanItemProps = KanbanItemProps>({
 
   return (
     <>
-      <div style={style} {...listeners} {...attributes} ref={setNodeRef}>
+      <div style={style} ref={setNodeRef}>
         <Card
           className={cn(
-            'cursor-grab gap-4 rounded-xl p-4 border transition-all duration-200 min-h-[140px]',
-            isDragging && 'pointer-events-none cursor-grabbing opacity-30',
+            'gap-4 rounded-xl p-4 border transition-all duration-200 min-h-[140px]',
+            isDragging && 'pointer-events-none opacity-30',
             className
           )}
           style={{ 
             borderColor: '#04CDD470'
           }}
         >
+          {/* Drag handle customizado ou padrão */}
+          {dragHandle ? (
+            <div {...listeners} {...attributes}>
+              {dragHandle}
+            </div>
+          ) : (
+            <div {...listeners} {...attributes} className="absolute inset-0 z-20 cursor-grab active:cursor-grabbing" />
+          )}
           {children ?? <p className="m-0 font-medium text-sm">{name}</p>}
         </Card>
       </div>
@@ -136,8 +146,7 @@ export const KanbanCard = <T extends KanbanItemProps = KanbanItemProps>({
         <t.In>
           <Card
             className={cn(
-              'cursor-grab gap-4 rounded-xl p-4 ring-2 ring-[#04CDD4] min-h-[140px]',
-              isDragging && 'cursor-grabbing',
+              'gap-4 rounded-xl p-4 ring-2 ring-[#04CDD4] min-h-[140px]',
               className
             )}
             style={{ 
