@@ -38,12 +38,18 @@ const CHANNEL_OPTIONS = [
 ] as const
 
 export function EditCardModal({ isOpen, onClose, card }: EditCardModalProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string;
+    priority: 'baixa' | 'média' | 'alta';
+    estimatedValue: string;
+    serviceOfInterest: string;
+    channel: 'Indicação' | 'Redes Sociais' | 'Google' | 'Comercial de TV' | 'Outdoor' | 'Outro';
+  }>({
     title: '',
-    priority: 'média' as const,
+    priority: 'média',
     estimatedValue: '',
     serviceOfInterest: '',
-    channel: 'Indicação' as const
+    channel: 'Indicação'
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   
