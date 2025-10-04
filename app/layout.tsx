@@ -4,6 +4,8 @@ import "./globals.css";
 import { AuthProvider } from "@/contexts/auth-context";
 import { AuthWrapper } from "@/components/auth/auth-wrapper";
 import { GoogleTag } from "@/components/analytics/google-tag";
+import { ReduxProvider } from "@/components/providers/redux-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Roboto({
   variable: "--font-geist-sans",
@@ -98,11 +100,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-          <AuthWrapper>
-            {children}
-          </AuthWrapper>
-        </AuthProvider>
+        <ReduxProvider>
+          <AuthProvider>
+            <AuthWrapper>
+              {children}
+            </AuthWrapper>
+          </AuthProvider>
+        </ReduxProvider>
+        <Toaster />
       </body>
     </html>
   );

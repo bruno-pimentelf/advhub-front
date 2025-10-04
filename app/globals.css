@@ -40,7 +40,7 @@
   --primary-foreground: var(--color-black);
   --secondary: var(--base-200);
   --secondary-foreground: var(--base-950);
-  --muted: var(--base-100);
+  --muted: var(--base-200);
   --muted-foreground: var(--base-600);
   --accent: var(--base-100);
   --accent-foreground: var(--base-800);
@@ -53,7 +53,7 @@
   --chart-3: var(--primary-400);
   --chart-4: var(--primary-300);
   --chart-5: var(--primary-100);
-  --radius: 1rem;
+  --radius: 0.5rem;
   --sidebar: var(--color-white);
   --sidebar-foreground: var(--base-800);
   --sidebar-primary: var(--primary-300);

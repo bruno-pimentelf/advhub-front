@@ -77,8 +77,8 @@ export const KanbanBoard = ({ id, children, className }: KanbanBoardProps) => {
   return (
     <div
       className={cn(
-        'flex size-full min-h-40 flex-col divide-y overflow-hidden rounded-2xl border border-primary/30 bg-background/95 backdrop-blur-md text-xs shadow-lg ring-2 transition-all duration-300',
-        isOver ? 'ring-[#04CDD4] shadow-[#04CDD4]/20' : 'ring-transparent',
+        'flex size-full min-h-40 flex-col divide-y overflow-hidden rounded-2xl border border-primary/30 bg-background/95 backdrop-blur-md text-xs ring-2 transition-all duration-300',
+        isOver ? 'ring-[#04CDD4]' : 'ring-transparent',
         className
       )}
       ref={setNodeRef}
@@ -121,13 +121,12 @@ export const KanbanCard = <T extends KanbanItemProps = KanbanItemProps>({
       <div style={style} {...listeners} {...attributes} ref={setNodeRef}>
         <Card
           className={cn(
-            'cursor-grab gap-4 rounded-xl p-4 border transition-all duration-200 hover:shadow-[0_0_20px_rgba(4,205,212,0.15)]',
+            'cursor-grab gap-4 rounded-xl p-4 border transition-all duration-200 min-h-[140px]',
             isDragging && 'pointer-events-none cursor-grabbing opacity-30',
             className
           )}
           style={{ 
-            borderColor: '#04CDD470',
-            boxShadow: '0 0 10px rgba(4,205,212,0.08)'
+            borderColor: '#04CDD470'
           }}
         >
           {children ?? <p className="m-0 font-medium text-sm">{name}</p>}
@@ -137,13 +136,12 @@ export const KanbanCard = <T extends KanbanItemProps = KanbanItemProps>({
         <t.In>
           <Card
             className={cn(
-              'cursor-grab gap-4 rounded-xl p-4 ring-2 ring-[#04CDD4]',
+              'cursor-grab gap-4 rounded-xl p-4 ring-2 ring-[#04CDD4] min-h-[140px]',
               isDragging && 'cursor-grabbing',
               className
             )}
             style={{ 
-              borderColor: '#04CDD470',
-              boxShadow: '0 0 25px rgba(4,205,212,0.25)'
+              borderColor: '#04CDD470'
             }}
           >
             {children ?? <p className="m-0 font-medium text-sm">{name}</p>}

@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useSidebar } from '@/contexts/sidebar-context';
 import { 
   Plus, 
   Search, 
@@ -119,6 +120,8 @@ const getCategoryColor = (category: MessageTemplate['category']) => {
 };
 
 export default function MessagesPage() {
+  const { isHidden } = useSidebar();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [scheduledMessages, setScheduledMessages] = useState<ScheduledMessage[]>([]);
   const [templates, setTemplates] = useState<MessageTemplate[]>([]);
   const [isClient, setIsClient] = useState(false);
@@ -138,6 +141,32 @@ export default function MessagesPage() {
     setIsClient(true);
     setScheduledMessages(generateScheduledMessages());
     setTemplates(generateTemplates());
+  }, []);
+
+  // Detectar estado da sidebar
+  useEffect(() => {
+    const checkSidebarState = () => {
+      const sidebar = document.querySelector('[data-sidebar]');
+      if (sidebar) {
+        const isCollapsed = sidebar.classList.contains('w-16');
+        setSidebarCollapsed(isCollapsed);
+      }
+    };
+
+    // Verificar estado inicial
+    checkSidebarState();
+
+    // Observer para mudanças na sidebar
+    const observer = new MutationObserver(checkSidebarState);
+    const sidebar = document.querySelector('[data-sidebar]');
+    if (sidebar) {
+      observer.observe(sidebar, { 
+        attributes: true, 
+        attributeFilter: ['class'] 
+      });
+    }
+
+    return () => observer.disconnect();
   }, []);
 
   const filteredScheduledMessages = scheduledMessages.filter(message => {
@@ -228,96 +257,60 @@ export default function MessagesPage() {
   }
 
   return (
-    <div className="mx-4 mb-4 mt-4 space-y-6">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-6 bg-transparent border border-primary/30 rounded-lg p-1 h-auto min-h-[3rem]">
-          <TabsTrigger 
-            value="scheduled" 
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/25 rounded-lg transition-all duration-200 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary py-3 px-4"
-          >
-            <Clock className="h-4 w-4 mr-2" />
-            Agendadas
-          </TabsTrigger>
-          <TabsTrigger 
-            value="templates"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/25 rounded-lg transition-all duration-200 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary py-3 px-4"
-          >
-            <FileText className="h-4 w-4 mr-2" />
-            Templates
-          </TabsTrigger>
-          <TabsTrigger 
-            value="schedule"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/25 rounded-lg transition-all duration-200 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary py-3 px-4"
-          >
-            <Calendar className="h-4 w-4 mr-2" />
-            Agendar
-          </TabsTrigger>
-        </TabsList>
+    <div className="mb-4 mt-2 overflow-x-hidden">
+      {/* Header com busca e navegação */}
+      <header className={`fixed top-0 right-0 z-50 mb-3 pb-3 pt-2 border-b border-border bg-background/95 backdrop-blur-md transition-all duration-300 ease-in-out ${isHidden ? 'left-0' : sidebarCollapsed ? 'left-16' : 'left-56'}`}>
+        <div className="flex items-center justify-between px-4">
+          <div className="flex items-center gap-3 flex-1">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar mensagens..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 border-0 bg-transparent focus:ring-0 focus:outline-none focus:border-0 focus:shadow-none cursor-text shadow-none"
+              />
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
+              <TabsList className="grid grid-cols-3 bg-transparent border border-primary/30 rounded-lg p-1 h-10">
+                <TabsTrigger 
+                  value="scheduled" 
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg transition-all duration-200 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary py-1 px-3 text-sm h-8 cursor-pointer"
+                >
+                  <Clock className="h-4 w-4 mr-1" />
+                  Agendadas
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="templates"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg transition-all duration-200 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary py-1 px-3 text-sm h-8 cursor-pointer"
+                >
+                  <FileText className="h-4 w-4 mr-1" />
+                  Templates
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="schedule"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg transition-all duration-200 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary py-1 px-3 text-sm h-8 cursor-pointer"
+                >
+                  <Calendar className="h-4 w-4 mr-1" />
+                  Agendar
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+        </div>
+      </header>
+
+      {/* Conteúdo principal */}
+      <div className="mx-4 pt-16 space-y-2">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
 
         {/* Mensagens Agendadas */}
-        <TabsContent value="scheduled" className="space-y-6">
-          {/* Filters */}
-          <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
-            <CardContent className="p-4">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Buscar mensagens..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 border-primary/30 focus:border-primary focus:ring-[#04CDD4]"
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setStatusFilter('all')}
-                    className={statusFilter === 'all' 
-                      ? 'bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold' 
-                      : 'border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50'
-                    }
-                  >
-                    Todas
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setStatusFilter('scheduled')}
-                    className={statusFilter === 'scheduled' 
-                      ? 'bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold' 
-                      : 'border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50'
-                    }
-                  >
-                    Agendadas
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setStatusFilter('sent')}
-                    className={statusFilter === 'sent' 
-                      ? 'bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold' 
-                      : 'border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50'
-                    }
-                  >
-                    Enviadas
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
+        <TabsContent value="scheduled" className="space-y-2">
           {/* Messages List */}
-          <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
-            <CardHeader className="border-b border-border/50">
-              <CardTitle className="flex items-center justify-between">
-                <span>Mensagens Agendadas</span>
-                <Badge variant="outline" className="border-primary/30 text-primary">
-                  {filteredScheduledMessages.length} mensagens
-                </Badge>
-              </CardTitle>
-            </CardHeader>
+          <Card className="border-primary/30 bg-background/95 backdrop-blur-md py-0">
             <CardContent className="p-0">
               <div className="space-y-0">
                 {paginatedScheduledMessages.map((message) => (
@@ -369,127 +362,45 @@ export default function MessagesPage() {
                   </div>
                 ))}
               </div>
+              <div className="px-4 py-3 border-t border-border/50 bg-muted/30">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    {filteredScheduledMessages.length} mensagens carregadas
+                  </span>
+                  {totalPages > 1 && (
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="h-6 w-6 p-0"
+                      >
+                        <ChevronLeft className="h-3 w-3" />
+                      </Button>
+                      <span className="text-xs text-muted-foreground">
+                        {currentPage} de {totalPages}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="h-6 w-6 p-0"
+                      >
+                        <ChevronRight className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
             </CardContent>
           </Card>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
-              <CardContent className="p-4">
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                  {/* Items per page selector */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">Mostrar:</span>
-                    <select
-                      value={itemsPerPage}
-                      onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-                      className="px-3 py-1 text-sm border border-primary-200 dark:border-primary-800/50 rounded-md bg-background hover:bg-primary-100 dark:hover:bg-primary-900/30 focus:border-primary-300 dark:focus:border-primary-700/50 focus:ring-[#04CDD4] focus:outline-none"
-                    >
-                      <option value={5}>5</option>
-                      <option value={10}>10</option>
-                      <option value={20}>20</option>
-                      <option value={50}>50</option>
-                    </select>
-                    <span className="text-sm text-muted-foreground">por página</span>
-                  </div>
-
-                  {/* Page info */}
-                  <div className="text-sm text-muted-foreground">
-                    Mostrando {startIndex + 1} a {Math.min(endIndex, filteredScheduledMessages.length)} de {filteredScheduledMessages.length} mensagens
-                  </div>
-
-                  {/* Pagination controls */}
-                  <div className="flex items-center gap-2">
-                    {/* First page */}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handlePageChange(1)}
-                      disabled={currentPage === 1}
-                      className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary disabled:opacity-50"
-                    >
-                      <ChevronsLeft className="h-4 w-4" />
-                    </Button>
-
-                    {/* Previous page */}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary disabled:opacity-50"
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                    </Button>
-
-                    {/* Page numbers */}
-                    <div className="flex items-center gap-1">
-                      {getPageNumbers().map((page, index) => (
-                        <div key={index}>
-                          {page === '...' ? (
-                            <span className="px-3 py-1 text-sm text-muted-foreground">...</span>
-                          ) : (
-                            <Button
-                              variant={currentPage === page ? 'default' : 'outline'}
-                              size="sm"
-                              onClick={() => handlePageChange(page as number)}
-                              className={
-                                currentPage === page
-                                  ? 'bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700'
-                                  : 'border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary'
-                              }
-                            >
-                              {page}
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Next page */}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary disabled:opacity-50"
-                    >
-                      <ChevronRight className="h-4 w-4" />
-                    </Button>
-
-                    {/* Last page */}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handlePageChange(totalPages)}
-                      disabled={currentPage === totalPages}
-                      className="border-primary/30 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary disabled:opacity-50"
-                    >
-                      <ChevronsRight className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </TabsContent>
 
         {/* Templates */}
-        <TabsContent value="templates" className="space-y-6">
-          <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
-            <CardHeader className="border-b border-border/50">
-              <div className="flex items-center justify-between">
-                <CardTitle className="m-0">Templates de Mensagem</CardTitle>
-                <Button 
-                  size="sm"
-                  className="bg-primary hover:bg-primary/90 text-white font-semibold dark:bg-primary-600 dark:hover:bg-primary-700"
-                  onClick={() => setShowNewTemplate(true)}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Novo Template
-                </Button>
-              </div>
-            </CardHeader>
+        <TabsContent value="templates" className="space-y-2">
+          <Card className="border-primary/30 bg-background/95 backdrop-blur-md py-0">
             <CardContent className="p-0">
               <div className="space-y-0">
                 {templates.map((template) => (
@@ -530,12 +441,27 @@ export default function MessagesPage() {
                   </div>
                 ))}
               </div>
+              <div className="px-4 py-3 border-t border-border/50 bg-muted/30">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    {templates.length} templates carregados
+                  </span>
+                  <Button 
+                    size="sm"
+                    className="bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold"
+                    onClick={() => setShowNewTemplate(true)}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Novo Template
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         {/* Agendar Mensagem */}
-        <TabsContent value="schedule" className="space-y-6">
+        <TabsContent value="schedule" className="space-y-4">
           <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
             <CardHeader className="border-b border-border/50">
               <CardTitle>Agendar Nova Mensagem</CardTitle>
@@ -594,9 +520,9 @@ export default function MessagesPage() {
             </CardContent>
           </Card>
         </TabsContent>
-      </Tabs>
+        </Tabs>
 
-      {/* Modal para Novo Template */}
+        {/* Modal para Novo Template */}
       {showNewTemplate && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <Card className="w-full max-w-md border-primary/30 bg-background/95 backdrop-blur-md">
@@ -663,6 +589,7 @@ export default function MessagesPage() {
           </Card>
         </div>
       )}
+      </div>
     </div>
   );
 }

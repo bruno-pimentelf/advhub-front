@@ -24,6 +24,7 @@ import './funnel-explorer.css';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Plus, 
   Save, 
@@ -42,15 +43,12 @@ import {
   XCircle,
   Clock,
   Zap,
-  ArrowLeft,
   Home,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useSidebar } from '@/contexts/sidebar-context';
-import { ThemeToggle } from '@/components/theme-toggle';
 
 // Tipos de nós customizados
 import { LeadNode } from '@/components/funnel-explorer/nodes/lead-node';
@@ -312,18 +310,11 @@ const initialFunnels: FunnelTemplate[] = [
 
 function FunnelExplorerContent() {
   const router = useRouter();
-  const { hideSidebar, showSidebar } = useSidebar();
   const [selectedFunnel, setSelectedFunnel] = useState(initialFunnels[0]);
   const [nodes, setNodes, onNodesChange] = useNodesState(selectedFunnel.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(selectedFunnel.edges);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance<any, any> | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
-
-  // Esconder sidebar quando entrar na página
-  React.useEffect(() => {
-    hideSidebar();
-    return () => showSidebar(); // Mostrar sidebar quando sair
-  }, [hideSidebar, showSidebar]);
 
   // Auto fit view inicial para centralizar
   React.useEffect(() => {
@@ -434,18 +425,39 @@ function FunnelExplorerContent() {
       {/* Header Compacto */}
       <div className="flex-shrink-0 border-b border-border/50 bg-background/95 backdrop-blur-md">
         <div className="flex items-center justify-between h-14 px-4">
-          {/* Botão Voltar */}
-          <Link 
-            href="/funnels"
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="text-sm font-medium">Voltar para Funis</span>
-          </Link>
-
-          {/* Título Central */}
-          <div className="flex-1 text-center">
-            <h1 className="text-lg font-semibold text-foreground">Explorador de Funis</h1>
+          {/* Dropdown Adicionar */}
+          <div className="flex items-center gap-3">
+            <Select onValueChange={(value) => addNode(value)}>
+              <SelectTrigger className="w-[140px] h-10">
+                <SelectValue placeholder="Adicionar" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="lead">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4" />
+                    <span>Lead</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="qualification">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4" />
+                    <span>Qualificação</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="proposal">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4" />
+                    <span>Proposta</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="closing">
+                  <div className="flex items-center gap-2">
+                    <Zap className="h-4 w-4" />
+                    <span>Fechamento</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Botões de Ação Compactos */}
@@ -483,9 +495,6 @@ function FunnelExplorerContent() {
             >
               <Upload className="h-4 w-4" />
             </Button>
-            
-            {/* Toggle de Tema */}
-            <ThemeToggle />
             
             <Button
               size="sm"
@@ -605,48 +614,6 @@ function FunnelExplorerContent() {
                 </div>
               </div>
 
-              {/* Ações Rápidas Compactas */}
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-foreground">Adicionar</h3>
-                <div className="grid grid-cols-2 gap-1">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addNode('lead')}
-                    className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-xs h-8"
-                  >
-                    <Users className="h-3 w-3 mr-1" />
-                    Lead
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addNode('qualification')}
-                    className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-xs h-8"
-                  >
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    Qualif.
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addNode('proposal')}
-                    className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-xs h-8"
-                  >
-                    <MessageSquare className="h-3 w-3 mr-1" />
-                    Proposta
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addNode('closing')}
-                    className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-xs h-8"
-                  >
-                    <Zap className="h-3 w-3 mr-1" />
-                    Fechar
-                  </Button>
-                </div>
-              </div>
             </div>
           )}
         </div>

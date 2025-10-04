@@ -1,10 +1,12 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { useSidebar } from '@/contexts/sidebar-context';
 import { 
   Plus, 
   Search, 
@@ -20,45 +22,23 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight
+  ChevronsRight,
+  Edit,
+  Trash2
 } from 'lucide-react';
-import { faker } from '@faker-js/faker';
-// Sem necessidade de useHeader
+import { useContatos } from '@/hooks/use-contatos';
+import { ContactModal } from '@/components/contacts/contact-modal';
+import { DeleteContactModal } from '@/components/contacts/delete-contact-modal';
+import { LoadingState, ErrorState, EmptyState } from '@/components/ui/loading-state';
+import { formatFirestoreDate } from '@/lib/utils/date-utils';
+import type { Contato } from '@/lib/api';
 
-interface Contact {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  source: 'whatsapp' | 'manual' | 'import';
-  status: 'active' | 'inactive' | 'lead';
-  lastContact: Date;
-  avatar?: string;
-  tags: string[];
-}
-
-const generateContacts = (): Contact[] => {
-  return Array.from({ length: 25 }).map(() => ({
-    id: faker.string.uuid(),
-    name: faker.person.fullName(),
-    email: faker.internet.email(),
-    phone: faker.phone.number(),
-    source: faker.helpers.arrayElement(['whatsapp', 'manual', 'import'] as const),
-    status: faker.helpers.arrayElement(['active', 'inactive', 'lead'] as const),
-    lastContact: faker.date.recent({ days: 30 }),
-    avatar: faker.image.avatar(),
-    tags: faker.helpers.arrayElements(['Cliente', 'Lead', 'VIP', 'Novo'], { min: 1, max: 2 })
-  }));
-};
-
-const getStatusColor = (status: Contact['status']) => {
+const getStatusColor = (status: Contato['status']) => {
   switch (status) {
     case 'active':
       return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800/50';
-    case 'inactive':
+    case 'archived':
       return 'bg-muted text-muted-foreground border-border';
-    case 'lead':
-      return 'bg-primary-100 text-primary-600 border-primary-200 dark:bg-primary-900/30 dark:text-primary-400 dark:border-primary-800/50';
     default:
       return 'bg-muted text-muted-foreground border-border';
   }
@@ -66,35 +46,81 @@ const getStatusColor = (status: Contact['status']) => {
 
 
 export default function ContactsPage() {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [isClient, setIsClient] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const router = useRouter();
+  const { isHidden } = useSidebar();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  useEffect(() => {
-    setIsClient(true);
-    setContacts(generateContacts());
-  }, []);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedContact, setSelectedContact] = useState<Contato | null>(null);
 
-  const filteredContacts = contacts.filter(contact => {
-    const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         contact.phone.includes(searchTerm);
-    const matchesFilter = filterStatus === 'all' || contact.status === filterStatus;
-    return matchesSearch && matchesFilter;
-  });
+  const {
+    contatos,
+    total,
+    isLoadingContatos,
+    contatosError,
+    searchTerm,
+    setSearchTerm,
+    filterStatus,
+    setFilterStatus,
+    refetchContatos
+  } = useContatos(currentPage, itemsPerPage);
 
   // Pagination logic
-  const totalPages = Math.ceil(filteredContacts.length / itemsPerPage);
+  const totalPages = Math.ceil(total / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedContacts = filteredContacts.slice(startIndex, endIndex);
 
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filterStatus]);
+
+  // Detectar estado da sidebar
+  useEffect(() => {
+    const checkSidebarState = () => {
+      const sidebar = document.querySelector('[data-sidebar]');
+      if (sidebar) {
+        const isCollapsed = sidebar.classList.contains('w-16');
+        setSidebarCollapsed(isCollapsed);
+      }
+    };
+
+    // Verificar estado inicial
+    checkSidebarState();
+
+    // Observer para mudanças na sidebar
+    const observer = new MutationObserver(checkSidebarState);
+    const sidebar = document.querySelector('[data-sidebar]');
+    if (sidebar) {
+      observer.observe(sidebar, { 
+        attributes: true, 
+        attributeFilter: ['class'] 
+      });
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Handlers
+  const handleEditContact = (contact: Contato) => {
+    setSelectedContact(contact);
+    setShowEditModal(true);
+  };
+
+  const handleDeleteContact = (contact: Contato) => {
+    setSelectedContact(contact);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseModals = () => {
+    setShowCreateModal(false);
+    setShowEditModal(false);
+    setShowDeleteModal(false);
+    setSelectedContact(null);
+  };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -139,187 +165,201 @@ export default function ContactsPage() {
     return pages;
   };
 
-  if (!isClient) {
+  // Loading state
+  if (isLoadingContatos) {
     return (
       <div className="mx-4 mb-4 mt-4">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-muted-foreground">Carregando contatos...</div>
-        </div>
+        <LoadingState message="Carregando contatos..." size="lg" />
+      </div>
+    );
+  }
+
+  // Error state
+  if (contatosError) {
+    return (
+      <div className="mx-4 mb-4 mt-4">
+        <ErrorState
+          title="Erro ao carregar contatos"
+          message="Não foi possível carregar os contatos. Verifique sua conexão e tente novamente."
+          onRetry={refetchContatos}
+          retryLabel="Recarregar contatos"
+        />
+      </div>
+    );
+  }
+
+  // Empty state
+  if (contatos.length === 0) {
+    return (
+      <div className="mx-4 mb-4 mt-4">
+        <EmptyState
+          title="Nenhum contato encontrado"
+          message="Crie seu primeiro contato para começar a gerenciar seus clientes."
+          actionLabel="Criar Primeiro Contato"
+          onAction={() => setShowCreateModal(true)}
+          icon={<Plus className="h-8 w-8 text-muted-foreground" />}
+        />
+        
+        {/* Modal para criar contato - renderizado mesmo no empty state */}
+        <ContactModal
+          isOpen={showCreateModal}
+          onClose={handleCloseModals}
+          mode="create"
+        />
       </div>
     );
   }
 
   return (
-    <div className="mx-4 mb-4 mt-4 space-y-4">
-      {/* Filters */}
-      <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
+    <div className="mb-4 mt-2 overflow-x-hidden">
+      {/* Header com busca e botões de ação */}
+      <header className={`fixed top-0 right-0 z-50 mb-3 pb-3 pt-2 border-b border-border bg-background/95 backdrop-blur-md transition-all duration-300 ease-in-out ${isHidden ? 'left-0' : sidebarCollapsed ? 'left-16' : 'left-56'}`}>
+        <div className="flex items-center justify-between px-4">
+          <div className="flex items-center gap-3 flex-1">
+            <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Buscar contatos..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 border-primary/30 focus:border-primary focus:ring-[#04CDD4]"
+                className="pl-10 border-0 bg-transparent focus:ring-0 focus:outline-none focus:border-0 focus:shadow-none cursor-text shadow-none"
               />
             </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setFilterStatus('all')}
-                className={filterStatus === 'all' 
-                  ? 'bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold' 
-                  : 'border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50'
-                }
-              >
-                Todos
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setFilterStatus('lead')}
-                className={filterStatus === 'lead' 
-                  ? 'bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold' 
-                  : 'border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50'
-                }
-              >
-                Leads
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setFilterStatus('active')}
-                className={filterStatus === 'active' 
-                  ? 'bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold' 
-                  : 'border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50'
-                }
-              >
-                Ativos
-              </Button>
-            </div>
           </div>
-        </CardContent>
-      </Card>
+          
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50 cursor-pointer"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Exportar
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50 cursor-pointer"
+            >
+              <FileSpreadsheet className="h-4 w-4 mr-2" />
+              Importar
+            </Button>
+            <Button 
+              size="sm"
+              className="bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold cursor-pointer"
+            >
+              <MessageSquare className="h-4 w-4 mr-2" />
+              Importar do WhatsApp
+            </Button>
+            <Button 
+              size="sm"
+              onClick={() => setShowCreateModal(true)}
+              className="bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold cursor-pointer"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Novo
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Conteúdo principal */}
+      <div className="mx-4 pt-16 space-y-2">
 
       {/* Contacts Table */}
-      <Card className="border-primary/30 bg-background/95 backdrop-blur-md">
-        <CardHeader className="border-b border-border/50">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="flex items-center gap-3">
-              <CardTitle className="m-0">Lista de Contatos</CardTitle>
-              <Badge variant="outline" className="border-primary/30 text-primary">
-                {filteredContacts.length} contatos
-              </Badge>
-            </div>
-            
-            <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Exportar
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="border-primary-200 dark:border-primary-800/50 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:border-primary-300 dark:hover:border-primary-700/50"
-              >
-                <FileSpreadsheet className="h-4 w-4 mr-2" />
-                Importar
-              </Button>
-              <Button 
-                size="sm"
-                className="bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold"
-              >
-                <MessageSquare className="h-4 w-4 mr-2" />
-                Importar do WhatsApp
-              </Button>
-              <Button 
-                size="sm"
-                className="bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40 hover:border-primary-300 dark:hover:border-primary-700/50 font-semibold"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Novo
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
+      <Card className="border-primary/30 bg-background/95 backdrop-blur-md py-0">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border/50">
-                  <th className="text-left p-4 font-semibold text-sm text-muted-foreground">Contato</th>
-                  <th className="text-left p-4 font-semibold text-sm text-muted-foreground">Telefone</th>
-                  <th className="text-left p-4 font-semibold text-sm text-muted-foreground">Email</th>
-                  <th className="text-left p-4 font-semibold text-sm text-muted-foreground">Status</th>
-                  <th className="text-left p-4 font-semibold text-sm text-muted-foreground">Último Contato</th>
-                  <th className="text-left p-4 font-semibold text-sm text-muted-foreground">Ações</th>
+                  <th className="text-left p-3 font-semibold text-sm text-muted-foreground">Contato</th>
+                  <th className="text-left p-3 font-semibold text-sm text-muted-foreground">Telefone</th>
+                  <th className="text-left p-3 font-semibold text-sm text-muted-foreground">Email</th>
+                  <th className="text-left p-3 font-semibold text-sm text-muted-foreground">Status</th>
+                  <th className="text-left p-3 font-semibold text-sm text-muted-foreground">Último Contato</th>
+                  <th className="text-left p-3 font-semibold text-sm text-muted-foreground">Ações</th>
                 </tr>
               </thead>
-              <tbody>
-                {paginatedContacts.map((contact) => (
-                  <tr key={contact.id} className="border-b border-border/30 hover:bg-muted/30 transition-colors">
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-10 w-10 border border-border/50">
-                          <AvatarImage src={contact.avatar} />
-                          <AvatarFallback className="bg-primary-100 dark:bg-primary-900/30 text-foreground">
-                            {contact.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="font-medium text-foreground">{contact.name}</div>
-                          <div className="flex gap-1 mt-1">
-                            {contact.tags.map((tag, index) => (
-                              <Badge 
-                                key={index} 
-                                variant="outline" 
-                                className="text-xs border-primary/30 text-primary"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4">
+                      <tbody>
+                        {contatos.map((contact) => (
+                          <tr 
+                            key={contact.id} 
+                            className="border-b border-border/30 hover:bg-muted/30 transition-colors cursor-pointer"
+                            onClick={() => router.push(`/contacts/${contact.id}/cards`)}
+                          >
+                            <td className="p-3">
+                              <div className="flex items-center gap-3">
+                                <Avatar className="h-10 w-10 border border-border/50">
+                                  <AvatarImage src={contact.photoUrl} />
+                                  <AvatarFallback className="bg-primary-100 dark:bg-primary-900/30 text-foreground">
+                                    {contact.name.split(' ').map(n => n[0]).join('')}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <div className="font-medium text-foreground">{contact.name}</div>
+                                </div>
+                              </div>
+                            </td>
+                    <td className="p-3">
                       <div className="flex items-center gap-2">
                         <Phone className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">{contact.phone}</span>
                       </div>
                     </td>
-                    <td className="p-4">
+                    <td className="p-3">
                       <div className="flex items-center gap-2">
                         <Mail className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{contact.email}</span>
+                        <span className="text-sm">{contact.email || 'Não informado'}</span>
                       </div>
                     </td>
-                    <td className="p-4">
+                    <td className="p-3">
                       <Badge className={`${getStatusColor(contact.status)} border`}>
-                        {contact.status === 'active' ? 'Ativo' : 
-                         contact.status === 'inactive' ? 'Inativo' : 'Lead'}
+                        {contact.status === 'active' ? 'Ativo' : 'Arquivado'}
                       </Badge>
                     </td>
-                    <td className="p-4">
+                    <td className="p-3">
                       <span className="text-sm text-muted-foreground">
-                        {contact.lastContact.toLocaleDateString('pt-BR')}
+                        {formatFirestoreDate(contact.lastContactAt)}
                       </span>
                     </td>
-                    <td className="p-4">
-                      <Button variant="ghost" size="sm" className="hover:bg-primary-100 dark:hover:bg-primary-900/30">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </td>
+                            <td className="p-3">
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEditContact(contact);
+                                  }}
+                                  className="hover:bg-primary-100 dark:hover:bg-primary-900/30"
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteContact(contact);
+                                  }}
+                                  className="hover:bg-destructive/10 text-destructive"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="px-4 py-3 border-t border-border/50 bg-muted/30">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">
+                {total} contatos carregados
+              </span>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -347,7 +387,7 @@ export default function ContactsPage() {
 
               {/* Page info */}
               <div className="text-sm text-muted-foreground">
-                Mostrando {startIndex + 1} a {Math.min(endIndex, filteredContacts.length)} de {filteredContacts.length} contatos
+                Mostrando {startIndex + 1} a {Math.min(endIndex, total)} de {total} contatos
               </div>
 
               {/* Pagination controls */}
@@ -424,6 +464,27 @@ export default function ContactsPage() {
           </CardContent>
         </Card>
       )}
+
+        {/* Modais */}
+        <ContactModal
+          isOpen={showCreateModal}
+          onClose={handleCloseModals}
+          mode="create"
+        />
+
+        <ContactModal
+          isOpen={showEditModal}
+          onClose={handleCloseModals}
+          contato={selectedContact}
+          mode="edit"
+        />
+
+        <DeleteContactModal
+          isOpen={showDeleteModal}
+          onClose={handleCloseModals}
+          contato={selectedContact}
+        />
+      </div>
     </div>
   );
 }

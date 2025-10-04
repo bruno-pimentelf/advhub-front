@@ -17,36 +17,85 @@ import { useState } from "react"
 import { useAuth as useAuthContext } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { useOnboarding } from "@/hooks/use-onboarding"
+import { OnboardingProgress } from "@/components/ui/onboarding-progress"
 
-export function LoginForm({
+export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const { signIn } = useAuthContext()
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    clinicaName: ""
+  })
+  const { signUp } = useAuthContext()
   const router = useRouter()
+  const { completeOnboarding, isLoading, currentStep } = useOnboarding()
+  const [isCreatingAccount, setIsCreatingAccount] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
 
     try {
-      await signIn(email, password)
-      toast.success("Login realizado com sucesso!")
+      // Validar senhas
+      if (formData.password !== formData.confirmPassword) {
+        throw new Error("As senhas não coincidem")
+      }
+
+      if (formData.password.length < 6) {
+        throw new Error("A senha deve ter pelo menos 6 caracteres")
+      }
+
+      // Iniciar processo completo
+      setIsProcessing(true)
+
+      // 1. Criar conta no Firebase
+      setIsCreatingAccount(true)
+      await signUp(formData.email, formData.password)
+      toast.success("Conta criada com sucesso!")
+
+      // 2. Aguardar um pouco para o Firebase processar
+      setIsCreatingAccount(false)
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      // 3. Executar onboarding completo
+      await completeOnboarding({
+        name: formData.name,
+        email: formData.email,
+        clinicaName: formData.clinicaName
+      })
+
+      toast.success("Onboarding completo! Redirecionando...")
       
-      // Não redirecionamos aqui, deixamos o ProtectedRoute fazer isso
-      // quando detectar que o usuário está autenticado
+      // 4. Redirecionar para dashboard
+      setTimeout(() => {
+        router.push('/calendar')
+      }, 2000)
+
     } catch (error: any) {
-      toast.error(error.message || "Erro ao fazer login")
+      console.error('Erro no signup:', error)
+      toast.error(error.message || "Erro ao criar conta")
+      setIsProcessing(false)
     } finally {
-      setIsLoading(false)
+      setIsCreatingAccount(false)
     }
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <>
+      <OnboardingProgress 
+        currentStep={isCreatingAccount ? "Criando conta no Firebase..." : currentStep}
+        isLoading={isProcessing || isLoading || isCreatingAccount}
+      />
+      <div className={cn("flex flex-col gap-6", className)} {...props}>
       <AnimatedGroup 
         variants={{
           container: {
@@ -145,9 +194,9 @@ export function LoginForm({
                   },
                 }}
               >
-                <CardTitle className="text-center">Entre na sua conta</CardTitle>
+                <CardTitle className="text-center">Crie sua conta</CardTitle>
                 <CardDescription className="text-center">
-                  Digite seu email abaixo para entrar na sua conta
+                  Preencha os dados abaixo para começar a usar o Ailum CRM
                 </CardDescription>
               </AnimatedGroup>
             </div>
@@ -182,52 +231,86 @@ export function LoginForm({
                   },
                 }}
               >
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-4">
+                  <div className="grid gap-3">
+                    <Label htmlFor="name">Nome completo</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      placeholder="Dr. João Silva"
+                      value={formData.name}
+                      onChange={(e) => handleInputChange('name', e.target.value)}
+                      required
+                    />
+                  </div>
+                  
                   <div className="grid gap-3">
                     <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
                       type="email"
-                      placeholder="miguel@ailum.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="joao@clinica.com"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
                       required
                     />
                   </div>
+
                   <div className="grid gap-3">
-                    <div className="flex items-center">
-                      <Label htmlFor="password">Senha</Label>
-                      <a
-                        href="#"
-                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                      >
-                        Esqueceu sua senha?
-                      </a>
-                    </div>
+                    <Label htmlFor="clinicaName">Nome da clínica</Label>
+                    <Input
+                      id="clinicaName"
+                      type="text"
+                      placeholder="Clínica Dr. João Silva"
+                      value={formData.clinicaName}
+                      onChange={(e) => handleInputChange('clinicaName', e.target.value)}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="grid gap-3">
+                    <Label htmlFor="password">Senha</Label>
                     <Input 
                       id="password" 
                       type="password" 
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Mínimo 6 caracteres"
+                      value={formData.password}
+                      onChange={(e) => handleInputChange('password', e.target.value)}
                       required 
                     />
                   </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="confirmPassword">Confirmar senha</Label>
+                    <Input 
+                      id="confirmPassword" 
+                      type="password" 
+                      placeholder="Digite a senha novamente"
+                      value={formData.confirmPassword}
+                      onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                      required 
+                    />
+                  </div>
+                  
                   <div className="flex flex-col gap-3">
                     <Button 
                       type="submit" 
                       className="w-full"
-                      disabled={isLoading}
+                      disabled={isProcessing || isLoading || isCreatingAccount}
                     >
-                      {isLoading ? "Entrando..." : "Entrar"}
+                      {isCreatingAccount ? "Criando conta..." : 
+                       isLoading ? (currentStep || "Configurando...") : 
+                       isProcessing ? "Processando..." :
+                       "Criar conta"}
                     </Button>
                     
                     <div className="text-center text-sm text-gray-600">
-                      Não tem uma conta?{" "}
+                      Já tem uma conta?{" "}
                       <a
-                        href="/signup"
+                        href="/login"
                         className="underline underline-offset-4 hover:text-primary"
                       >
-                        Criar conta
+                        Faça login
                       </a>
                     </div>
                   </div>
@@ -237,6 +320,7 @@ export function LoginForm({
           </CardContent>
         </Card>
       </AnimatedGroup>
-    </div>
+      </div>
+    </>
   )
 }

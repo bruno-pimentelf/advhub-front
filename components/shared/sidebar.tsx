@@ -7,9 +7,7 @@ import {
   TrendingUp, 
   Users, 
   MessageSquare, 
-  Settings, 
   Calendar,
-  ChevronRight,
   LogOut,
   ArrowLeft,
   Menu,
@@ -25,43 +23,38 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth as useAuthHook } from "@/hooks/use-auth";
 import { useAuth as useAuthContext } from "@/contexts/auth-context";
 import { toast } from "sonner";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const navigationItems = [
   {
     title: "Funis",
     href: "/funnels",
     icon: TrendingUp,
-    description: "Gerenciar funis",
   },
   {
     title: "Contatos",
     href: "/contacts",
     icon: Users,
-    description: "Lista de contatos",
   },
   {
     title: "Mensagens",
     href: "/messages",
     icon: MessageSquare,
-    description: "Central de mensagens",
   },
   {
     title: "Chats",
     href: "/chats",
     icon: MessageCircle,
-    description: "Conversas em tempo real",
   },
   {
     title: "Calendário",
     href: "/calendar",
     icon: Calendar,
-    description: "Agenda e eventos",
   },
   {
     title: "Explorador",
     href: "/funnel-explorer",
     icon: Compass,
-    description: "Editor visual de funis",
   },
 ];
 
@@ -167,231 +160,201 @@ interface SidebarProps {
 
 export function Sidebar({ onCollapseChange }: SidebarProps) {
   const pathname = usePathname();
-  const [isRetracted, setIsRetracted] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true); // Padrão colapsada
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const handleToggleSidebar = () => {
-    const newRetractedState = !isRetracted;
-    setIsRetracted(newRetractedState);
-    onCollapseChange?.(newRetractedState);
+    const newCollapsedState = !isCollapsed;
+    setIsCollapsed(newCollapsedState);
+    onCollapseChange?.(newCollapsedState);
   };
 
   const handleCloseMobile = () => {
     setIsMobileOpen(false);
   };
 
-  // Se estiver retraída, mostrar apenas botão de voltar
-  if (isRetracted) {
-    return (
-      <div className="fixed inset-y-0 left-4 z-50 w-16 bg-background/95 backdrop-blur-md border rounded-2xl lg:block hidden my-4" style={{ borderColor: '#04CDD470' }}>
-        <div className="flex h-full flex-col">
-          {/* Logo compacto */}
-          <div className="flex h-16 items-center justify-center border-b border-border/50">
-            <Link href="/" className="flex items-center justify-center">
-              <Image 
-                src="/ailum-logo.png" 
-                alt="Ailum" 
-                width={32} 
-                height={32}
-                className="w-7 h-8"
-              />
-            </Link>
-          </div>
-
-          {/* Botão para expandir sidebar - mais visível */}
-          <div className="px-2 py-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleToggleSidebar}
-                  className="w-full h-10 p-0 hover:bg-opacity-10"
-                  style={{ backgroundColor: 'transparent' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.classList.add('bg-primary-100', 'dark:bg-primary-900/30');
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.classList.remove('bg-primary-100', 'dark:bg-primary-900/30');
-                  }}
-                >
-                  <Menu className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p>Expandir sidebar</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
-
-          {/* Navigation compacta */}
-          <nav className="flex-1 px-2 py-4 space-y-2">
-            {navigationItems.map((item) => {
-              const isActive = pathname.startsWith(item.href);
-              const Icon = item.icon;
-              
-              return (
-                <Tooltip key={item.href}>
-                  <TooltipTrigger asChild>
-                    <Link
-                      href={item.href}
-                      className={cn(
-                        "group relative flex items-center justify-center p-3 rounded-lg transition-all duration-200",
-                        "hover:bg-opacity-10",
-                        isActive
-                          ? "border bg-primary-100 dark:bg-primary-900/30 border-primary-200 dark:border-primary-800/50"
-                          : "text-muted-foreground hover:text-foreground"
-                      )}
-                      onMouseEnter={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.classList.add('bg-primary-100', 'dark:bg-primary-900/30');
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.classList.remove('bg-primary-100', 'dark:bg-primary-900/30');
-                        }
-                      }}
-                    >
-                      <Icon className="h-5 w-5" />
-                      
-                      {/* Active indicator */}
-                      {isActive && (
-                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full" style={{ backgroundColor: 'var(--primary)' }} />
-                      )}
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">
-                    <div>
-                      <p className="font-medium">{item.title}</p>
-                      <p className="text-xs opacity-80">{item.description}</p>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              );
-            })}
-          </nav>
-
-          {/* Footer com dropdown do usuário compacto */}
-          <div className="p-2 border-t border-border/50">
-            <div className="flex items-center justify-center">
-              <UserTooltip />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Sidebar expandida normal
   return (
     <>
       {/* Overlay para mobile */}
       {isMobileOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden transition-opacity duration-300"
           onClick={handleCloseMobile}
         />
       )}
       
-      <div 
-        className={`
-          fixed inset-y-0 left-4 z-50 w-64 bg-background/95 backdrop-blur-md border rounded-2xl my-4
-          ${isMobileOpen ? 'block' : 'lg:block hidden'}
-        `}
-        style={{ borderColor: '#04CDD470' }}
-      >
+              <div 
+                data-sidebar
+                className={cn(
+                  "fixed inset-y-0 left-0 z-50 bg-background border-r border-border transition-all duration-300 ease-in-out",
+                  isCollapsed ? "w-16" : "w-56",
+                  isMobileOpen ? 'block' : 'lg:block hidden'
+                )}
+              >
         <div className="flex h-full flex-col">
           {/* Logo */}
-          <div className="flex h-16 items-center px-6 border-b border-border/50">
-            <Link href="/" className="flex items-center space-x-3">
+          <div className="flex h-16 items-center transition-all duration-300 ease-in-out">
+            <Link href="/" className={cn(
+              "flex items-center transition-all duration-300 ease-in-out",
+              isCollapsed ? "justify-center w-full" : "space-x-3 px-6"
+            )}>
               <Image 
                 src="/ailum-logo.png" 
                 alt="Ailum" 
-                width={40} 
-                height={40}
-                className="w-9 h-10"
+                width={isCollapsed ? 32 : 40} 
+                height={isCollapsed ? 32 : 40}
+                className={cn(
+                  "transition-all duration-300 ease-in-out",
+                  isCollapsed ? "w-7 h-8" : "w-9 h-10"
+                )}
               />
-              <span className="text-xl font-semibold text-foreground">A I L U M</span>
+              <span className={cn(
+                "font-semibold text-foreground text-xl whitespace-nowrap transition-all duration-200 ease-in-out",
+                isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto"
+              )}>
+                A I L U M
+              </span>
             </Link>
             
-            <div className="ml-auto flex items-center gap-2">
-              {/* Botão contrair sidebar */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleToggleSidebar}
-                className="hidden lg:flex"
-                title="Contrair sidebar"
-              >
-                <Menu className="w-4 h-4" />
-              </Button>
-              
-              {/* Botão fechar para mobile */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleCloseMobile}
-                className="lg:hidden"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
-            </div>
+            {!isCollapsed && (
+              <div className="ml-auto flex items-center gap-2 pr-2 transition-all duration-300 ease-in-out">
+                {/* Botão contrair sidebar */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleToggleSidebar}
+                  className="hidden lg:flex hover:bg-accent transition-colors duration-200"
+                  title="Contrair sidebar"
+                >
+                  <Menu className="w-4 h-4" />
+                </Button>
+                
+                {/* Botão fechar para mobile */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleCloseMobile}
+                  className="lg:hidden hover:bg-accent transition-colors duration-200"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
           </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-2">
-          {navigationItems.map((item) => {
-            const isActive = pathname.startsWith(item.href);
-            const Icon = item.icon;
-            
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={handleCloseMobile}
-                className={cn(
-                  "group relative flex items-center px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200",
-                  "hover:text-foreground",
-                  isActive
-                    ? "border bg-primary-100 dark:bg-primary-900/30 border-primary-200 dark:border-primary-800/50"
-                    : "text-muted-foreground"
-                )}
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.classList.add('bg-primary-100', 'dark:bg-primary-900/30');
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.classList.remove('bg-primary-100', 'dark:bg-primary-900/30');
-                  }
-                }}
-              >
-                <Icon className="mr-3 h-5 w-5 flex-shrink-0" />
-                <div className="flex-1">
-                  <div className="font-medium">{item.title}</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">
-                    {item.description}
-                  </div>
-                </div>
-                
-                {isActive && (
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                )}
-                
-                {/* Active indicator */}
-                {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full" style={{ backgroundColor: 'var(--primary)' }} />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
+          {/* Botão para expandir sidebar (quando colapsada) */}
+          {isCollapsed && (
+            <div className="px-2 py-2 transition-all duration-300 ease-in-out">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleToggleSidebar}
+                    className="w-full h-10 p-0 hover:bg-accent transition-colors duration-200"
+                  >
+                    <Menu className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>Expandir sidebar</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          )}
 
-          {/* Footer com dropdown do usuário */}
-          <div className="p-4 border-t border-border/50">
-            <UserDropdown />
+          {/* Navigation */}
+          <nav className={cn(
+            "flex-1 py-4 space-y-1.5 transition-all duration-300 ease-in-out",
+            isCollapsed ? "px-2" : "px-4"
+          )}>
+            {navigationItems.map((item) => {
+              const isActive = pathname.startsWith(item.href);
+              const Icon = item.icon;
+              
+              if (isCollapsed) {
+                return (
+                  <Tooltip key={item.href}>
+                    <TooltipTrigger asChild>
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          "group relative flex items-center justify-center p-2.5 rounded-lg transition-all duration-200",
+                          "hover:bg-accent hover:scale-105 transform",
+                          isActive
+                            ? "bg-accent text-accent-foreground scale-105"
+                            : "text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        <Icon className="h-4 w-4" />
+                        
+                        {/* Active indicator */}
+                        {isActive && (
+                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full bg-primary transition-all duration-200" />
+                        )}
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p className="font-medium">{item.title}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              }
+              
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={handleCloseMobile}
+                  className={cn(
+                    "group relative flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+                    "hover:bg-accent hover:text-accent-foreground hover:scale-[1.02] transform",
+                    isActive
+                      ? "bg-accent text-accent-foreground scale-[1.02]"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  <Icon className="mr-3 h-4 w-4 flex-shrink-0 transition-transform duration-200 group-hover:scale-110" />
+                  <span className="text-sm font-medium transition-all duration-300 ease-in-out">{item.title}</span>
+                  
+                  {/* Active indicator */}
+                  {isActive && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full bg-primary transition-all duration-200" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Footer com dropdown do usuário e theme toggle */}
+          <div className={cn(
+            "border-t border-border transition-all duration-300 ease-in-out",
+            isCollapsed ? "p-2" : "p-3"
+          )}>
+            {isCollapsed ? (
+              <div className="flex flex-col items-center gap-2">
+                <UserTooltip />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center justify-center">
+                      <ThemeToggle />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p>Alternar tema</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between w-full min-w-0">
+                <div className="flex-1 min-w-0">
+                  <UserDropdown />
+                </div>
+                <div className="flex-shrink-0 ml-2">
+                  <ThemeToggle />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

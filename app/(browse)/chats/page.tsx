@@ -139,16 +139,14 @@ export default function ChatsPage() {
 
   if (!isClient) {
     return (
-      <div className="mx-4 mb-4 mt-4">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-muted-foreground">Carregando chats...</div>
-        </div>
+      <div className="h-screen w-full flex items-center justify-center">
+        <div className="text-muted-foreground">Carregando chats...</div>
       </div>
     );
   }
 
   return (
-    <div className="mx-4 mb-4 mt-4 h-[calc(100vh-8rem)] relative">
+    <div className="h-screen w-full relative overflow-hidden">
       {/* Botão de IA */}
       <div className="absolute top-4 right-4 z-10">
         <RainbowButton 
@@ -160,13 +158,13 @@ export default function ChatsPage() {
         </RainbowButton>
       </div>
       
-      <div className="flex h-full border border-primary/30 rounded-2xl bg-background/95 backdrop-blur-md overflow-hidden max-h-[calc(100vh-8rem)]">
+      <div className="flex h-full bg-background/95 backdrop-blur-md overflow-hidden">
         {/* Sidebar de Chats */}
-        <div className="w-1/3 border-r border-border/50 flex flex-col">
+        <div className="w-1/4 border-r border-border/50 flex flex-col">
           {/* Header da Sidebar */}
-          <div className="p-4 border-b border-border/50">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-foreground">Conversas</h2>
+          <div className="p-3 border-b border-border/50">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-base font-semibold text-foreground">Conversas</h2>
               <Button variant="ghost" size="sm" className="hover:bg-primary-100 dark:hover:bg-primary-900/30">
                 <MoreVertical className="h-4 w-4" />
               </Button>
@@ -191,30 +189,32 @@ export default function ChatsPage() {
               <div
                 key={chat.id}
                 onClick={() => setSelectedChat(chat)}
-                className={`p-4 border-b border-border/30 cursor-pointer transition-colors hover:bg-muted/30 ${
-                  selectedChat?.id === chat.id ? 'bg-primary-100 dark:bg-primary-900/30 border-r-2 border-r-primary' : ''
+                className={`p-4 border-b border-border/30 cursor-pointer transition-colors ${
+                  selectedChat?.id === chat.id 
+                    ? 'bg-primary-100 dark:bg-primary-900/30 border-r-2 border-r-primary' 
+                    : 'hover:bg-muted/30'
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <Avatar className="h-12 w-12 border border-border/50">
+                    <Avatar className="h-8 w-8 border border-border/50">
                       <AvatarImage src={chat.avatar} />
-                      <AvatarFallback className="bg-primary-100 dark:bg-primary-900/30 text-foreground">
+                      <AvatarFallback className="bg-primary-100 dark:bg-primary-900/30 text-foreground text-xs">
                         {chat.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
                     {chat.isOnline && (
-                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-background rounded-full dark:bg-green-400" />
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-background rounded-full dark:bg-green-400" />
                     )}
                   </div>
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-medium text-foreground truncate">{chat.name}</h3>
+                      <h3 className="text-sm font-medium text-foreground truncate">{chat.name}</h3>
                       <div className="flex items-center gap-1">
                         {chat.isAutoReply && (
-                          <div className="flex items-center gap-1 bg-primary-100 dark:bg-primary-900/30 px-2 py-1 rounded-full">
-                            <Bot className="h-3 w-3 text-primary" />
+                          <div className="flex items-center gap-1 bg-primary-100 dark:bg-primary-900/30 px-1.5 py-0.5 rounded-full">
+                            <Bot className="h-2.5 w-2.5 text-primary" />
                             <span className="text-xs text-primary font-medium">Auto</span>
                           </div>
                         )}
@@ -225,21 +225,16 @@ export default function ChatsPage() {
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
-                        <p className="text-sm text-muted-foreground truncate flex-1">
-                          {chat.lastMessage.length > 30 
-                            ? `${chat.lastMessage.substring(0, 30)}...` 
+                      <div className="flex items-center gap-1 flex-1 min-w-0">
+                        <p className="text-xs text-muted-foreground truncate flex-1">
+                          {chat.lastMessage.length > 25 
+                            ? `${chat.lastMessage.substring(0, 25)}...` 
                             : chat.lastMessage
                           }
                         </p>
-                        {chat.isAutoReply && (
-                          <div className="w-[15%] flex justify-center">
-                            <Bot className="h-4 w-4 text-primary flex-shrink-0" />
-                          </div>
-                        )}
                       </div>
                       {chat.unreadCount > 0 && (
-                        <Badge className="bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 text-xs min-w-[20px] h-5 flex items-center justify-center ml-2 font-semibold">
+                        <Badge className="bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800/50 text-primary-700 dark:text-primary-300 text-xs min-w-[16px] h-4 flex items-center justify-center ml-1 font-semibold">
                           {chat.unreadCount}
                         </Badge>
                       )}
@@ -257,30 +252,30 @@ export default function ChatsPage() {
           {selectedChat ? (
             <>
               {/* Header do Chat */}
-              <div className="p-4 border-b border-border/50 bg-background/50">
+              <div className="p-3 border-b border-border/50 bg-background/50">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <div className="relative">
-                      <Avatar className="h-10 w-10 border border-border/50">
+                      <Avatar className="h-8 w-8 border border-border/50">
                         <AvatarImage src={selectedChat.avatar} />
-                        <AvatarFallback className="bg-primary-100 dark:bg-primary-900/30 text-foreground">
+                        <AvatarFallback className="bg-primary-100 dark:bg-primary-900/30 text-foreground text-xs">
                           {selectedChat.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                       {selectedChat.isOnline && (
-                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-background rounded-full dark:bg-green-400" />
+                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-background rounded-full dark:bg-green-400" />
                       )}
                     </div>
                     <div>
-                      <h3 className="font-medium text-foreground">{selectedChat.name}</h3>
+                      <h3 className="text-sm font-medium text-foreground">{selectedChat.name}</h3>
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-muted-foreground">
                           {selectedChat.isOnline ? 'Online' : 'Offline'}
                         </span>
                         {selectedChat.isAutoReply && (
-                          <div className="flex items-center gap-1 bg-primary-100 dark:bg-primary-900/30 px-2 py-1 rounded-full">
-                            <Bot className="h-3 w-3 text-primary" />
-                            <span className="text-xs text-primary font-medium">Resposta automática</span>
+                          <div className="flex items-center gap-1 bg-primary-100 dark:bg-primary-900/30 px-1.5 py-0.5 rounded-full">
+                            <Bot className="h-2.5 w-2.5 text-primary" />
+                            <span className="text-xs text-primary font-medium">Auto</span>
                           </div>
                         )}
                       </div>
@@ -297,7 +292,7 @@ export default function ChatsPage() {
 
               {/* Mensagens */}
               <div className="flex-1 min-h-0">
-                <ScrollArea className="h-full p-4 bg-muted/20">
+                <ScrollArea className="h-full p-3 bg-muted/20">
                   <div className="space-y-4">
                     {selectedChat.messages.map((message) => (
                       <div
@@ -308,7 +303,7 @@ export default function ChatsPage() {
                           className={`max-w-[70%] p-3 rounded-2xl ${
                             message.isFromUser
                               ? 'bg-primary text-white dark:bg-primary-600 rounded-br-md'
-                              : 'bg-background border border-border/50 text-foreground rounded-bl-md'
+                              : 'bg-white border border-border/50 text-foreground rounded-bl-md shadow-sm dark:bg-background'
                           }`}
                         >
                           <p className={`text-sm ${message.isFromUser ? 'font-semibold' : ''}`}>{message.text}</p>
@@ -338,7 +333,7 @@ export default function ChatsPage() {
               </div>
 
               {/* Input de Mensagem */}
-              <div className="p-4 border-t border-border/50 bg-background/50">
+              <div className="p-3 border-t border-border/50 bg-background/50">
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="sm" className="hover:bg-primary-100 dark:hover:bg-primary-900/30">
                     <Paperclip className="h-4 w-4" />
