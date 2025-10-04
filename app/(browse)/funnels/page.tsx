@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Plus, Search, Settings, Loader2, AlertCircle, Trash2, MoreVertical } from 'lucide-react';
+import { Plus, Search, Settings, Loader2, AlertCircle, Trash2, MoreVertical, Copy, Phone } from 'lucide-react';
 import Link from 'next/link';
 import { useSidebar } from '@/contexts/sidebar-context';
 import { useFunis, useEstagios } from '@/hooks/use-funis';
@@ -20,7 +20,8 @@ import { CreateFunnelModal } from '@/components/funnels/create-funnel-modal';
 import { DeleteFunnelModal } from '@/components/funnels/delete-funnel-modal';
 import { LoadingState, ErrorState, EmptyState } from '@/components/ui/loading-state';
 import { formatFirestoreDate } from '@/lib/utils/date-utils';
-import type { Card } from '@/lib/api';
+import { toast } from 'sonner';
+import type { Card, CardWithContact } from '@/lib/api';
 
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
   month: 'short',
@@ -34,7 +35,7 @@ const shortDateFormatter = new Intl.DateTimeFormat('pt-BR', {
 });
 
 // Função para converter Card da API para formato do Kanban
-const convertCardToKanban = (card: Card) => ({
+const convertCardToKanban = (card: CardWithContact) => ({
   id: card.id,
   name: card.title,
   column: card.estagioId,
@@ -43,7 +44,8 @@ const convertCardToKanban = (card: Card) => ({
   serviceOfInterest: card.serviceOfInterest,
   channel: card.channel,
   lastContactAt: card.lastContactAt,
-  createdAt: card.createdAt
+  createdAt: card.createdAt,
+  contato: card.contato
 });
 
 const FunnelsPage = () => {
@@ -135,6 +137,17 @@ const FunnelsPage = () => {
       await handleMoveCard(cardId, { newEstagioId });
     } catch (error) {
       console.error('Erro ao mover card:', error);
+    }
+  };
+
+  // Função para copiar telefone para área de transferência
+  const handleCopyPhone = async (phone: string) => {
+    try {
+      await navigator.clipboard.writeText(phone);
+      toast.success(`Telefone copiado: ${phone}`);
+    } catch (error) {
+      console.error('Erro ao copiar telefone:', error);
+      toast.error('Erro ao copiar telefone');
     }
   };
 
@@ -319,45 +332,67 @@ const FunnelsPage = () => {
                     name={card.name}
                   >
                     <div className="flex flex-col h-full">
-                      {/* Título */}
-                      <div className="mb-3">
-                        <p className="m-0 font-semibold text-sm text-foreground leading-tight">
-                          {card.name}
-                        </p>
-                      </div>
-                      
-                      {/* Data */}
-                      <div className="flex items-center gap-2 mb-2">
-                        <div 
-                          className="h-1.5 w-1.5 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: column.color }}
-                        ></div>
-                        <p className="m-0 text-muted-foreground text-xs">
-                          {formatFirestoreDate(card.lastContactAt)}
-                        </p>
-                      </div>
-                      
-                      {/* Serviço de interesse (se existir) */}
-                      {card.serviceOfInterest && (
-                        <div className="mb-2">
-                          <p className="m-0 text-muted-foreground text-xs">
-                            {card.serviceOfInterest}
-                          </p>
+                      {/* Header com Avatar, Nome e Tempo */}
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <Avatar className="h-10 w-10 border border-border/50">
+                            <AvatarImage src={card.contato.photoUrl} />
+                            <AvatarFallback className="bg-primary-100 dark:bg-primary-900/30 text-foreground text-sm">
+                              {card.contato.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="m-0 font-semibold text-sm text-foreground leading-tight truncate">
+                              {card.contato.name}
+                            </p>
+                            <p className="m-0 text-xs text-muted-foreground truncate">
+                              ...{card.contato.phone.slice(-4)}
+                            </p>
+                          </div>
                         </div>
-                      )}
+                        {/* Indicador de tempo */}
+                        <div className="flex items-center gap-1 ml-2">
+                          <div 
+                            className="h-2 w-2 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: column.color }}
+                          ></div>
+                          <span className="text-xs text-muted-foreground">
+                            {formatFirestoreDate(card.lastContactAt, 'short')}
+                          </span>
+                        </div>
+                      </div>
                       
-                      {/* Prioridade e Valor - sempre no final */}
-                      <div className="flex items-center gap-2 mt-auto">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                          card.priority === 'alta' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
-                          card.priority === 'média' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                          'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                        }`}>
-                          {card.priority}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          R$ {card.estimatedValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                        </span>
+                      {/* Última mensagem do contato */}
+                      <div className="mb-4">
+                        <p className="m-0 text-sm text-foreground/70 leading-tight">
+                          {card.contato.lastMessage || "Mensagem"}
+                        </p>
+                      </div>
+                      
+                      {/* Footer com Prioridade, Valor e Telefone */}
+                      <div className="flex items-center justify-between mt-auto">
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                            card.priority === 'alta' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                            card.priority === 'média' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                            'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                          }`}>
+                            {card.priority}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            R$ {card.estimatedValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </span>
+                        </div>
+                        
+                        {/* Telefone clicável no rodapé */}
+                        <button
+                          onClick={() => handleCopyPhone(card.contato.phone)}
+                          className="flex items-center gap-1 px-2 py-1 rounded-full bg-muted/50 hover:bg-muted transition-colors text-xs text-muted-foreground hover:text-foreground"
+                          title="Clique para copiar telefone"
+                        >
+                          <Phone className="h-3 w-3" />
+                          <span className="font-mono">{card.contato.phone.slice(-4)}</span>
+                        </button>
                       </div>
                     </div>
                   </KanbanCard>

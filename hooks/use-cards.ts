@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { toast } from 'sonner'
 import {
   useGetCardsByFunilQuery,
@@ -7,7 +7,9 @@ import {
   useUpdateCardMutation,
   useMoveCardMutation,
   useDeleteCardMutation,
+  useGetContatosQuery,
   type Card,
+  type CardWithContact,
   type CreateCardRequest,
   type UpdateCardRequest,
   type MoveCardRequest,
@@ -23,6 +25,38 @@ export function useCards(funilId?: string) {
   } = useGetCardsByFunilQuery(funilId!, {
     skip: !funilId
   })
+
+  // Buscar todos os contatos para combinar com os cards
+  const {
+    data: contatosData,
+    isLoading: isLoadingContatos,
+    error: contatosError
+  } = useGetContatosQuery({ page: 1, limit: 1000 }, {
+    skip: !funilId || cards.length === 0
+  })
+
+  // Combinar cards com dados dos contatos
+  const cardsWithContacts: CardWithContact[] = useMemo(() => {
+    if (!cards.length || !contatosData?.contatos) return []
+    
+    return cards.map(card => {
+      const contato = contatosData.contatos.find(c => c.id === card.contatoId)
+      return {
+        ...card,
+        contato: contato || {
+          id: card.contatoId,
+          clinicaId: card.clinicaId,
+          name: 'Contato não encontrado',
+          phone: 'N/A',
+          lastMessage: 'Mensagem não disponível',
+          status: 'active' as const,
+          lastContactAt: card.lastContactAt,
+          createdAt: card.createdAt,
+          updatedAt: card.updatedAt
+        }
+      }
+    })
+  }, [cards, contatosData])
 
   const [createCard, { isLoading: isCreatingCard }] = useCreateCardMutation()
   const [updateCard, { isLoading: isUpdatingCard }] = useUpdateCardMutation()
@@ -78,17 +112,17 @@ export function useCards(funilId?: string) {
 
   return {
     // Data
-    cards,
+    cards: cardsWithContacts,
     
     // Loading states
-    isLoadingCards,
+    isLoadingCards: isLoadingCards || isLoadingContatos,
     isCreatingCard,
     isUpdatingCard,
     isMovingCard,
     isDeletingCard,
     
     // Errors
-    cardsError,
+    cardsError: cardsError || contatosError,
     
     // Actions
     handleCreateCard,

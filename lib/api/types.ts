@@ -81,6 +81,7 @@ export interface Contato {
   phone: string
   email?: string
   photoUrl?: string
+  lastMessage?: string
   status: 'active' | 'archived'
   lastContactAt: string | { _seconds: number; _nanoseconds: number }
   createdAt: string | { _seconds: number; _nanoseconds: number }
@@ -122,6 +123,11 @@ export interface Card {
   lastContactAt: string | { _seconds: number; _nanoseconds: number }
   createdAt: string | { _seconds: number; _nanoseconds: number }
   updatedAt: string | { _seconds: number; _nanoseconds: number }
+}
+
+// Card com dados do contato incluídos
+export interface CardWithContact extends Card {
+  contato: Contato
 }
 
 export interface CreateCardRequest {

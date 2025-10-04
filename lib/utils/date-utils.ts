@@ -10,7 +10,7 @@ export type DateValue = string | Date | FirestoreTimestamp | null | undefined
 /**
  * Formata uma data do Firestore para string localizada
  * @param dateValue - Valor da data (pode ser string, Date, ou objeto Firestore)
- * @param locale - Locale para formatação (padrão: 'pt-BR')
+ * @param locale - Locale para formatação (padrão: 'pt-BR') ou 'short' para tempo relativo
  * @param options - Opções de formatação
  * @returns String formatada da data
  */
@@ -44,6 +44,11 @@ export const formatFirestoreDate = (
     return 'Data inválida'
   }
   
+  // Se locale é 'short', retornar tempo relativo
+  if (locale === 'short') {
+    return getRelativeTime(date)
+  }
+  
   // Formatar com opções padrão se não fornecidas
   const defaultOptions: Intl.DateTimeFormatOptions = {
     day: '2-digit',
@@ -53,6 +58,28 @@ export const formatFirestoreDate = (
   }
   
   return date.toLocaleDateString(locale, defaultOptions)
+}
+
+/**
+ * Calcula tempo relativo (ex: "4h", "2d", "1w")
+ */
+const getRelativeTime = (date: Date): string => {
+  const now = new Date()
+  const diffInMs = now.getTime() - date.getTime()
+  const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
+  const diffInHours = Math.floor(diffInMinutes / 60)
+  const diffInDays = Math.floor(diffInHours / 24)
+  const diffInWeeks = Math.floor(diffInDays / 7)
+  
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes}m`
+  } else if (diffInHours < 24) {
+    return `${diffInHours}h`
+  } else if (diffInDays < 7) {
+    return `${diffInDays}d`
+  } else {
+    return `${diffInWeeks}w`
+  }
 }
 
 /**
