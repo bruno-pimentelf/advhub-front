@@ -123,7 +123,7 @@ export const KanbanCard = <T extends KanbanItemProps = KanbanItemProps>({
       <div style={style} ref={setNodeRef}>
         <Card
           className={cn(
-            'gap-4 rounded-xl p-4 border transition-all duration-200 min-h-[140px]',
+            'relative gap-4 rounded-xl p-4 border transition-all duration-200 min-h-[140px]',
             isDragging && 'pointer-events-none opacity-30',
             className
           )}
@@ -146,7 +146,7 @@ export const KanbanCard = <T extends KanbanItemProps = KanbanItemProps>({
         <t.In>
           <Card
             className={cn(
-              'gap-4 rounded-xl p-4 ring-2 ring-[#04CDD4] min-h-[140px]',
+              'relative gap-4 rounded-xl p-4 ring-2 ring-[#04CDD4] min-h-[140px]',
               className
             )}
             style={{ 
