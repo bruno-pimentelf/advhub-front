@@ -221,15 +221,6 @@ export function LoginForm({
                       {isLoading ? "Entrando..." : "Entrar"}
                     </Button>
                     
-                    <div className="text-center text-sm text-gray-600">
-                      Não tem uma conta?{" "}
-                      <a
-                        href="/signup"
-                        className="underline underline-offset-4 hover:text-primary"
-                      >
-                        Criar conta
-                      </a>
-                    </div>
                   </div>
                 </div>
               </AnimatedGroup>
