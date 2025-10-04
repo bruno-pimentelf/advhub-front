@@ -140,8 +140,25 @@ const FunnelsPage = () => {
   const [isMovingContato, setIsMovingContato] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Converter contatos da API para formato do Kanban (memoizado)
-  const contatos = useMemo(() => apiContatosFunil.map(convertContatoFunilToKanban), [apiContatosFunil]);
+  // Função auxiliar para converter timestamp para Date
+  const convertTimestampToDate = (timestamp: string | { _seconds: number; _nanoseconds: number }) => {
+    if (typeof timestamp === 'string') {
+      return new Date(timestamp);
+    }
+    return new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
+  };
+
+  // Converter contatos da API para formato do Kanban (memoizado) e ordenar por data de movimento
+  const contatos = useMemo(() => {
+    const converted = apiContatosFunil.map(convertContatoFunilToKanban);
+    
+    // Ordenar por data de último movimento (mais recente primeiro)
+    return converted.sort((a, b) => {
+      const dateA = convertTimestampToDate(a.lastMovedAt);
+      const dateB = convertTimestampToDate(b.lastMovedAt);
+      return dateB.getTime() - dateA.getTime(); // Mais recente primeiro
+    });
+  }, [apiContatosFunil]);
 
   // Inicializar estado local apenas uma vez
   useEffect(() => {
@@ -216,8 +233,15 @@ const FunnelsPage = () => {
         throw new Error('Contato não encontrado no funil');
       }
       
+      // Encontrar o nome do estágio de destino
+      const estagioDestino = estagios.find(e => e.id === newEstagioId);
+      const nomeEstagio = estagioDestino?.name || 'estágio';
+      
       // Chamar API em background
       await handleMoveContatoInFunil(contatoFunil.contatoId, contatoFunil.funilId, { newEstagioId });
+      
+      // Mostrar toast de sucesso
+      toast.success(`Contato movido para ${nomeEstagio}!`);
     } catch (error) {
       console.error('Erro ao mover contato:', error);
       
@@ -422,10 +446,11 @@ const FunnelsPage = () => {
               // Atualizar estado local imediatamente (movimento otimista)
               setLocalContatos(newContatos);
               
-              // Encontrar o contato que foi movido
-              const movedContato = newContatos.find((newContato, index) => 
-                newContato.column !== contatos[index]?.column
-              );
+              // Encontrar o contato que foi movido comparando com o estado anterior
+              const movedContato = newContatos.find(newContato => {
+                const oldContato = contatos.find(oldContato => oldContato.id === newContato.id);
+                return oldContato && oldContato.column !== newContato.column;
+              });
               
               if (movedContato) {
                 // Chamar API em background
@@ -501,33 +526,40 @@ const FunnelsPage = () => {
                         </div>
                       </div>
                       
-                      {/* Informações do funil */}
+                      {/* Última mensagem do contato */}
                       <div className="mb-4">
                         <p className="m-0 text-sm text-foreground/70 leading-tight">
-                          Funil: {contato.funilName}
-                        </p>
-                        <p className="m-0 text-xs text-muted-foreground leading-tight">
-                          Estágio: {contato.estagioName}
+                          {contato.contato.lastMessage || "Mensagem"}
                         </p>
                       </div>
                       
-                      {/* Footer com Data de Adição e Telefone */}
+                      {/* Footer com Status e Telefone */}
                       <div className="flex items-center justify-between mt-auto">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground">
-                            Adicionado: {formatFirestoreDate(contato.addedAt, 'short')}
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                            contato.contato.status === 'active' 
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                              : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
+                          }`}>
+                            {contato.contato.status === 'active' ? 'Ativo' : 'Arquivado'}
                           </span>
                         </div>
                         
                         {/* Telefone clicável no rodapé */}
-                        <button
-                          onClick={() => handleCopyPhone(contato.contato.phone)}
-                          className="flex items-center gap-1 px-2 py-1 rounded-full bg-muted/50 hover:bg-muted transition-colors text-xs text-muted-foreground hover:text-foreground"
-                          title="Clique para copiar telefone"
-                        >
-                          <Phone className="h-3 w-3" />
-                          <span className="font-mono">{contato.contato.phone.slice(-4)}</span>
-                        </button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button
+                              onClick={() => handleCopyPhone(contato.contato.phone)}
+                              className="flex items-center gap-1 px-2 py-1 rounded-full bg-muted/50 hover:bg-muted transition-colors text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                            >
+                              <Phone className="h-3 w-3" />
+                              <span className="font-mono">{contato.contato.phone.slice(-4)}</span>
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Clique para copiar: {contato.contato.phone}</p>
+                          </TooltipContent>
+                        </Tooltip>
                       </div>
                     </div>
                   </KanbanCard>

@@ -5,7 +5,6 @@ import { funisApi } from './services/funis'
 import { estagiosApi } from './services/estagios'
 import { contatosApi } from './services/contatos'
 import { contatosFunilApi } from './services/contatos-funil'
-import { cardsApi } from './services/cards' // DEPRECATED
 
 export const configureApiStore = () => {
   return configureStore({
@@ -16,7 +15,6 @@ export const configureApiStore = () => {
       [estagiosApi.reducerPath]: estagiosApi.reducer,
       [contatosApi.reducerPath]: contatosApi.reducer,
       [contatosFunilApi.reducerPath]: contatosFunilApi.reducer,
-      [cardsApi.reducerPath]: cardsApi.reducer, // DEPRECATED
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware()
@@ -25,8 +23,7 @@ export const configureApiStore = () => {
         .concat(funisApi.middleware)
         .concat(estagiosApi.middleware)
         .concat(contatosApi.middleware)
-        .concat(contatosFunilApi.middleware)
-        .concat(cardsApi.middleware), // DEPRECATED
+        .concat(contatosFunilApi.middleware),
   })
 }
 
