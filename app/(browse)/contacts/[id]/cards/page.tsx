@@ -136,6 +136,14 @@ export default function ContactCardsPage() {
     }
   }, [funis, currentFunilId, selectedFunilId])
 
+  // Pré-carregar dados do contato assim que o componente é montado
+  useEffect(() => {
+    if (contactId) {
+      // Força o carregamento imediato dos dados
+      router.prefetch(`/contacts/${contactId}/cards`)
+    }
+  }, [contactId, router])
+
   // Detectar estado da sidebar
   useEffect(() => {
     const checkSidebarState = () => {

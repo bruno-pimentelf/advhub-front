@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -133,6 +133,7 @@ export default function ContactsPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedContact, setSelectedContact] = useState<Contato | null>(null);
+  const [clickedContactId, setClickedContactId] = useState<string | null>(null);
 
   const {
     contatos,
@@ -155,6 +156,15 @@ export default function ContactsPage() {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filterStatus]);
+
+  // Pré-carregar páginas de contatos para navegação mais rápida
+  useEffect(() => {
+    if (contatos.length > 0) {
+      contatos.forEach(contact => {
+        router.prefetch(`/contacts/${contact.id}/cards`);
+      });
+    }
+  }, [contatos, router]);
 
   // Detectar estado da sidebar
   useEffect(() => {
@@ -207,6 +217,16 @@ export default function ContactsPage() {
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
     setItemsPerPage(newItemsPerPage);
     setCurrentPage(1);
+  };
+
+  const handleContactClick = (contactId: string) => {
+    // Feedback visual imediato
+    setClickedContactId(contactId);
+    
+    // Navegação imediata usando startTransition para melhor performance
+    startTransition(() => {
+      router.push(`/contacts/${contactId}/cards`);
+    });
   };
 
   const getPageNumbers = () => {
@@ -383,8 +403,10 @@ export default function ContactsPage() {
                         {contatos.map((contact) => (
                           <tr 
                             key={contact.id} 
-                            className="border-b border-border/30 hover:bg-muted/30 transition-colors cursor-pointer"
-                            onClick={() => router.push(`/contacts/${contact.id}/cards`)}
+                            className={`border-b border-border/30 hover:bg-muted/30 transition-colors cursor-pointer ${
+                              clickedContactId === contact.id ? 'bg-primary/10' : ''
+                            }`}
+                            onClick={() => handleContactClick(contact.id)}
                           >
                             <td className="p-3">
                               <div className="flex items-center gap-3">
