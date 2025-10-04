@@ -6,7 +6,7 @@ import {
   KanbanHeader,
   KanbanProvider,
 } from '@/components/ui/shadcn-io/kanban';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -19,6 +19,7 @@ import { useCards } from '@/hooks/use-cards';
 import { CreateFunnelModal } from '@/components/funnels/create-funnel-modal';
 import { DeleteFunnelModal } from '@/components/funnels/delete-funnel-modal';
 import { LoadingState, ErrorState, EmptyState } from '@/components/ui/loading-state';
+import { Skeleton } from '@/components/ui/skeleton';
 import { formatFirestoreDate } from '@/lib/utils/date-utils';
 import { toast } from 'sonner';
 import type { Card, CardWithContact } from '@/lib/api';
@@ -34,7 +35,7 @@ const shortDateFormatter = new Intl.DateTimeFormat('pt-BR', {
   day: 'numeric',
 });
 
-// Função para converter Card da API para formato do Kanban
+// Função para converter Card da API para formato do Kanban (memoizada)
 const convertCardToKanban = (card: CardWithContact) => ({
   id: card.id,
   name: card.title,
@@ -47,6 +48,63 @@ const convertCardToKanban = (card: CardWithContact) => ({
   createdAt: card.createdAt,
   contato: card.contato
 });
+
+// Componente de skeleton para o card
+const CardSkeleton = () => (
+  <div className="flex flex-col h-full p-4 border rounded-xl min-h-[140px]">
+    {/* Header com Avatar, Nome e Tempo */}
+    <div className="flex items-start justify-between mb-3">
+      <div className="flex items-center gap-3 flex-1 min-w-0">
+        <Skeleton className="h-10 w-10 rounded-full" />
+        <div className="flex-1 min-w-0">
+          <Skeleton className="h-4 w-24 mb-1" />
+          <Skeleton className="h-3 w-16" />
+        </div>
+      </div>
+      {/* Indicador de tempo */}
+      <div className="flex items-center gap-1 ml-2">
+        <Skeleton className="h-2 w-2 rounded-full" />
+        <Skeleton className="h-3 w-6" />
+      </div>
+    </div>
+    
+    {/* Última mensagem do contato */}
+    <div className="mb-4">
+      <Skeleton className="h-4 w-full mb-1" />
+      <Skeleton className="h-4 w-3/4" />
+    </div>
+    
+    {/* Footer com Prioridade, Valor e Telefone */}
+    <div className="flex items-center justify-between mt-auto">
+      <div className="flex items-center gap-2">
+        <Skeleton className="h-5 w-12 rounded-full" />
+        <Skeleton className="h-4 w-16" />
+      </div>
+      
+      {/* Telefone clicável no rodapé */}
+      <Skeleton className="h-6 w-12 rounded-full" />
+    </div>
+  </div>
+);
+
+// Componente de skeleton para a coluna
+const ColumnSkeleton = () => (
+  <div className="flex flex-col gap-4">
+    {/* Header da coluna */}
+    <div className="flex items-center gap-3 p-4 border rounded-lg">
+      <Skeleton className="h-3 w-3 rounded-full" />
+      <Skeleton className="h-4 w-20" />
+      <Skeleton className="h-5 w-6 rounded-full ml-auto" />
+    </div>
+    
+    {/* Cards skeleton */}
+    <div className="space-y-3">
+      <CardSkeleton />
+      <CardSkeleton />
+      <CardSkeleton />
+    </div>
+  </div>
+);
 
 const FunnelsPage = () => {
   const { isHidden } = useSidebar();
@@ -78,8 +136,21 @@ const FunnelsPage = () => {
     handleMoveCard
   } = useCards(selectedFunilId || undefined);
 
-  // Converter cards da API para formato do Kanban
-  const cards = apiCards.map(convertCardToKanban);
+  // Estado local para controlar o drag and drop
+  const [localCards, setLocalCards] = useState<ReturnType<typeof convertCardToKanban>[]>([]);
+  const [isMovingCard, setIsMovingCard] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Converter cards da API para formato do Kanban (memoizado)
+  const cards = useMemo(() => apiCards.map(convertCardToKanban), [apiCards]);
+
+  // Inicializar estado local apenas uma vez
+  useEffect(() => {
+    if (!isInitialized && apiCards.length > 0) {
+      setLocalCards(apiCards.map(convertCardToKanban));
+      setIsInitialized(true);
+    }
+  }, [apiCards, isInitialized]);
 
   // Selecionar primeiro funil automaticamente quando carregar
   useEffect(() => {
@@ -131,12 +202,31 @@ const FunnelsPage = () => {
     setFunilToDelete(null);
   };
 
-  // Função para lidar com movimento de cards no Kanban
+  // Função para lidar com movimento de cards no Kanban (movimento otimista)
   const handleCardMove = async (cardId: string, newEstagioId: string) => {
+    // Marcar card como sendo movido
+    setIsMovingCard(cardId);
+    
     try {
+      // Chamar API em background
       await handleMoveCard(cardId, { newEstagioId });
     } catch (error) {
       console.error('Erro ao mover card:', error);
+      
+      // Reverter movimento se API falhar
+      setLocalCards(prevCards => 
+        prevCards.map(card => 
+          card.id === cardId 
+            ? { ...card, column: cards.find(c => c.id === cardId)?.column || card.column }
+            : card
+        )
+      );
+      
+      // Mostrar toast de erro
+      toast.error('Erro ao mover card. Tente novamente.');
+    } finally {
+      // Remover indicador de movimento
+      setIsMovingCard(null);
     }
   };
 
@@ -161,8 +251,30 @@ const FunnelsPage = () => {
   // Loading state
   if (isLoadingFunis) {
     return (
-      <div className="mx-4 mb-4 mt-2">
-        <LoadingState message="Carregando funis..." size="lg" />
+      <div className="mb-4 mt-2 overflow-x-hidden">
+        {/* Header skeleton */}
+        <header className={`fixed top-0 right-0 z-50 mb-3 pb-3 pt-2 border-b border-border bg-background/95 backdrop-blur-md transition-all duration-300 ease-in-out ${isHidden ? 'left-0' : sidebarCollapsed ? 'left-16' : 'left-56'}`}>
+          <div className="flex items-center justify-between px-4">
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-10 w-[200px]" />
+            </div>
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-8 w-24" />
+            </div>
+          </div>
+        </header>
+
+        {/* Conteúdo principal skeleton */}
+        <div className="mx-4 pt-16 overflow-x-auto">
+          <div className="min-w-max">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">
+              <ColumnSkeleton />
+              <ColumnSkeleton />
+              <ColumnSkeleton />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -259,9 +371,15 @@ const FunnelsPage = () => {
 
       {/* Conteúdo principal */}
       <div className="mx-4 pt-16 overflow-x-auto">
-        {/* Loading dos estágios */}
-        {isLoadingEstagios && (
-          <LoadingState message="Carregando estágios..." size="md" />
+        {/* Loading dos estágios e cards */}
+        {(isLoadingEstagios || isLoadingCards) && (
+          <div className="min-w-max">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">
+              <ColumnSkeleton />
+              <ColumnSkeleton />
+              <ColumnSkeleton />
+            </div>
+          </div>
         )}
 
         {/* Error dos estágios */}
@@ -273,11 +391,6 @@ const FunnelsPage = () => {
             retryLabel="Recarregar página"
             className="mb-4"
           />
-        )}
-
-        {/* Loading dos cards */}
-        {isLoadingCards && (
-          <LoadingState message="Carregando cards..." size="md" />
         )}
 
         {/* Error dos cards */}
@@ -296,14 +409,18 @@ const FunnelsPage = () => {
         <div className="min-w-max">
           <KanbanProvider
             columns={columns}
-            data={cards}
+            data={localCards}
             onDataChange={(newCards) => {
+              // Atualizar estado local imediatamente (movimento otimista)
+              setLocalCards(newCards);
+              
               // Encontrar o card que foi movido
               const movedCard = newCards.find((newCard, index) => 
                 newCard.column !== cards[index]?.column
               );
               
               if (movedCard) {
+                // Chamar API em background
                 handleCardMove(movedCard.id, movedCard.column);
               }
             }}
@@ -319,7 +436,7 @@ const FunnelsPage = () => {
                   />
                   <span className="font-semibold text-foreground">{column.name}</span>
                   <span className="ml-auto text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                    {cards.filter(card => card.column === column.id).length}
+                    {localCards.filter(card => card.column === column.id).length}
                   </span>
                 </div>
               </KanbanHeader>
@@ -331,7 +448,13 @@ const FunnelsPage = () => {
                     key={card.id}
                     name={card.name}
                   >
-                    <div className="flex flex-col h-full">
+                    <div className={`flex flex-col h-full relative ${isMovingCard === card.id ? 'opacity-75' : ''}`}>
+                      {/* Indicador de sincronização */}
+                      {isMovingCard === card.id && (
+                        <div className="absolute top-2 right-2">
+                          <div className="h-2 w-2 bg-blue-500 rounded-full animate-pulse" title="Sincronizando..."></div>
+                        </div>
+                      )}
                       {/* Header com Avatar, Nome e Tempo */}
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3 flex-1 min-w-0">

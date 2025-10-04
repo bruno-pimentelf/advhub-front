@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Ailum CRM - Sistema de Gestão para Clínicas Médicas',
+    title: 'Ailum CRM - Sistema para Clínicas Médicas com IA',
     description: 'CRM completo para clínicas médicas com IA. Gerencie pacientes, agendamentos, funis de vendas e marketing digital.',
     images: ['/og-image.png'],
   },

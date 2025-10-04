@@ -90,7 +90,7 @@ export function useCards(funilId?: string) {
   const handleMoveCard = async (id: string, data: MoveCardRequest) => {
     try {
       const card = await moveCard({ id, data }).unwrap()
-      toast.success("Card movido com sucesso!")
+      // Não mostrar toast de sucesso - movimento é visual imediato
       return card
     } catch (error: any) {
       console.error('Erro ao mover card:', error)
