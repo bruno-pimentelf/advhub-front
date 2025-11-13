@@ -202,7 +202,7 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
                 "font-bold text-xl whitespace-nowrap transition-all duration-200 ease-in-out text-[#1e3a8a]",
                 isCollapsed ? "text-lg" : "text-2xl"
               )}>
-                Advhub
+                ADVHUB
               </span>
             </Link>
             
