@@ -1,12 +1,10 @@
 import React from 'react'
 import Link from 'next/link'
-import { ArrowRight, ChevronRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
 import { TextEffect } from '@/components/ui/text-effect'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { HeroHeader } from './header'
-import { useSmoothScroll } from '@/hooks/use-smooth-scroll'
 
 const transitionVariants = {
     item: {
@@ -29,14 +27,12 @@ const transitionVariants = {
 }
 
 export default function HeroSection() {
-    const { scrollToElement } = useSmoothScroll()
-    
     return (
         <>
             <HeroHeader />
             <main className="overflow-hidden">
                 <div className="min-h-[85vh] w-full relative bg-white">
-                    {/* Teal Glow Top */}
+                    {/* Blue Glow Top */}
                     <div
                         className="absolute inset-0 z-0"
                         style={{
@@ -44,7 +40,7 @@ export default function HeroSection() {
                             backgroundImage: `
                                 radial-gradient(
                                     circle at top center,
-                                    rgba(4, 205, 212, 0.5),
+                                    rgba(30, 58, 138, 0.3),
                                     transparent 30%
                                 )
                             `,
@@ -55,47 +51,12 @@ export default function HeroSection() {
                     {/* Your Content/Components */}
                     <section>
                         <div className="relative pt-16 md:pt-24 pb-16 md:pb-24">
-                        <AnimatedGroup
-                            variants={{
-                                container: {
-                                    visible: {
-                                        transition: {
-                                            delayChildren: 1,
-                                        },
-                                    },
-                                },
-                                item: {
-                                    hidden: {
-                                        opacity: 0,
-                                        y: 20,
-                                    },
-                                    visible: {
-                                        opacity: 1,
-                                        y: 0,
-                                        transition: {
-                                            type: 'spring',
-                                            bounce: 0.3,
-                                            duration: 2,
-                                        },
-                                    },
-                                },
-                            }}
-                            className="absolute inset-0 -z-20">
-                            <Image
-                                src="https://ik.imagekit.io/lrigu76hy/tailark/night-background.jpg?updatedAt=1745733451120"
-                                alt="background"
-                                className="absolute inset-x-0 top-56 -z-20 hidden lg:top-32 dark:block"
-                                width="3276"
-                                height="4095"
-                            />
-                        </AnimatedGroup>
-                        <div className="absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,var(--color-background)_75%)]"></div>
                         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-                            <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
-                                {/* Left Column - Text Content */}
-                                <div className="flex-1 lg:flex-[0.8] text-center lg:text-left">
+                            <div className="flex flex-col items-center justify-center">
+                                {/* Text Content */}
+                                <div className="w-full max-w-4xl text-center">
                                     <AnimatedGroup variants={transitionVariants}>
-                                        <                                        <div className="hover:bg-background dark:hover:border-t-border bg-muted group inline-flex items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950">
+                                        <div className="hover:bg-background dark:hover:border-t-border bg-muted group inline-flex items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950">
                                             <span className="text-foreground text-sm">Gestão jurídica inteligente com IA</span>
                                             <span className="dark:border-background block h-4 w-0.5 border-l bg-white dark:bg-zinc-700"></span>
 
@@ -116,7 +77,7 @@ export default function HeroSection() {
                                         preset="fade-in-blur"
                                         speedSegment={0.3}
                                         as="h1"
-                                        className="mt-8 text-center lg:text-left text-4xl sm:text-5xl md:text-6xl lg:text-5xl xl:text-[4.25rem] font-medium leading-tight">
+                                        className="mt-8 text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight">
                                         Transforme seu escritório com tecnologia jurídica de ponta
                                     </TextEffect>
                                     <TextEffect
@@ -125,7 +86,7 @@ export default function HeroSection() {
                                         speedSegment={0.3}
                                         delay={0.5}
                                         as="p"
-                                        className="mt-8 max-w-2xl text-balance text-lg">
+                                        className="mt-8 mx-auto max-w-3xl text-balance text-xl text-muted-foreground">
                                         Plataforma completa para advogados que automatiza atendimento, gestão de contratos e relacionamento com clientes, usando IA para otimizar seu tempo e aumentar conversões.
                                     </TextEffect>
 
@@ -141,7 +102,7 @@ export default function HeroSection() {
                                             },
                                             ...transitionVariants,
                                         }}
-                                        className="mt-12 flex flex-col items-center lg:items-start gap-4 md:flex-row">
+                                        className="mt-12 flex flex-col items-center gap-4 md:flex-row md:justify-center">
                                         <div
                                             key={1}
                                             className="bg-foreground/10 rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5">
@@ -153,45 +114,6 @@ export default function HeroSection() {
                                                     <span className="text-nowrap">Começar agora</span>
                                                 </Link>
                                             </Button>
-                                        </div>
-                                    </AnimatedGroup>
-                                </div>
-
-                                {/* Right Column - Image */}
-                                <div className="flex-1 lg:flex-[0.5]">
-                                    <AnimatedGroup
-                                        variants={{
-                                            container: {
-                                                visible: {
-                                                    transition: {
-                                                        staggerChildren: 0.05,
-                                                        delayChildren: 0.75,
-                                                    },
-                                                },
-                                            },
-                                            ...transitionVariants,
-                                        }}>
-                                        <div className="relative overflow-hidden">
-                                            <div
-                                                aria-hidden
-                                                className="bg-linear-to-b to-background absolute inset-0 z-10 from-transparent from-35%"
-                                            />
-                                            <div className="inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1">
-                                                <Image
-                                                    className="bg-background aspect-[3/4] relative hidden rounded-2xl dark:block"
-                                                    src="/Card.svg"
-                                                    alt="app screen"
-                                                    width="1000"
-                                                    height="400"
-                                                />
-                                                <Image
-                                                    className="z-2 border-border/25 aspect-[3/4] relative rounded-2xl border dark:hidden"
-                                                    src="/Card.svg"
-                                                    alt="app screen"
-                                                    width="1000"
-                                                    height="400"
-                                                />
-                                            </div>
                                         </div>
                                     </AnimatedGroup>
                                 </div>

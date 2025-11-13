@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 export const Logo = ({ className, uniColor }: { className?: string; uniColor?: boolean }) => {
     return (
         <div className='flex items-center gap-2'>
-            <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-[#04CDD4] to-[#0891B2] bg-clip-text text-transparent">
+            <span className="text-2xl font-bold tracking-tight text-[#1e3a8a]">
                 Advhub
             </span>
         </div>

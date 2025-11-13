@@ -199,7 +199,7 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
               isCollapsed ? "justify-center w-full" : "px-6"
             )}>
               <span className={cn(
-                "font-bold text-xl whitespace-nowrap transition-all duration-200 ease-in-out bg-gradient-to-r from-[#04CDD4] to-[#0891B2] bg-clip-text text-transparent",
+                "font-bold text-xl whitespace-nowrap transition-all duration-200 ease-in-out text-[#1e3a8a]",
                 isCollapsed ? "text-lg" : "text-2xl"
               )}>
                 Advhub
