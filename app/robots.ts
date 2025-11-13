@@ -12,6 +12,6 @@ export default function robots(): MetadataRoute.Robots {
         '/private/',
       ],
     },
-    sitemap: 'https://ailumcrm.com.br/sitemap.xml',
+    sitemap: 'https://advhub.com.br/sitemap.xml',
   }
 }

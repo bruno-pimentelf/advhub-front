@@ -35,8 +35,8 @@ export function useOnboarding() {
       const user = await createUser(userData).unwrap()
       toast.success("Perfil criado com sucesso!")
 
-      // 2. Criar clínica
-      setCurrentStep('Criando clínica...')
+      // 2. Criar escritório
+      setCurrentStep('Criando escritório...')
       await new Promise(resolve => setTimeout(resolve, 200))
       
       const clinicaData = {
@@ -44,7 +44,7 @@ export function useOnboarding() {
       }
       
       const clinica = await createClinica(clinicaData).unwrap()
-      toast.success("Clínica criada com sucesso!")
+      toast.success("Escritório criado com sucesso!")
 
       // 3. Criar funil padrão com estágios
       setCurrentStep('Configurando funil...')

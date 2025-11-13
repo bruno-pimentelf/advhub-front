@@ -1,8 +1,8 @@
 import emailjs from '@emailjs/browser'
 
 // Configurações do EmailJS - Substitua pelos seus valores
-const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_ailum'
-const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'template_ailum_form'
+const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_advhub'
+const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'template_advhub_form'
 const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'ejp3Lo6DsFVQgYOit'
 
 // Inicializar EmailJS
@@ -28,7 +28,7 @@ export const sendApplicationEmail = async (formData: FormSubmissionData): Promis
   try {
     // Preparar dados para o template
     const templateParams = {
-      to_email: 'ailumcrm@gmail.com',
+      to_email: 'contato@advhub.com.br',
       from_name: formData.name,
       from_email: formData.email,
       phone: formData.phone,

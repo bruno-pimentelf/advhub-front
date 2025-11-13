@@ -19,54 +19,54 @@ const geistMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Ailum CRM - Sistema de Gestão para Clínicas Médicas",
-    template: "%s | Ailum CRM"
+    default: "Advhub - Plataforma de Gestão Jurídica com IA",
+    template: "%s | Advhub"
   },
-  description: "CRM completo para clínicas médicas com IA. Gerencie pacientes, agendamentos, funis de vendas e marketing digital. Aumente sua receita mantendo o atendimento humano.",
+  description: "Plataforma completa para advogados com IA. Automatize atendimento, gestão de contratos, relacionamento com clientes e funis de vendas. Aumente conversões e otimize seu tempo.",
   keywords: [
-    "CRM clínicas médicas",
-    "sistema gestão clínica",
-    "agendamento online",
-    "marketing digital clínicas",
-    "funnels vendas medicina",
-    "IA para clínicas",
-    "gestão pacientes",
-    "software clínica médica",
-    "automação marketing saúde",
-    "CRM saúde"
+    "gestão jurídica",
+    "software para advogados",
+    "automação jurídica",
+    "CRM advogados",
+    "gestão de contratos",
+    "IA para escritórios",
+    "atendimento jurídico",
+    "funis vendas jurídicos",
+    "automação escritório advocacia",
+    "tecnologia jurídica"
   ],
-  authors: [{ name: "Ailum CRM" }],
-  creator: "Ailum CRM",
-  publisher: "Ailum CRM",
+  authors: [{ name: "Advhub" }],
+  creator: "Advhub",
+  publisher: "Advhub",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://ailumcrm.com.br'),
+  metadataBase: new URL('https://advhub.com.br'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
-    url: 'https://ailumcrm.com.br',
-    title: 'Ailum CRM - Sistema de Gestão para Clínicas Médicas',
-    description: 'CRM completo para clínicas médicas com IA. Gerencie pacientes, agendamentos, funis de vendas e marketing digital.',
-    siteName: 'Ailum CRM',
+    url: 'https://advhub.com.br',
+    title: 'Advhub - Plataforma de Gestão Jurídica com IA',
+    description: 'Plataforma completa para advogados com IA. Automatize atendimento, gestão de contratos, relacionamento com clientes e funis de vendas.',
+    siteName: 'Advhub',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Ailum CRM - Sistema de Gestão para Clínicas',
+        alt: 'Advhub - Plataforma de Gestão Jurídica',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Ailum CRM - Sistema para Clínicas Médicas com IA',
-    description: 'CRM completo para clínicas médicas com IA. Gerencie pacientes, agendamentos, funis de vendas e marketing digital.',
+    title: 'Advhub - Plataforma para Advogados com IA',
+    description: 'Plataforma completa para advogados com IA. Automatize atendimento, gestão de contratos, relacionamento com clientes e funis de vendas.',
     images: ['/og-image.png'],
   },
   robots: {

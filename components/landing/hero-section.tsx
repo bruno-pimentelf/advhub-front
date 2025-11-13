@@ -95,10 +95,8 @@ export default function HeroSection() {
                                 {/* Left Column - Text Content */}
                                 <div className="flex-1 lg:flex-[0.8] text-center lg:text-left">
                                     <AnimatedGroup variants={transitionVariants}>
-                                        <Link
-                                            href="#link"
-                                            className="hover:bg-background dark:hover:border-t-border bg-muted group inline-flex items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950">
-                                            <span className="text-foreground text-sm">O CRM que usa IA do jeito certo</span>
+                                        <                                        <div className="hover:bg-background dark:hover:border-t-border bg-muted group inline-flex items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950">
+                                            <span className="text-foreground text-sm">Gestão jurídica inteligente com IA</span>
                                             <span className="dark:border-background block h-4 w-0.5 border-l bg-white dark:bg-zinc-700"></span>
 
                                             <div className="bg-background group-hover:bg-muted size-6 overflow-hidden rounded-full duration-500">
@@ -111,7 +109,7 @@ export default function HeroSection() {
                                                     </span>
                                                 </div>
                                             </div>
-                                        </Link>
+                                        </div>
                                     </AnimatedGroup>
 
                                     <TextEffect
@@ -119,7 +117,7 @@ export default function HeroSection() {
                                         speedSegment={0.3}
                                         as="h1"
                                         className="mt-8 text-center lg:text-left text-4xl sm:text-5xl md:text-6xl lg:text-5xl xl:text-[4.25rem] font-medium leading-tight">
-                                        Modernize sua clínica com o CRM do futuro
+                                        Transforme seu escritório com tecnologia jurídica de ponta
                                     </TextEffect>
                                     <TextEffect
                                         per="line"
@@ -128,7 +126,7 @@ export default function HeroSection() {
                                         delay={0.5}
                                         as="p"
                                         className="mt-8 max-w-2xl text-balance text-lg">
-                                        Um CRM completo para clínicas que não perde a essência do atendimento humano, com IA para melhorar a experiência do paciente e otimizar o seu negócio.
+                                        Plataforma completa para advogados que automatiza atendimento, gestão de contratos e relacionamento com clientes, usando IA para otimizar seu tempo e aumentar conversões.
                                     </TextEffect>
 
                                     <AnimatedGroup
@@ -149,9 +147,11 @@ export default function HeroSection() {
                                             className="bg-foreground/10 rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5">
                                             <Button
                                                 size="lg"
-                                                onClick={() => scrollToElement('#application-form')}
+                                                asChild
                                                 className="rounded-xl px-5 text-base">
-                                                <span className="text-nowrap">Aplique-se</span>
+                                                <Link href="/login">
+                                                    <span className="text-nowrap">Começar agora</span>
+                                                </Link>
                                             </Button>
                                         </div>
                                     </AnimatedGroup>

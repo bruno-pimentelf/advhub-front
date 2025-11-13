@@ -196,23 +196,13 @@ export function Sidebar({ onCollapseChange }: SidebarProps) {
           <div className="flex h-16 items-center transition-all duration-300 ease-in-out">
             <Link href="/" className={cn(
               "flex items-center transition-all duration-300 ease-in-out",
-              isCollapsed ? "justify-center w-full" : "space-x-3 px-6"
+              isCollapsed ? "justify-center w-full" : "px-6"
             )}>
-              <Image 
-                src="/ailum-logo.png" 
-                alt="Ailum" 
-                width={isCollapsed ? 32 : 40} 
-                height={isCollapsed ? 32 : 40}
-                className={cn(
-                  "transition-all duration-300 ease-in-out",
-                  isCollapsed ? "w-7 h-8" : "w-9 h-10"
-                )}
-              />
               <span className={cn(
-                "font-semibold text-foreground text-xl whitespace-nowrap transition-all duration-200 ease-in-out",
-                isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto"
+                "font-bold text-xl whitespace-nowrap transition-all duration-200 ease-in-out bg-gradient-to-r from-[#04CDD4] to-[#0891B2] bg-clip-text text-transparent",
+                isCollapsed ? "text-lg" : "text-2xl"
               )}>
-                A I L U M
+                Advhub
               </span>
             </Link>
             

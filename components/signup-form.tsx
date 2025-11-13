@@ -196,7 +196,7 @@ export function SignupForm({
               >
                 <CardTitle className="text-center">Crie sua conta</CardTitle>
                 <CardDescription className="text-center">
-                  Preencha os dados abaixo para começar a usar o Ailum CRM
+                  Preencha os dados abaixo para começar a usar o Advhub
                 </CardDescription>
               </AnimatedGroup>
             </div>
@@ -257,11 +257,11 @@ export function SignupForm({
                   </div>
 
                   <div className="grid gap-3">
-                    <Label htmlFor="clinicaName">Nome da clínica</Label>
+                    <Label htmlFor="clinicaName">Nome do escritório</Label>
                     <Input
                       id="clinicaName"
                       type="text"
-                      placeholder="Clínica Dr. João Silva"
+                      placeholder="Advocacia Silva & Associados"
                       value={formData.clinicaName}
                       onChange={(e) => handleInputChange('clinicaName', e.target.value)}
                       required

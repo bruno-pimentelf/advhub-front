@@ -13,7 +13,7 @@ const getStepProgress = (step: string): number => {
   if (step.includes("Firebase")) return 10
   if (step.includes("Processando")) return 20
   if (step.includes("Criando perfil")) return 30
-  if (step.includes("Criando clínica")) return 45
+  if (step.includes("Criando escritório")) return 45
   if (step.includes("Configurando funil")) return 60
   if (step.includes("Criando estágios")) {
     // Extrair progresso dos estágios (1/5, 2/5, etc.)

@@ -1,12 +1,11 @@
 import { cn } from '@/lib/utils'
-import Image from 'next/image'
 
 export const Logo = ({ className, uniColor }: { className?: string; uniColor?: boolean }) => {
     return (
         <div className='flex items-center gap-2'>
-
-            <Image src="/ailum-logo.png" alt="Ailum Logo" width={120} height={120} className={cn('w-auto h-10', className)} />
-            <span className="text-xl ">A I L U M</span>
+            <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-[#04CDD4] to-[#0891B2] bg-clip-text text-transparent">
+                Advhub
+            </span>
         </div>
     )
 }

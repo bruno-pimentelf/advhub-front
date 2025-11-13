@@ -283,16 +283,16 @@ export function useFunilTemplates() {
         { name: 'Retention', color: '#D1FAE5', order: 4, description: 'Mantiveram assinatura' },
       ]
     },
-    'clinica-medica': {
-      id: 'clinica-medica',
-      name: 'Clínica Médica',
-      description: 'Funil específico para clínicas médicas',
+    'consultoria-juridica': {
+      id: 'consultoria-juridica',
+      name: 'Consultoria Jurídica',
+      description: 'Funil específico para captação de clientes',
       estagios: [
-        { name: 'Novo Lead', color: '#FF5733', order: 0, description: 'Primeiro contato com o paciente' },
-        { name: 'Interessado', color: '#FFA500', order: 1, description: 'Paciente demonstrou interesse' },
-        { name: 'Agendado', color: '#33FF57', order: 2, description: 'Consulta agendada' },
-        { name: 'Consulta Realizada', color: '#3357FF', order: 3, description: 'Consulta foi realizada' },
-        { name: 'Fechado', color: '#8A2BE2', order: 4, description: 'Tratamento finalizado' },
+        { name: 'Novo Lead', color: '#FF5733', order: 0, description: 'Primeiro contato com o potencial cliente' },
+        { name: 'Interessado', color: '#FFA500', order: 1, description: 'Cliente demonstrou interesse' },
+        { name: 'Proposta Enviada', color: '#33FF57', order: 2, description: 'Proposta de honorários enviada' },
+        { name: 'Em Negociação', color: '#3357FF', order: 3, description: 'Negociando termos do contrato' },
+        { name: 'Fechado', color: '#8A2BE2', order: 4, description: 'Contrato assinado' },
       ]
     }
   }

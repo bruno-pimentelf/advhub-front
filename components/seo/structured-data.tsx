@@ -8,20 +8,20 @@ export function StructuredData({ type = 'organization' }: StructuredDataProps) {
   const organizationData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Ailum CRM",
-    "description": "CRM completo para clínicas médicas com IA. Gerencie pacientes, agendamentos, funis de vendas e marketing digital.",
-    "url": "https://ailumcrm.com.br",
-    "logo": "https://ailumcrm.com.br/ailum-logo.png",
+    "name": "Advhub",
+    "description": "Plataforma completa para advogados com IA. Automatize atendimento, gestão de contratos, relacionamento com clientes e funis de vendas.",
+    "url": "https://advhub.com.br",
+    "logo": "https://advhub.com.br/advhub-logo.png",
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+55-11-99999-9999",
       "contactType": "customer service",
-      "email": "contato@ailumcrm.com.br"
+      "email": "contato@advhub.com.br"
     },
     "sameAs": [
-      "https://www.linkedin.com/company/ailum-crm",
-      "https://www.instagram.com/ailumcrm",
-      "https://www.facebook.com/ailumcrm"
+      "https://www.linkedin.com/company/advhub",
+      "https://www.instagram.com/advhub",
+      "https://www.facebook.com/advhub"
     ],
     "address": {
       "@type": "PostalAddress",
@@ -34,8 +34,8 @@ export function StructuredData({ type = 'organization' }: StructuredDataProps) {
   const softwareData = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Ailum CRM",
-    "description": "Sistema de gestão completo para clínicas médicas com inteligência artificial",
+    "name": "Advhub",
+    "description": "Plataforma de gestão completa para escritórios de advocacia com inteligência artificial",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Web Browser",
     "offers": {
@@ -53,22 +53,22 @@ export function StructuredData({ type = 'organization' }: StructuredDataProps) {
     },
     "author": {
       "@type": "Organization",
-      "name": "Ailum CRM"
+      "name": "Advhub"
     },
     "publisher": {
       "@type": "Organization",
-      "name": "Ailum CRM"
+      "name": "Advhub"
     }
   }
 
   const serviceData = {
     "@context": "https://schema.org",
     "@type": "Service",
-    "name": "CRM para Clínicas Médicas",
-    "description": "Sistema completo de gestão para clínicas médicas com IA",
+    "name": "Plataforma para Escritórios de Advocacia",
+    "description": "Sistema completo de gestão para escritórios de advocacia com IA",
     "provider": {
       "@type": "Organization",
-      "name": "Ailum CRM"
+      "name": "Advhub"
     },
     "serviceType": "Software as a Service",
     "areaServed": {
@@ -77,14 +77,14 @@ export function StructuredData({ type = 'organization' }: StructuredDataProps) {
     },
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
-      "name": "Planos Ailum CRM",
+      "name": "Planos Advhub",
       "itemListElement": [
         {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
             "name": "Plano Básico",
-            "description": "Gestão básica de pacientes e agendamentos"
+            "description": "Gestão básica de clientes e contratos"
           }
         },
         {
@@ -92,7 +92,7 @@ export function StructuredData({ type = 'organization' }: StructuredDataProps) {
           "itemOffered": {
             "@type": "Service",
             "name": "Plano Premium",
-            "description": "CRM completo com IA e marketing digital"
+            "description": "Plataforma completa com IA e automação jurídica"
           }
         }
       ]
@@ -128,18 +128,18 @@ export function FAQStructuredData() {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "O que é o Ailum CRM?",
+        "name": "O que é o Advhub?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "O Ailum CRM é um sistema completo de gestão para clínicas médicas que combina tecnologia de ponta com inteligência artificial para otimizar o atendimento ao paciente e aumentar a receita da clínica."
+          "text": "O Advhub é uma plataforma completa de gestão para escritórios de advocacia que combina tecnologia de ponta com inteligência artificial para automatizar atendimento, gestão de contratos e relacionamento com clientes."
         }
       },
       {
         "@type": "Question",
-        "name": "Como o Ailum CRM pode ajudar minha clínica?",
+        "name": "Como o Advhub pode ajudar meu escritório?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "O Ailum CRM ajuda sua clínica a gerenciar pacientes, agendamentos, funis de vendas, marketing digital e muito mais. Com IA integrada, você pode automatizar processos e melhorar a experiência do paciente."
+          "text": "O Advhub ajuda seu escritório a gerenciar clientes, contratos, funis de vendas e automação de atendimento. Com IA integrada, você pode automatizar processos e melhorar a experiência dos seus clientes."
         }
       },
       {
@@ -147,7 +147,7 @@ export function FAQStructuredData() {
         "name": "O sistema é fácil de usar?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Sim! O Ailum CRM foi desenvolvido pensando na simplicidade. Nossa interface intuitiva permite que qualquer membro da equipe use o sistema sem dificuldades, mantendo a essência do atendimento humano."
+          "text": "Sim! O Advhub foi desenvolvido pensando na simplicidade. Nossa interface intuitiva permite que qualquer membro da equipe use o sistema sem dificuldades, mantendo o foco no atendimento de qualidade."
         }
       },
       {
